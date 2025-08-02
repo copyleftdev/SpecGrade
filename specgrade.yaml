@@ -1,0 +1,26 @@
+# SpecGrade Configuration File
+# This file demonstrates all available configuration options
+
+# OpenAPI specification version to validate against
+spec_version: 3.1.0
+
+# Directory containing the OpenAPI specification files
+input_dir: ./test/sample-spec
+
+# Minimum acceptable grade (A+, A, A-, B+, B, B-, C+, C, C-, D, F)
+# SpecGrade will exit with non-zero code if the grade is below this threshold
+fail_threshold: B
+
+# Output format for validation results
+# Options: cli, json, markdown, html
+output_format: cli
+
+# List of rule IDs to skip during validation
+# Useful for temporarily ignoring specific rules or for gradual adoption
+skip_rules:
+  # - INFO-001  # Skip title requirement
+  # - OPID-001  # Skip operation ID requirement
+
+# Example of team-wide standardization:
+# This configuration ensures consistent validation across all team members
+# and CI/CD pipelines when placed in the project root directory

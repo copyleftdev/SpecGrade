@@ -1,0 +1,304 @@
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        type:
+          enum:
+            - InactivePatient
+            - Internal
+            - InvalidCredentials
+            - PatientDataSuppressed
+            - PatientNotEligible
+            - PatientNotFound
+            - ProviderNotFound
+            - SiteConfiguration
+            - SiteMaintenance
+            - ThirdPartyAdministrator
+            - TwoFactorAuthentication
+            - TwoFactorAuthenticationConfiguration
+          type: string
+      required:
+        - type
+    ErrorResponseUpstream:
+      type: object
+      properties:
+        type:
+          enum:
+            - Upstream
+          type: string
+        details:
+          $ref: '#/components/schemas/ErrorDetail'
+      required:
+        - type
+        - details
+    ErrorDetail:
+      properties:
+        code:
+          type: number
+        message:
+          type: string
+      type: object
+    ErrorType:
+      description: See [Concepts](../concepts) for explanations of error types
+      enum:
+        - InactivePatient
+        - Internal
+        - InvalidCredentials
+        - PatientDataSuppressed
+        - PatientNotEligible
+        - PatientNotFound
+        - ProviderNotFound
+        - SiteConfiguration
+        - SiteMaintenance
+        - ThirdPartyAdministrator
+        - TwoFactorAuthentication
+        - TwoFactorAuthenticationConfiguration
+        - Upstream
+      type: string
+    InternalErrorResponse:
+      type: object
+      properties:
+        type:
+          enum:
+            - Internal
+          type: string
+      required:
+        - type
+    Iso8601:
+      example: '2000-01-01T00:00:00Z'
+      format: date-time
+      type: string
+    MimeType:
+      enum:
+        - application/pdf
+      type: string
+    NonEmptyString:
+      minLength: 1
+      type: string
+    NonEmptyTrimmedString:
+      description: a non empty string
+      minLength: 1
+      pattern: ^\S[\s\S]*\S$|^\S$|^$
+      title: nonEmptyString
+      type: string
+    PayerId:
+      enum:
+        - '00580'
+        - '00611'
+        - '00621'
+        - '00840'
+        - '00851'
+        - '00910'
+        - '00932'
+        - '02027'
+        - '04614'
+        - '05029'
+        - '05030'
+        - '07000'
+        - '07027'
+        - '10578'
+        - '11198'
+        - '11271'
+        - '128WV'
+        - '13411'
+        - '22099'
+        - '22189'
+        - '22229'
+        - '23166'
+        - '23281'
+        - '31096'
+        - '34192'
+        - '36088'
+        - '36123'
+        - '36215'
+        - '39026'
+        - '39069'
+        - '41124'
+        - '43090'
+        - '43091'
+        - '44054'
+        - '47009'
+        - '47198'
+        - '47570'
+        - '50503'
+        - '51022'
+        - '52080'
+        - '52133'
+        - '52147'
+        - '53589'
+        - '53767'
+        - '54084'
+        - '54097'
+        - '55093'
+        - '56101'
+        - '56139'
+        - '58066'
+        - '59374'
+        - '60054'
+        - '61271'
+        - '61425'
+        - '62308'
+        - '64157'
+        - '64246'
+        - '65030'
+        - '65978'
+        - '680652604'
+        - '68069'
+        - '70408'
+        - '71064'
+        - '71084'
+        - '71412'
+        - '73288'
+        - '76031'
+        - '77777'
+        - '80314D'
+        - '81040'
+        - '82029'
+        - '84056'
+        - '84100'
+        - '84103'
+        - '84105'
+        - '84980'
+        - '85022'
+        - '86027'
+        - '87098'
+        - '89070'
+        - '91062'
+        - '93024'
+        - '93221'
+        - '94036'
+        - '94276'
+        - '99010'
+        - AARP1
+        - AD050
+        - AD060
+        - AD130
+        - AD160
+        - AD180
+        - AD265
+        - AD332
+        - AD450
+        - AFLAC
+        - BBMDQ
+        - BCAFD
+        - BCSNC
+        - BCSSC
+        - BSCA1
+        - BSCA2
+        - CB865
+        - CB870
+        - CBAL1
+        - CBAR1
+        - CBGA1
+        - CBKS1
+        - CBMA1
+        - CBMT1
+        - CBNM1
+        - CBTN1
+        - CDAK1
+        - CDAR1
+        - CDCA1
+        - CDIA1
+        - CDKY1
+        - CDLA1
+        - CDMN1
+        - CDOK1
+        - CDOR1
+        - CDTN1
+        - CDWY1
+        - CKAL1
+        - CKAR1
+        - CKCO1
+        - CKCT1
+        - CKFL1
+        - CKGA1
+        - CKIA1
+        - CKID1
+        - CKIL1
+        - CKIN1
+        - CKKS1
+        - CKKY1
+        - CKMA1
+        - CKMD1
+        - CKME1
+        - CKMI1
+        - CKMN1
+        - CKMO1
+        - CKMS1
+        - CKMT1
+        - CKND1
+        - CKNH1
+        - CKNJ1
+        - CKNM1
+        - CKNV1
+        - CKNY1
+        - CKOH1
+        - CKOK1
+        - CKOR1
+        - CKPA1
+        - CKTN1
+        - CKTX1
+        - CKUT1
+        - CKVA1
+        - CKVT1
+        - CKWA1
+        - CKWI1
+        - CKWV1
+        - CKWY1
+        - CX004
+        - CX007
+        - CX013
+        - CX014
+        - CX030
+        - CX058
+        - CX061
+        - CX068
+        - CX076
+        - CX083
+        - CX107
+        - DDAL1
+        - DDFL1
+        - DDGA1
+        - DDMS1
+        - DDMT1
+        - DDNV1
+        - DDPFS
+        - DDPIN
+        - DDPMI
+        - DDPOH
+        - DDTX1
+        - DDUT1
+        - DX067
+        - DXSCF
+        - DXTAS
+        - E3960
+        - GP133
+        - GWD01
+        - HDSMH
+        - MLNNE
+        - NDB01
+        - R7001
+        - R7002
+        - RP073
+        - SB840
+        - SB890
+        - SCION
+        - SKYGN
+        - SKYGNH
+        - STR01
+        - TLY26
+        - UTUDD
+        - WDENC
+      type: string
+    AuthenticationMethod:
+      type: string
+      enum:
+        - Basic
+        - TwoFactorSms
+        - TwoFactorEmail
+    LoginMethod:
+      type: string
+      enum:
+        - Native
+        - SSO

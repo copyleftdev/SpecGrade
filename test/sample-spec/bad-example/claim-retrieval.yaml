@@ -1,0 +1,799 @@
+components:
+  schemas:
+    AdditionalData:
+      additionalProperties: true
+      description: >
+        An object string keys and values of any type, representing additional
+        data
+      example:
+        anotherKey: 123
+        someKey: someValue
+      type: object
+    BasicCredentials:
+      properties:
+        password:
+          type: string
+        username:
+          type: string
+      required:
+        - username
+        - password
+      type: object
+    BillingProvider:
+      description: >
+        A billing provider is a dental provider responsible for submitting a
+        dental claim and receiving payment
+      oneOf:
+        - properties:
+            name:
+              type: string
+          required:
+            - name
+          title: BillingProviderByName
+          type: object
+        - properties:
+            nationalProviderId:
+              $ref: "#/components/schemas/NationalProviderId"
+          required:
+            - nationalProviderId
+          title: BillingProviderByNationalProviderId
+          type: object
+    Claim:
+      additionalProperties: false
+      properties:
+        additionalData:
+          $ref: "#/components/schemas/AdditionalData"
+        billingProvider:
+          $ref: "#/components/schemas/BillingProvider"
+        codes:
+          items:
+            $ref: "#/components/schemas/ClaimCode"
+          type: array
+        coinsuranceAmount:
+          $ref: "#/components/schemas/NonNegativeCurrency"
+        deductibleApplied:
+          $ref: "#/components/schemas/NonNegativeCurrency"
+        groupNumber:
+          description: >
+            The group number associated with the claim, which may be used to
+            identify the insurance plan or group under which the claim is
+            submitted
+          type: string
+        id:
+          description: Unique identifier for the claim
+          type: string
+        notes:
+          items:
+            type: string
+          type: array
+        patient:
+          $ref: "#/components/schemas/MemberResult"
+        patientResponsibility:
+          $ref: "#/components/schemas/NonNegativeCurrency"
+        payment:
+          $ref: "#/components/schemas/Payment"
+        renderingProvider:
+          $ref: "#/components/schemas/RenderingProvider"
+        serviceDateRange:
+          $ref: "#/components/schemas/DateRange"
+        serviceVisits:
+          items:
+            $ref: "#/components/schemas/ServiceVisit"
+          type: array
+        status:
+          $ref: "#/components/schemas/ClaimStatusType"
+        subscriber:
+          $ref: "#/components/schemas/MemberResult"
+      required:
+        - id
+        - patient
+        - payment
+        - renderingProvider
+        - serviceDateRange
+        - serviceVisits
+        - status
+        - serviceDateRange
+      type: object
+    ClaimCode:
+      description: |
+        A claim code object, which may include a code, description, and/or type
+      oneOf:
+        - properties:
+            code:
+              $ref: "#/components/schemas/Code"
+            description:
+              type: string
+            type:
+              $ref: "#/components/schemas/CodeType"
+          required:
+            - code
+            - description
+            - type
+          title: ClaimCodeWithAllProperties
+          type: object
+        - properties:
+            code:
+              $ref: "#/components/schemas/Code"
+            description:
+              type: string
+          required:
+            - code
+            - description
+          title: ClaimCodeWithCodeAndDescription
+          type: object
+        - properties:
+            code:
+              $ref: "#/components/schemas/Code"
+            type:
+              $ref: "#/components/schemas/CodeType"
+          required:
+            - code
+            - type
+          title: ClaimCodeWithCodeAndType
+          type: object
+        - properties:
+            description:
+              type: string
+            type:
+              $ref: "#/components/schemas/CodeType"
+          required:
+            - description
+            - type
+          title: ClaimCodeWithDescriptionAndType
+          type: object
+        - properties:
+            code:
+              $ref: "#/components/schemas/Code"
+          required:
+            - code
+          title: ClaimCodeWithCode
+          type: object
+        - properties:
+            description:
+              type: string
+          required:
+            - description
+          title: ClaimCodeWithDescription
+          type: object
+    ClaimRetrievalRequest:
+      additionalProperties: false
+      properties:
+        correlationId:
+          description: An identifier for the credentials validation request
+          type: string
+        credentials:
+          anyOf:
+            - $ref: "#/components/schemas/BasicCredentials"
+            - $ref: "#/components/schemas/EmailCredentials"
+            - $ref: "#/components/schemas/SMSCredentials"
+        dependent:
+          $ref: "#/components/schemas/Member"
+        office:
+          $ref: "#/components/schemas/Office"
+          description: Information about the office
+        patientControlNumber:
+          $ref: "#/components/schemas/PatientControlNumber"
+          description: A string uniquely identifying a patient control number
+        portalId:
+          description: Zuub-provided identifier for a portal
+          example: 26
+          type: number
+        provider:
+          $ref: "#/components/schemas/Provider"
+        serviceDateRange:
+          $ref: "#/components/schemas/DateRange"
+          description: >-
+            A date range with a `from` and `to` date. The `from` date must be
+            earlier than or equal to the `to` date.
+        subscriber:
+          $ref: "#/components/schemas/Member"
+          description: >-
+            The subscriber for the member's claim. If no dependent is specified,
+            the verification will be for this member.
+        version:
+          enum:
+            - 1.0.0
+          type: string
+      required:
+        - correlationId
+        - office
+        - portalId
+        - provider
+        - serviceDateRange
+        - subscriber
+        - version
+      type: object
+    ClaimRetrievalRequestResponse:
+      additionalProperties: false
+      properties:
+        correlationId:
+          description: The correlation ID provided in the claim retrieval request
+          type: string
+        status:
+          description: The status of the claim retrieval request
+          enum:
+            - Acknowledged
+          type: string
+        version:
+          enum:
+            - 1.0.0
+          type: string
+      required:
+        - correlationId
+        - status
+        - version
+      type: object
+    ClaimRetrievalStatusResponse:
+      additionalProperties: false
+      properties:
+        correlationId:
+          description: The correlation ID provided in the claim retrieval request
+          type: string
+        result:
+          $ref: "#/components/schemas/ClaimRetrievalStatusResult"
+        status:
+          description: The status of the claim retrieval request
+          enum:
+            - Successful
+          type: string
+        version:
+          enum:
+            - 1.0.0
+          type: string
+      required:
+        - correlationId
+        - result
+        - status
+        - version
+      type: object
+    ClaimRetrievalStatusResponseFailure:
+      additionalProperties: false
+      properties:
+        correlationId:
+          description: The correlation ID provided in the claim retrieval request
+          type: string
+        result:
+          additionalProperties: false
+          description: The result of the claim retrieval request
+          properties:
+            type:
+              description: The type of error that occurred during claim retrieval
+              enum:
+                - InactivePatient
+                - Internal
+                - InvalidCredentials
+                - PatientDataSuppressed
+                - PatientNotEligible
+                - PatientNotFound
+                - SiteConfiguration
+                - SiteMaintenance
+                - Upstream
+              type: string
+          required:
+            - type
+          type: object
+        status:
+          description: The status of the claim retrieval request
+          enum:
+            - Failed
+          type: string
+        version:
+          enum:
+            - 1.0.0
+          type: string
+      required:
+        - correlationId
+        - result
+        - status
+        - version
+      type: object
+    ClaimRetrievalStatusResult:
+      additionalProperties: false
+      properties:
+        claims:
+          type: array
+          items:
+            $ref: "#/components/schemas/Claim"
+        patientControlNumber:
+          $ref: "#/components/schemas/PatientControlNumber"
+          description: A string uniquely identifying a patient control number
+      required:
+        - claims
+      type: object
+    ClaimStatusType:
+      description: >
+        The status of the claim, such as "Acknowledged", "NotFound",
+        "PendingFurtherDocumentation", "PendingReview", "Processed", or
+        "UnderAdjudication".
+      enum:
+        - Acknowledged
+        - NotFound
+        - PendingFurtherDocumentation
+        - PendingReview
+        - Processed
+        - UnderAdjudication
+      type: string
+    Code:
+      description: A string representing a code value
+      example: D0120
+      type: string
+    CodeType:
+      description: A string representing the type of code
+      example: procedure
+      type: string
+    Currency:
+      description: A currency value that can be negative, zero, or positive
+      type: number
+    Date:
+      description: |
+        A string representing a date in the format YYYY-MM-DD
+      example: "2023-10-01"
+      pattern: ^\d{4}-\d{2}-\d{2}$
+      type: string
+    DateRange:
+      description: >
+        An object representing a date range with a `from` and `to` date
+        (YYYY-MM-DD). The `from` date must be earlier than or equal to the `to`
+        date.
+      properties:
+        from:
+          $ref: "#/components/schemas/Date"
+        to:
+          $ref: "#/components/schemas/Date"
+      required:
+        - from
+        - to
+      type: object
+    E164:
+      description: Phone number in E.164 format (e.g., +1234567890)
+      example: "+1234567890"
+      pattern: ^\+\d{1,15}$
+      type: string
+    EmailCredentials:
+      properties:
+        email:
+          format: email
+          type: string
+        password:
+          type: string
+        username:
+          type: string
+      required:
+        - username
+        - password
+        - email
+      type: object
+    Member:
+      properties:
+        address:
+          $ref: "#/components/schemas/MemberAddress"
+        dateOfBirth:
+          $ref: "#/components/schemas/Date"
+        firstName:
+          type: string
+        groupId:
+          type: string
+        id:
+          description: This is the member ID
+          type: string
+        lastName:
+          type: string
+      required:
+        - id
+        - firstName
+        - lastName
+        - dateOfBirth
+      type: object
+    MemberAddress:
+      properties:
+        zipCode:
+          example: "94103"
+          pattern: ^\d{5}$
+          type: string
+      required:
+        - zipCode
+      type: object
+    MemberResult:
+      description: >
+        A person covered by an insurance policy, including the subscriber and
+        any dependents
+      properties:
+        dateOfBirth:
+          $ref: "#/components/schemas/Date"
+          description: The date on which the member was born
+        firstName:
+          description: The member's first name
+          type: string
+        lastName:
+          description: The member's last name
+          type: string
+        middleName:
+          description: The member's middle name
+          type: string
+        relationshipToSubscriber:
+          $ref: "#/components/schemas/RelationshipToSubscriber"
+          description: The relationship of the member to the primary subscriber
+      required:
+        - dateOfBirth
+        - firstName
+        - lastName
+        - relationshipToSubscriber
+      title: Member
+      type: object
+    MouthArch:
+      description: |
+        The arch of the mouth where a procedure is performed
+      enum:
+        - LA
+        - UA
+      type: string
+    MouthQuadrant:
+      description: |
+        The quadrant of the mouth where a procedure is performed
+      enum:
+        - LL
+        - LR
+        - UL
+        - UR
+      type: string
+    NationalProviderId:
+      example: "1234567890"
+      type: string
+    NonNegativeCurrency:
+      description: >
+        A number greater than or equal to zero, representing a non-negative
+        currency amount
+      example: 100.5
+      minimum: 0
+      type: number
+    Office:
+      description: |
+        Information about the office
+      properties:
+        address:
+          $ref: "#/components/schemas/OfficeAddress"
+        id:
+          $ref: "#/components/schemas/OfficeId"
+        name:
+          type: string
+        organizationalNationalProviderId:
+          $ref: "#/components/schemas/NationalProviderId"
+        phoneNumber:
+          $ref: "#/components/schemas/E164"
+        taxId:
+          $ref: "#/components/schemas/TaxId"
+      required:
+        - name
+      type: object
+    OfficeAddress:
+      properties:
+        address1:
+          type: string
+        address2:
+          type: string
+        city:
+          type: string
+        state:
+          example: CA
+          type: string
+        zipCode:
+          example: "94103"
+          pattern: ^\d{5}$
+          type: string
+      required:
+        - address1
+        - city
+        - state
+        - zipCode
+      type: object
+    OfficeId:
+      description: Unique identifier of an office
+      type: string
+    PatientControlNumber:
+      example: PCN123456
+      type: string
+    Payment:
+      description: >
+        A Payment is a representation of a single payment that was made for a
+        claim
+      properties:
+        amount:
+          $ref: "#/components/schemas/NonNegativeCurrency"
+          description: The currency amount of the payment
+        date:
+          $ref: "#/components/schemas/Date"
+          description: The date on which the payment was made
+        notes:
+          description: Any notes that the provider has added to the payment
+          items:
+            type: string
+          type: array
+        referenceId:
+          description: A unique identifier for the payment
+          type: string
+        status:
+          $ref: "#/components/schemas/PaymentStatusType"
+          description: The status of the payment, such as "Paid" or "Denied"
+      required:
+        - status
+      type: object
+    PaymentStatusType:
+      description: The status of the payment, such as "Paid", "Denied", or "Pending"
+      enum:
+        - AwaitingFunding
+        - Check
+        - Denied
+        - ElectronicFundsTransfer
+        - Outstanding
+        - Paid
+        - VirtualCreditCard
+      type: string
+    ProcedureCode:
+      description: >
+        A dental procedure code consisting of the letter D followed by four
+        digits (e.g., D0120)
+      pattern: ^D\d{4}$
+      type: string
+    ProcedureLocation:
+      description: >
+        A union type representing the location of a dental procedure, which can
+        be specified by arch, quadrant, or tooth code
+      oneOf:
+        - description: Location specified by mouth arch
+          properties:
+            arch:
+              $ref: "#/components/schemas/MouthArch"
+          required:
+            - arch
+          title: ProcedureLocationByMouthArch
+          type: object
+        - description: Location specified by mouth quadrant
+          properties:
+            quadrant:
+              $ref: "#/components/schemas/MouthQuadrant"
+          required:
+            - quadrant
+          title: ProcedureLocationByMouthQuadrant
+          type: object
+        - description: Location specified by tooth code (and optionally surface)
+          properties:
+            toothCode:
+              $ref: "#/components/schemas/ToothCode"
+            toothSurface:
+              $ref: "#/components/schemas/ToothSurface"
+          required:
+            - toothCode
+          title: ProcedureLocationByToothCode
+          type: object
+    Provider:
+      description: The provider rendering services for the member
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        nationalProviderId:
+          $ref: "#/components/schemas/NationalProviderId"
+      type: object
+    RelationshipToSubscriber:
+      description: >
+        The relationship of a member to the primary subscriber of the insurance
+        plan
+      enum:
+        - Dependent
+        - Self
+      type: string
+    RenderingProvider:
+      description: >
+        A rendering provider is the dental provider who performed the services
+        on the patient
+      properties:
+        name:
+          type: string
+        nationalProviderId:
+          $ref: "#/components/schemas/NationalProviderId"
+      required:
+        - name
+      type: object
+    SMSCredentials:
+      properties:
+        password:
+          type: string
+        phoneNumber:
+          format: ^\+1[0-9]{10}$
+          type: string
+        username:
+          type: string
+      required:
+        - username
+        - password
+        - phoneNumber
+      type: object
+    ServiceVisit:
+      description: >
+        A ServiceVisit is a representation of a single procedure performed on a
+        patient, including financial and procedural details
+      properties:
+        additionalData:
+          $ref: "#/components/schemas/AdditionalData"
+          description: Additional data related to the service visit
+        allowedAmount:
+          $ref: "#/components/schemas/Currency"
+          description: The allowed amount for the procedure
+        codes:
+          description: Non-empty array of codes associated with the service visit
+          items:
+            $ref: "#/components/schemas/Code"
+          minItems: 1
+          type: array
+        coinsuranceAmount:
+          $ref: "#/components/schemas/NonNegativeCurrency"
+          description: Coinsurance amount for the procedure
+        copayAmount:
+          $ref: "#/components/schemas/NonNegativeCurrency"
+          description: Copay amount for the procedure
+        date:
+          $ref: "#/components/schemas/Date"
+          description: The date of the procedure
+        deductibleApplied:
+          $ref: "#/components/schemas/NonNegativeCurrency"
+          description: Deductible applied to the procedure
+        discountAmount:
+          $ref: "#/components/schemas/Currency"
+          description: Discount amount for the procedure
+        ineligibleAmount:
+          $ref: "#/components/schemas/Currency"
+          description: Ineligible amount for the procedure
+        location:
+          $ref: "#/components/schemas/ProcedureLocation"
+          description: Location where the procedure was performed
+        notes:
+          description: Notes for the service visit
+          items:
+            description: Non-empty, trimmed string
+            minLength: 1
+            type: string
+          type: array
+        paidAmount:
+          $ref: "#/components/schemas/Currency"
+          description: Paid amount for the procedure
+        patientResponsibility:
+          $ref: "#/components/schemas/Currency"
+          description: Patient responsibility for the procedure
+        procedureCode:
+          $ref: "#/components/schemas/ProcedureCode"
+          description: Procedure code for the service visit
+        submittedAmount:
+          $ref: "#/components/schemas/Currency"
+          description: Submitted amount for the procedure
+      required:
+        - date
+        - submittedAmount
+      type: object
+    TaxId:
+      description: Business tax identifier for the clinic in EIN format
+      example: 12-3456789
+      pattern: ^\d{2}-\d{7}$
+      type: string
+    ToothCode:
+      description: |
+        A code representing a specific tooth
+      enum:
+        - A
+        - AS
+        - B
+        - BS
+        - C
+        - CS
+        - D
+        - DS
+        - E
+        - ES
+        - F
+        - FS
+        - G
+        - GS
+        - H
+        - HS
+        - I
+        - IS
+        - J
+        - JS
+        - K
+        - KS
+        - L
+        - LS
+        - M
+        - MS
+        - "N"
+        - NS
+        - O
+        - OS
+        - P
+        - PS
+        - Q
+        - QS
+        - R
+        - RS
+        - S
+        - SS
+        - T
+        - TS
+        - "1"
+        - "2"
+        - "3"
+        - "4"
+        - "5"
+        - "6"
+        - "7"
+        - "8"
+        - "9"
+        - "10"
+        - "11"
+        - "12"
+        - "13"
+        - "14"
+        - "15"
+        - "16"
+        - "17"
+        - "18"
+        - "19"
+        - "20"
+        - "21"
+        - "22"
+        - "24"
+        - "23"
+        - "25"
+        - "26"
+        - "27"
+        - "28"
+        - "29"
+        - "30"
+        - "31"
+        - "32"
+        - "51"
+        - "52"
+        - "53"
+        - "54"
+        - "55"
+        - "56"
+        - "57"
+        - "58"
+        - "59"
+        - "60"
+        - "61"
+        - "62"
+        - "63"
+        - "64"
+        - "65"
+        - "66"
+        - "67"
+        - "68"
+        - "69"
+        - "70"
+        - "71"
+        - "72"
+        - "73"
+        - "74"
+        - "75"
+        - "76"
+        - "77"
+        - "78"
+        - "79"
+        - "80"
+        - "81"
+        - "82"
+      type: string
+    ToothSurface:
+      description: |
+        The surface of a tooth
+      enum:
+        - Buccal
+        - Distal
+        - Facial
+        - Incisal
+        - Labial
+        - Lingual
+        - Mesial
+        - Occlusal
+      type: string

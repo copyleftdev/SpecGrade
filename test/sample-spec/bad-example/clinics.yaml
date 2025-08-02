@@ -1,0 +1,317 @@
+components:
+  schemas:
+    CreateClinicRequest:
+      type: object
+      properties:
+        businessTaxId:
+          type: string
+          description: Business tax identifier for the clinic
+          pattern: '^\d{2}-\d{7}$'
+          example: "12-3456789"
+        externalId:
+          oneOf:
+            - $ref: '#/components/schemas/ExternalId'
+            - $ref: '#/components/schemas/DeleteToken'
+        name:
+          type: string
+          description: Name of the clinic
+        nationalProviderId:
+          type: string
+          description: National provider identifier for the clinic
+          pattern: '^\d{10}$'
+          example: "1234567890"
+        organizationId:
+          type: string
+          description: Identifier of the organization the clinic belongs to
+        status:
+          type: string
+          description: Status of the clinic
+          enum:
+            - Active
+            - Inactive
+        address:
+          type: object
+          description: Address of the clinic
+          properties:
+            address1:
+              type: string
+              description: Street address
+            address2:
+              type: string
+              description: Street address
+            city:
+              type: string
+              description: City
+            state:
+              $ref: '#/components/schemas/State'
+            zipCode:
+              type: string
+              description: ZIP code in 5-digit or ZIP+4 format
+      required:
+        - businessTaxId
+        - name
+        - nationalProviderId
+        - organizationId
+        - status
+        - address
+    CreateClinicResponse:
+      type: object
+      properties:
+        businessTaxId:
+          type: string
+          description: Business tax identifier for the clinic in EIN format
+          pattern: '^\d{2}-\d{7}$'
+          example: "12-3456789"
+        externalId:
+          oneOf:
+            - $ref: '#/components/schemas/ExternalId'
+            - $ref: '#/components/schemas/DeleteToken'
+        name:
+          type: string
+          description: Name of the clinic
+        nationalProviderId:
+          type: string
+          description: National provider identifier for the clinic
+          pattern: '^\d{10}$'
+          example: "1234567890"
+        organizationId:
+          type: string
+          description: Identifier of the organization the clinic belongs to
+        status:
+          type: string
+          description: Status of the clinic
+          enum:
+            - Active
+            - Inactive
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the clinic was created
+        createdBy:
+          type: string
+          description: Identifier of the user who created the clinic
+        id:
+          type: string
+          description: Unique identifier for the clinic
+          example: "cl_123"
+        address:
+          type: object
+          description: Address of the clinic
+          properties:
+            address1:
+              type: string
+              description: Street address
+            address2:
+              type: string
+              description: Street address
+            city:
+              type: string
+              description: City
+            state:
+              $ref: '#/components/schemas/State'
+            zipCode:
+              type: string
+              description: ZIP code in 5-digit or ZIP+4 format
+      required:
+        - businessTaxId
+        - name
+        - nationalProviderId
+        - organizationId
+        - status
+        - id
+        - address
+        - createdAt
+        - createdBy
+    GetClinicResponse:
+      type: object
+      properties:
+        businessTaxId:
+          type: string
+          description: Business tax identifier for the clinic in EIN format
+          pattern: '^\d{2}-\d{7}$'
+          example: "12-3456789"
+        externalId:
+          oneOf:
+            - $ref: '#/components/schemas/ExternalId'
+            - $ref: '#/components/schemas/DeleteToken'
+        name:
+          type: string
+          description: Name of the clinic
+        nationalProviderId:
+          type: string
+          description: National provider identifier for the clinic
+          pattern: '^\d{10}$'
+          example: "1234567890"
+        organizationId:
+          type: string
+          description: Identifier of the organization the clinic belongs to
+        status:
+          $ref: "#/components/schemas/ClinicStatus"
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the clinic was created
+        createdBy:
+          type: string
+          description: Identifier of the user who created the clinic
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp when the clinic was last updated
+        updatedBy:
+          type: string
+          description: Identifier of the user who last updated the clinic
+        id:
+          type: string
+          description: Unique identifier for the clinic
+        address:
+          type: object
+          description: Address of the clinic
+          properties:
+            address1:
+              type: string
+              description: Street address
+            address2:
+              type: string
+              description: Street address
+            city:
+              type: string
+              description: City
+            state:
+              $ref: '#/components/schemas/State'
+            zipCode:
+              type: string
+              description: ZIP code in 5-digit or ZIP+4 format
+      required:
+        - businessTaxId
+        - name
+        - nationalProviderId
+        - organizationId
+        - status
+        - id
+        - address
+        - createdAt
+        - createdBy
+    UpdateClinicRequest:
+      type: object
+      properties:
+        businessTaxId:
+          type: string
+          description: Business tax identifier for the clinic in EIN format
+          pattern: '^\d{2}-\d{7}$'
+          example: "12-3456789"
+        externalId:
+          description: This property's value can be deleted using a Delete Token
+          oneOf:
+            - $ref: '#/components/schemas/ExternalId'
+            - $ref: '#/components/schemas/DeleteToken'
+        name:
+          type: string
+          description: Name of the clinic
+        nationalProviderId:
+          type: string
+          description: National provider identifier for the clinic
+          pattern: '^\d{10}$'
+          example: "1234567890"
+        organizationId:
+          type: string
+          description: Identifier of the organization the clinic belongs to
+        status:
+          type: string
+          description: Status of the clinic
+          enum:
+            - Active
+            - Inactive
+        address:
+          type: object
+          description: Address of the clinic
+          properties:
+            address1:
+              type: string
+              description: Street address
+            address2:
+              type: string
+              description: Street address
+            city:
+              type: string
+              description: City
+            state:
+              $ref: '#/components/schemas/State'
+            zipCode:
+              type: string
+              description: ZIP code in 5-digit or ZIP+4 format
+      minProperties: 1
+    ClinicStatus:
+      type: string
+      description: The status of a given Clinic
+      enum:
+        - Active
+        - Inactive
+    DeleteToken:
+      type: object
+      properties:
+        token:
+          type: string
+          enum:
+            - DELETE
+          description: A token that must have the literal value 'DELETE'
+      required:
+        - token
+    ExternalId:
+      type: string
+      minLength: 1
+      description: A non-empty string
+    State:
+      type: string
+      description: U.S. state abbreviations
+      enum:
+        - AK
+        - AL
+        - AR
+        - AZ
+        - CA
+        - CO
+        - CT
+        - DE
+        - FL
+        - GA
+        - HI
+        - IA
+        - ID
+        - IL
+        - IN
+        - KS
+        - KY
+        - LA
+        - MA
+        - MD
+        - ME
+        - MI
+        - MN
+        - MO
+        - MS
+        - MT
+        - NC
+        - ND
+        - NE
+        - NH
+        - NJ
+        - NM
+        - NV
+        - NY
+        - OH
+        - OK
+        - OR
+        - PA
+        - RI
+        - SC
+        - SD
+        - TN
+        - TX
+        - UT
+        - VA
+        - VT
+        - WA
+        - WI
+        - WV
+        - WY

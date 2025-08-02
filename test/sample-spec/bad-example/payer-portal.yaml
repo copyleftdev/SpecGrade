@@ -1,0 +1,95 @@
+openapi: 3.1.0
+components:
+  schemas:
+    CreatePayerPortalRegistrationResponse:
+      properties:
+        correlationId:
+          description: Zuub-generated UUID v4
+          example: facf4648-bc9b-48f7-aaf1-c0b787b46478
+          format: uuid
+          type: string
+        createTime:
+          format: date-time
+          type: string
+        forwardingEmail:
+          description: Email address from the request
+          example: user@example.com
+          format: email
+          type: string
+        office:
+          $ref: '#/components/schemas/PayerPortalOffice'
+        payerPortal:
+          allOf:
+            - $ref: '#/components/schemas/PayerPortal'
+          description: Payer Portal information based on the ID provided in the request
+        registeredEmail:
+          description: Generated email address
+          example: new@example.com
+          format: email
+          type: string
+        registeredPhoneNumber:
+          description: Generated phone number
+          example: '+15534567890'
+          pattern: ^\+1[0-9]{10}$
+          type: string
+      type: object
+    CreatePayerPortalRegistrationRequest:
+      properties:
+        forwardingEmail:
+          example: user@example.com
+          format: email
+          type: string
+        office:
+          $ref: '#/components/schemas/PayerPortalOffice'
+        portalId:
+          description: Zuub-provided identifier for a portal
+          type: number
+      required:
+        - forwardingEmail
+        - office
+        - portalId
+      type: object
+    PayerPortal:
+      properties:
+        description:
+          type: string
+        id:
+          type: number
+        name:
+          type: string
+        payerId:
+          $ref: './common.yaml#/components/schemas/PayerId'
+          example: SKYGN
+        status:
+          type: string
+          enum:
+            - Active
+            - Deprecated
+        url:
+          example: https://www.skygenusa.com
+          format: url
+          type: string
+      required:
+        - id
+        - name
+        - payerId
+        - status
+        - url
+      type: object
+    PayerPortalOffice:
+      properties:
+        id:
+          description: The identifier used by the caller's system for an individual office (clinic)
+          type: string
+        zipCode:
+          description: If provided, will register a phone number in a particular ZIP code
+          example: "90232"
+          pattern: ^\d{5}$
+          type: string
+      required:
+        - id
+      type: object
+    PayerPortalsResponse:
+      items:
+        $ref: '#/components/schemas/PayerPortal'
+      type: array

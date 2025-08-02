@@ -1,0 +1,49 @@
+# Development Dockerfile for SpecGrade
+# Uses host system's Go version for consistency
+
+ARG GO_VERSION=1.24.1
+FROM golang:${GO_VERSION}-alpine AS development
+
+# Install development tools
+RUN apk add --no-cache \
+    git \
+    make \
+    bash \
+    curl \
+    ca-certificates \
+    tzdata
+
+# Set working directory
+WORKDIR /app
+
+# Create non-root user for development
+RUN addgroup -g 1000 developer && \
+    adduser -D -s /bin/bash -u 1000 -G developer developer
+
+# Set up Go environment
+ENV GO111MODULE=on \
+    CGO_ENABLED=0 \
+    GOOS=linux \
+    GOARCH=amd64 \
+    GOPATH=/go \
+    PATH=$PATH:/go/bin
+
+# Create directories and set permissions
+RUN mkdir -p /go/pkg/mod /go/bin /root/.cache/go-build && \
+    chown -R developer:developer /go /root/.cache
+
+# Copy go mod files first for better caching
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Copy source code
+COPY . .
+
+# Set ownership
+RUN chown -R developer:developer /app
+
+# Switch to non-root user
+USER developer
+
+# Default command
+CMD ["sh"]

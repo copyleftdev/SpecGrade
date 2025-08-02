@@ -1,0 +1,94 @@
+openapi: 3.1.0
+components:
+  schemas:
+    PayerNetwork:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/SupportedPayer'
+      required:
+        - items
+    SupportedPayer:
+      type: object
+      properties:
+        commonPayerId:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        name:
+          type: string
+          minLength: 1
+        portals:
+          type: array
+          items:
+            $ref: '#/components/schemas/SupportedPayerPortal'
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - commonPayerId
+        - createdAt
+        - name
+        - portals
+    SupportedPayerPortal:
+      type: object
+      properties:
+        automation:
+          $ref: '#/components/schemas/Automation'
+        createdAt:
+          type: string
+          format: date-time
+        id:
+          $ref: '#/components/schemas/PayerPortalId'
+        portal:
+          $ref: '#/components/schemas/Portal'
+        updatedAt:
+          type: string
+          format: date-time
+        variant:
+          $ref: './variants.yaml#/components/schemas/Variant'
+      required:
+        - automation
+        - createdAt
+        - id
+        - portal
+    Automation:
+      type: string
+      enum:
+        - InsuranceVerification
+        - ClaimRetrieval
+        - CredentialValidation
+        - PasswordReset
+    PayerPortalId:
+      type: string
+      description: A unique identifier for a payer portal
+      pattern: ^pp_[a-zA-Z0-9]+$
+    PortalId:
+      type: string
+    Portal:
+      type: object
+      properties:
+        authenticationMethods:
+          type: array
+          items:
+            $ref: './common.yaml#/components/schemas/AuthenticationMethod'
+        id:
+          $ref: '#/components/schemas/PortalId'
+        loginMethods:
+          type: array
+          items:
+            $ref: './common.yaml#/components/schemas/LoginMethod'
+        name:
+          type: string
+        url:
+          type: string
+          format: uri
+      required:
+        - authenticationMethods
+        - id
+        - loginMethods
+        - name
+        - url

@@ -1,0 +1,1453 @@
+openapi: 3.1.0
+info:
+  description: Catalog of all endpoints in the Zuub API
+  title: Zuub API
+  version: 1.0.0
+servers:
+  - description: Production
+    url: https://api-production-001.zuub.com
+components:
+  schemas:
+    ClinicAddress:
+      allOf:
+        - $ref: '#/components/schemas/CreateAddress'
+        - properties:
+            id:
+              type: integer
+          required:
+            - id
+          type: object
+    ClinicResponse:
+      properties:
+        address:
+          $ref: '#/components/schemas/ClinicAddress'
+        business_tax_id:
+          $ref: '#/components/schemas/EmployerIdentificationNumber'
+        external_id:
+          description: The external ID provided in the request
+          type: string
+        id:
+          description: The Zuub-generated ID for the clinic
+          type: integer
+        name:
+          description: The name provided in the request
+          type: string
+      required:
+        - name
+        - address
+        - phoneNumber
+        - email
+      type: object
+    CreateAddress:
+      properties:
+        city:
+          type: string
+        state:
+          type: string
+        street_1:
+          type: string
+        street_2:
+          type: string
+        zip_code:
+          type: string
+      required:
+        - street_1
+        - city
+        - state
+        - zip_code
+      type: object
+    CreatePortalCredentialsRequest:
+      additionalProperties: false
+      properties:
+        loginMethod:
+          $ref: '#/components/schemas/LoginMethod'
+        managed:
+          type: boolean
+          description: Indicates the credentials are managed by Zuub
+        mfaEmail:
+          $ref: '#/components/schemas/EmailAddress'
+          example: user@example.com
+        mfaPhoneNumber:
+          $ref: '#/components/schemas/PhoneNumber'
+          example: 555455-6789
+        password:
+          $ref: './common.yaml#/components/schemas/NonEmptyString'
+        questions:
+          items:
+            $ref: '#/components/schemas/PortalSecurityQuestion'
+          type: array
+        username:
+          $ref: './common.yaml#/components/schemas/NonEmptyString'
+      required:
+        - password
+        - questions
+        - username
+      type: object
+    DeleteProperty:
+      additionalProperties: false
+      description: A token for deleting an optional property. See [PATCH Requests](../concepts#patch-requests)
+      properties:
+        token:
+          enum:
+            - DELETE
+          type: string
+      required:
+        - token
+      type: object
+    EmailAddress:
+      description: A valid email address
+      maxLength: 254
+      title: EmailAddress
+      type: string
+    EmployerIdentificationNumber:
+      description: Employer Identification Number (EIN)
+      example: "12-3456789"
+      pattern: ^\d{2}-\d{7}$
+      type: string
+    GetPortalEmailsResponse:
+      items:
+        $ref: '#/components/schemas/Portal2faEmail'
+      type: array
+    GetPortalSMSResponse:
+      items:
+        $ref: '#/components/schemas/Portal2faSms'
+      type: array
+    LoginMethod:
+      description: A portal login method
+      enum:
+        - Native
+        - SSO
+      title: LoginMethod
+      type: string
+    PagedClinicResponse:
+      allOf:
+        - $ref: '#/components/schemas/PagedResultBase'
+        - properties:
+            items:
+              items:
+                $ref: '#/components/schemas/ClinicResponse'
+              type: array
+          required:
+            - items
+          type: object
+    PagedResultBase:
+      properties:
+        page:
+          type: integer
+        page_size:
+          type: integer
+        total_count:
+          type: integer
+        total_pages:
+          type: integer
+      required:
+        - page
+        - page_size
+        - total_count
+        - total_pages
+    PhoneNumber:
+      description: A phone number
+      example: '+1234567890'
+      minLength: 1
+      title: PhoneNumber
+      type: string
+    Portal2faEmail:
+      properties:
+        code:
+          description: >-
+            The 2FA code included in the message. Not included if the message
+            cannot be parsed.
+          example: 123456
+          type: string
+        html:
+          description: The HTML content of the email
+          example: <p>Your verification code is 123456.</p>
+          format: html
+          type: string
+        text:
+          description: The text content of the email
+          example: Your verification code is 123456.
+          type: string
+        timestamp:
+          description: Timestamp of when the email was sent
+          example: 2000-01-01T00:00:00.000Z
+          format: date-time
+          type: string
+      required:
+        - html
+        - text
+        - timestamp
+    Portal2faSms:
+      properties:
+        code:
+          description: >-
+            The 2FA code included in the message. Not included if the message
+            cannot be parsed.
+          example: 123456
+          type: string
+        message:
+          description: Raw message contents
+          example: Your verification code is 123456.
+          type: string
+        timestamp:
+          description: Timestamp indicating when the message was sent
+          example: 2000-01-01T00:00:00.000Z
+          format: date-time
+          type: string
+      required:
+        - message
+        - timestamp
+      type: object
+    PortalCredentials:
+      properties:
+        createdAt:
+          $ref: './common.yaml#/components/schemas/Iso8601'
+        createdBy:
+          $ref: '#/components/schemas/UserId'
+        loginMethod:
+          $ref: '#/components/schemas/LoginMethod'
+        managed:
+          type: boolean
+          description: Indicates the credentials are managed by Zuub
+        mfaEmail:
+          $ref: '#/components/schemas/EmailAddress'
+        mfaPhoneNumber:
+          $ref: '#/components/schemas/PhoneNumber'
+        password:
+          $ref: './common.yaml#/components/schemas/NonEmptyString'
+        questions:
+          items:
+            $ref: '#/components/schemas/PortalSecurityQuestion'
+          type: array
+        totpRecoveryCodes:
+          description: A list of recovery codes to regain account access in case original TOTP secret is lost
+          items:
+            $ref: './common.yaml#/components/schemas/NonEmptyTrimmedString'
+          type: array
+        totpSecret:
+          allOf:
+            - $ref: './common.yaml#/components/schemas/NonEmptyTrimmedString'
+            - description: The secret used to generate TOTP MFA codes
+        updatedAt:
+          $ref: './common.yaml#/components/schemas/Iso8601'
+        updatedBy:
+          $ref: '#/components/schemas/UserId'
+        username:
+          $ref: './common.yaml#/components/schemas/NonEmptyString'
+      required:
+        - managed
+        - password
+        - questions
+        - username
+        - createdAt
+        - createdBy
+        - totpRecoveryCodes
+      type: object
+    PortalSecurityQuestion:
+      additionalProperties: false
+      properties:
+        answer:
+          $ref: './common.yaml#/components/schemas/NonEmptyTrimmedString'
+        question:
+          $ref: './common.yaml#/components/schemas/NonEmptyTrimmedString'
+      required:
+        - answer
+        - question
+      type: object
+    TotpVerificationCode:
+      description: A time-based one-time password verification code
+      type: string
+      pattern: '^[0-9]{6}$'
+      example: "123456"
+    UpdatePortalCredentials:
+      additionalProperties: false
+      properties:
+        loginMethod:
+          $ref: '#/components/schemas/LoginMethod'
+        managed:
+          type: boolean
+          description: Indicates the credentials are managed by Zuub
+        mfaEmail:
+          anyOf:
+            - $ref: '#/components/schemas/EmailAddress'
+            - $ref: '#/components/schemas/DeleteProperty'
+        mfaPhoneNumber:
+          anyOf:
+            - $ref: '#/components/schemas/PhoneNumber'
+            - $ref: '#/components/schemas/DeleteProperty'
+        password:
+          $ref: './common.yaml#/components/schemas/NonEmptyString'
+        questions:
+          items:
+            $ref: '#/components/schemas/PortalSecurityQuestion'
+          type: array
+      type: object
+    UserId:
+      description: A User ID
+      minLength: 1
+      title: UserId
+      type: string
+  securitySchemes:
+    OAuth2ClientCredentials:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: /v1/oauth/token
+          scopes:
+            create:claim-retrieval-request: Create claim retrieval requests
+            create:clinic: Create clinics
+            create:credentials-validation-request: Create credentials validation requests
+            create:insurance-verification: Create insurance verifications
+            create:insurance-verification-request: Create insurance verification requests
+            create:organization: Create organizations
+            create:payer-portal-credentials: Create payer portal credentials
+            create:payer-portal-registration: Create payer portal registrations
+            read:payer-network: Read payer network
+            read:claim-retrieval: Read claim retrievals
+            read:clinic: Read clinics
+            read:credentials-validation: Read credentials validations
+            read:email: Read emails
+            read:organization: Read organizations
+            read:payer-portal: Read payer portals
+            read:payer-portal-credentials: Read payer portal credentials
+            read:payer-portal-registration: Read payer portal registrations
+            read:sms-message: Read SMS messages
+            update:clinic: Update clinics
+            update:organization: Update organizations
+            update:payer-portal-credentials: Update payer portal credentials
+paths:
+  /v1/oauth/token:
+    post:
+      tags:
+        - Access Token
+      security: [ ]
+      summary: Get Access Token
+      description: |
+        Exchange client credentials for an access token using the OAuth 2.0 client credentials flow. This token must be provided in the `Authorization` header of most requests.
+      operationId: get-access-token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - client_id
+                - client_secret
+                - audience
+                - grant_type
+              properties:
+                client_id:
+                  description: The client identifier issued to the caller's application
+                  type: string
+                client_secret:
+                  description: The client secret issued to the caller's application
+                  type: string
+                audience:
+                  description: The intended audience for the token. This should be the base URL for the Zuub API.
+                  type: string
+                  example: https://api-production-001.zuub.com
+                grant_type:
+                  description: The type of grant being requested. This should be set to `client_credentials`.
+                  type: string
+                  enum: [ client_credentials ]
+                  example: client_credentials
+      responses:
+        '200':
+          description: Successful token response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    description: A signed JWT that can be used to authenticate requests to the Zuub API. This token should be included as a bearer token in the `Authorization` header of all requests.
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXNzYWdlIjoiSGVsbG8gV29ybGQhIiwic3ViIjoiMTIzNDU2Nzg5MCJ9.dummysignature
+                  scope:
+                    description: The scopes the token is authorized to access.
+                    type: string
+                    example: create:insurance-verification
+                  expires_in:
+                    description: The lifetime in seconds of the access token. After this period, the token will expire and the caller's application will need to request a new one.
+                    type: integer
+                    example: 86400
+                  token_type:
+                    description: The type of token returned. This will always be `Bearer`.
+                    type: string
+                    example: Bearer
+        401:
+          description: Unauthorized
+        422:
+          description: Invalid Request Body
+          content:
+            application/json:
+              schema:
+                $ref: './common.yaml#/components/schemas/InternalErrorResponse'
+        500:
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: './common.yaml#/components/schemas/InternalErrorResponse'
+  /v1/clinics:
+    post:
+      operationId: create-clinic
+      tags:
+        - Clinic
+      summary: Create Clinic
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './clinics.yaml#/components/schemas/CreateClinicRequest'
+      responses:
+        201:
+          description: Clinic created successfully
+          content:
+            application/json:
+              schema:
+                $ref: './clinics.yaml#/components/schemas/CreateClinicResponse'
+        401:
+          description: Invalid or missing access token
+        403:
+          description: Access token missing required scopes
+        404:
+          description: Customer not found
+        422:
+          description: Invalid Request Body
+        500:
+          description: Internal Error
+      security:
+        - OAuth2ClientCredentials:
+            - create:clinic
+  /v1/clinics/{clinicId}:
+    get:
+      operationId: get-clinic
+      tags:
+        - Clinic
+      summary: Get Clinic
+      parameters:
+        - name: clinicId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Clinic details
+          content:
+            application/json:
+              schema:
+                $ref: './clinics.yaml#/components/schemas/GetClinicResponse'
+        401:
+          description: Invalid or missing access token
+        403:
+          description: Access token missing required scopes
+        404:
+          description: Clinic not found
+        500:
+          description: Internal Error
+      security:
+        - OAuth2ClientCredentials:
+            - read:clinic
+    patch:
+      operationId: update-clinic
+      tags:
+        - Clinic
+      summary: Update Clinic
+      parameters:
+        - name: clinicId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        description: Can be any combination of the fields
+        content:
+          application/json:
+            schema:
+              $ref: './clinics.yaml#/components/schemas/UpdateClinicRequest'
+      responses:
+        200:
+          description: Clinic updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: './clinics.yaml#/components/schemas/GetClinicResponse'
+        401:
+          description: Invalid or missing access token
+        403:
+          description: Access token missing required scopes
+        404:
+          description: Clinic not found
+        422:
+          description: Invalid Request Body
+        500:
+          description: Internal Error
+      security:
+        - OAuth2ClientCredentials:
+            - update:clinic
+  /v1/clinics/{clinicId}/portals/{portalId}/credentials:
+    get:
+      description: |
+        Get Payer Portal Credentials for a Clinic
+      operationId: get-portal-credentials
+      parameters:
+        - in: path
+          name: clinicId
+          required: true
+          description: The ID of the clinic
+          schema:
+            type: string
+        - in: path
+          name: portalId
+          required: true
+          description: The ID of the payer portal. See [Get Payer Portals](/docs/api/get-payer-portals) to find the portal ID.
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successfully retrieved credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PortalCredentials'
+        401:
+          description: Invalid or missing access token
+        403:
+          description: Access token missing required scopes
+        404:
+          description: Clinic or portal not found
+        500:
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: './common.yaml#/components/schemas/ErrorResponse'
+                  - $ref: './common.yaml#/components/schemas/ErrorResponseUpstream'
+      security:
+        - OAuth2ClientCredentials:
+            - read:payer-portal-credentials
+      summary: Get Payer Portal Credentials
+      tags:
+        - Credentials
+    post:
+      description: |
+        Create Payer Portal Credentials for a Clinic
+      operationId: create-portal-credentials
+      parameters:
+        - in: path
+          name: clinicId
+          required: true
+          description: The ID of the clinic
+          schema:
+            type: string
+        - in: path
+          name: portalId
+          required: true
+          description: The ID of the payer portal
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePortalCredentialsRequest'
+      responses:
+        201:
+          description: Successfully created credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PortalCredentials'
+        401:
+          description: Invalid or missing access token
+        403:
+          description: Access token missing required scopes
+        404:
+          description: Clinic not found
+        409:
+          description: Credentials already exist for the portal
+        422:
+          description: Request validation failed
+        500:
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: './common.yaml#/components/schemas/ErrorResponse'
+                  - $ref: './common.yaml#/components/schemas/ErrorResponseUpstream'
+      security:
+        - OAuth2ClientCredentials:
+            - create:payer-portal-credentials
+      summary: Create Payer Portal Credentials
+      tags:
+        - Credentials
+    patch:
+      description: |
+        Update Payer Portal Credentials for a Clinic.  
+        See [PATCH Requests](../concepts#patch-requests)
+      operationId: update-portal-credentials
+      parameters:
+        - in: path
+          name: clinicId
+          required: true
+          description: The ID of the clinic
+          schema:
+            type: string
+        - in: path
+          name: portalId
+          required: true
+          description: The ID of the payer portal
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePortalCredentials'
+      responses:
+        200:
+          description: Successfully updated credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PortalCredentials'
+        304:
+          description: No changes made to the credentials
+        401:
+          description: Invalid or missing access token
+        403:
+          description: Access token missing required scopes
+        404:
+          description: Clinic or portal not found
+        422:
+          description: Request validation failed
+        500:
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: './common.yaml#/components/schemas/ErrorResponse'
+                  - $ref: './common.yaml#/components/schemas/ErrorResponseUpstream'
+      security:
+        - OAuth2ClientCredentials:
+            - update:payer-portal-credentials
+      summary: Update Payer Portal Credentials
+      tags:
+        - Credentials
+  /v1/clinics/{clinicId}/portals/{portalId}/totp-code:
+    get:
+      description: |
+        Get a time-based one-time verification code using a clinic's stored secret, for a portal that has an authenticator app configured as a two-factor authentication method.
+        This authentication method is only supported in certain portals, and does not require manual configuration via API endpoints. Configuration is orchestrated by Zuub.
+      operationId: get-portal-totp-code
+      parameters:
+        - in: path
+          name: clinicId
+          required: true
+          description: The ID of the clinic
+          schema:
+            type: string
+        - in: path
+          name: portalId
+          required: true
+          description: The ID of the portal
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successfully retrieved TOTP verification code
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    $ref: '#/components/schemas/TotpVerificationCode'
+                required:
+                  - code
+        401:
+          description: Invalid or missing access token
+        403:
+          description: Access token missing required scopes
+        404:
+          description: Portal credentials not found for clinic
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Credentials not configured for portal"
+                required:
+                  - message
+        409:
+          description: Unable to generate TOTP code
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "TOTP secret misconfigured"
+                required:
+                  - message
+        500:
+          description: Internal Error
+      security:
+        - OAuth2ClientCredentials:
+            - read:payer-portal-credentials
+      summary: Get Portal TOTP Code
+      tags:
+        - Credentials
+  /v1/credentials-validation-requests:
+    post:
+      tags:
+        - Credentials Validation
+      security:
+        - OAuth2ClientCredentials:
+            - create:credentials-validation-request
+      summary: Credentials Validation Request
+      description: |
+        Verify credentials for a particular payer portal. Wait at least three seconds before requesting status after a successful credentials validation request.
+      operationId: credentials-validation-request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './credentials-validation.yaml#/components/schemas/CredentialsValidationRequest'
+      responses:
+        201:
+          description: Successfully initiated a credentials validation request
+          content:
+            application/json:
+              schema:
+                $ref: './credentials-validation.yaml#/components/schemas/CredentialsValidationRequestResponse'
+        401:
+          description: Invalid or missing access token
+        403:
+          description: Access token missing required scopes
+        422:
+          description: Request validation failed
+        500:
+          description: Internal Error
+  /v1/credentials-validations/{correlationId}:
+    get:
+      tags:
+        - Credentials Validation
+      security:
+        - OAuth2ClientCredentials:
+            - read:credentials-validation
+      summary: Credentials Validation Status
+      description: |
+        Get the status of a credentials validation request. Wait at least three seconds before requesting status after a successful credentials validation request.
+      operationId: credentials-validation
+      parameters:
+        - in: path
+          name: correlationId
+          required: true
+          schema:
+            type: string
+          description: >-
+            The correlation ID provided from the initial credentials validation request
+      responses:
+        200:
+          description: Successfully retrieved a credentials validation status
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: './credentials-validation.yaml#/components/schemas/CredentialsValidationStatusResponse'
+                  - $ref: './credentials-validation.yaml#/components/schemas/CredentialsValidationStatusResponseFailure'
+        401:
+          description: Invalid or missing access token
+        403:
+          description: Access token missing required scopes
+        404:
+          description: Credentials validation request not Found
+        422:
+          description: Request validation failed
+        500:
+          description: Internal Error
+  /v1/insurance-verifications:
+    post:
+      tags:
+        - Insurance Verification
+      security:
+        - OAuth2ClientCredentials:
+            - create:insurance-verification
+      summary: Insurance Verification Synchronous
+      description: |
+        Verify a member's insurance in real time
+
+      operationId: insurance-verification-synchronous
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './insurance-verification.yaml#/components/schemas/InsuranceVerificationRequestSynchronous'
+      responses:
+        201:
+          description: Successfully verified insurance
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: './insurance-verification.yaml#/components/schemas/InsuranceVerification'
+                  - $ref: './insurance-verification.yaml#/components/schemas/InsuranceVerificationV3'
+        422:
+          description: Request validation failed
+        500:
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: './common.yaml#/components/schemas/ErrorResponse'
+                  - $ref: './common.yaml#/components/schemas/ErrorResponseUpstream'
+  /v1/insurance-verification-requests:
+    post:
+      tags:
+        - Insurance Verification
+      security:
+        - OAuth2ClientCredentials:
+            - create:insurance-verification-requests
+      summary: Insurance Verification Asynchronous
+      description: |
+        Create a request to verify insurance for a member. This request will be processed asynchronously and the results will be provided via a webhook call. The URL called is the webhook URL provided during onboarding.
+
+        See [Insurance Verification Webhook](./insurance-verification-webhook) for information about the webhook request.
+        
+        If payer portal credentials have been defined for a clinic, they can be used in the verification by leaving the credentials array empty and supplying values to the clinicId and portalId parameters. 
+        See [Create Payer Portal Credentials](./create-portal-credentials) for more information on how to create credentials.
+      operationId: insurance-verification-asynchronous
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './insurance-verification.yaml#/components/schemas/InsuranceVerificationRequestAsynchronous'
+      responses:
+        201:
+          description: Successfully created insurance verification request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: The ID of the insurance verification request
+                  status:
+                    type: string
+                    enum: [ pending, completed, failed ]
+                    description: The status of the insurance verification request
+                    example: pending
+        422:
+          description: Request validation failed
+        500:
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: './common.yaml#/components/schemas/ErrorResponse'
+                  - $ref: './common.yaml#/components/schemas/ErrorResponseUpstream'
+  /v1/organizations:
+    post:
+      operationId: create-organization
+      tags:
+        - Organization
+      summary: Create Organization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './organizations.yaml#/components/schemas/CreateOrganizationRequest'
+      responses:
+        201:
+          description: Organization created successfully
+          content:
+            application/json:
+              schema:
+                $ref: './organizations.yaml#/components/schemas/CreateOrganizationResponse'
+        401:
+          description: Invalid or missing access token
+        403:
+          description: Access token missing required scopes
+        404:
+          description: Customer not found
+        422:
+          description: Invalid Request Body
+        500:
+          description: Internal Error
+      security:
+        - OAuth2ClientCredentials:
+            - create:organization
+  /v1/organizations/{organizationId}/clinics:
+    get:
+      operationId: get-all-clinics-in-organization
+      tags:
+        - Organization
+      summary: Get All Clinics In Organization
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Unique identifier for the organization
+        - name: size
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1000
+          description: Number of items per page
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+          description: Page number for pagination
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - Active
+              - Inactive
+          description: Filter clinics by status (defaults to all statuses)
+      responses:
+        200:
+          description: List of clinics under an organization
+          content:
+            application/json:
+              schema:
+                $ref: './organizations.yaml#/components/schemas/ListOrganizationClinicsResponse'
+        401:
+          description: Invalid or missing access token
+        403:
+          description: Access token missing required scopes
+        404:
+          description: Customer not found
+        500:
+          description: Internal Error
+      security:
+        - OAuth2ClientCredentials:
+            - read:organization
+  /v1/organizations/{organizationId}:
+    get:
+      operationId: get-organization
+      tags:
+        - Organization
+      summary: Get Organization
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Organization details
+          content:
+            application/json:
+              schema:
+                $ref: './organizations.yaml#/components/schemas/GetOrganizationResponse'
+        401:
+          description: Invalid or missing access token
+        403:
+          description: Access token missing required scopes
+        404:
+          description: Organization not found
+        500:
+          description: Internal Error
+      security:
+        - OAuth2ClientCredentials:
+            - read:organization
+    patch:
+      tags:
+        - Organization
+      operationId: update-organization
+      summary: Update Organization
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './organizations.yaml#/components/schemas/UpdateOrganizationRequest'
+      responses:
+        200:
+          description: Organization updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: './organizations.yaml#/components/schemas/GetOrganizationResponse'
+        401:
+          description: Invalid or missing access token
+        403:
+          description: Access token missing required scopes
+        404:
+          description: Customer not found
+        422:
+          description: Invalid Request Body
+        500:
+          description: Internal Error
+      security:
+        - OAuth2ClientCredentials:
+            - update:organization
+  /v1/payer-portals:
+    get:
+      operationId: get-payer-portals
+      responses:
+        200:
+          description: Successfully retrieved payer portals
+          content:
+            application/json:
+              schema:
+                $ref: './payer-portal.yaml#/components/schemas/PayerPortalsResponse'
+        401:
+          description: Invalid or missing access token
+        403:
+          description: Access token missing required scopes
+        500:
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: './common.yaml#/components/schemas/ErrorResponse'
+                  - $ref: './common.yaml#/components/schemas/ErrorResponseUpstream'
+      security:
+        - OAuth2ClientCredentials:
+            - read:payer-portal
+      summary: Get All Payer Portals
+      tags:
+        - Payer Portal
+  /v1/payer-portal-registrations:
+    post:
+      operationId: create-payer-portal-registration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './payer-portal.yaml#/components/schemas/CreatePayerPortalRegistrationRequest'
+      responses:
+        201:
+          description: Successfully created Payer registration request
+          content:
+            application/json:
+              schema:
+                $ref: './payer-portal.yaml#/components/schemas/CreatePayerPortalRegistrationResponse'
+        401:
+          description: Invalid or missing access token
+        403:
+          description: Access token missing required scopes
+        422:
+          description: Request validation failed
+        500:
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: './common.yaml#/components/schemas/ErrorResponse'
+                  - $ref: './common.yaml#/components/schemas/ErrorResponseUpstream'
+      security:
+        - OAuth2ClientCredentials:
+            - create:payer-portal-registration
+      summary: Create Payer Portal Registration
+      description: |
+        Create a registration for a particular payer portal.
+        
+        During account creation, the payer portal typically sends a verification email to finalize the process. The email forwarding feature (`forwardingEmail`) allows Zuub to redirect emails from the payer portal to an inbox accessible to the API client, enabling the completion of account setup.
+      tags:
+        - Payer Portal
+  /v1/payer-portal-registrations/{correlationId}/emails:
+    get:
+      operationId: get-payer-portal-2fa-email-messages
+      security:
+        - OAuth2ClientCredentials:
+            - read:payer-portal-registration
+      parameters:
+        - in: path
+          name: correlationId
+          required: true
+          description: The correlation ID of the Payer Portal registration request
+          schema:
+            type: string
+            format: uuid
+        - in: query
+          name: lookback
+          required: true
+          description: How far back to look for messages, in milliseconds
+          schema:
+            type: number
+            example: 100000
+            maximum: 600000
+        - in: query
+          name: limit
+          required: false
+          description: The maximum number of messages to return. Defaults to 3.
+          schema:
+            type: number
+            example: 3
+            maximum: 10
+      responses:
+        200:
+          description: Successfully retrieved email messages
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPortalEmailsResponse'
+        401:
+          description: Invalid or missing access token
+        403:
+          description: Access token missing required scopes
+        404:
+          description: Email request not found
+        500:
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: './common.yaml#/components/schemas/ErrorResponse'
+                  - $ref: './common.yaml#/components/schemas/ErrorResponseUpstream'
+      summary: Get 2FA Email Messages
+      tags:
+        - Payer Portal
+  /v1/payer-portal-registrations/{correlationId}/sms-messages:
+    get:
+      operationId: get-payer-portal-2fa-sms-messages
+      parameters:
+        - in: path
+          name: correlationId
+          required: true
+          description: The correlation ID of the Payer Portal registration request
+          schema:
+            type: string
+            format: uuid
+        - in: query
+          name: lookback
+          required: true
+          description: How far back to look for messages, in milliseconds
+          schema:
+            type: number
+            example: 100000
+            maximum: 600000
+        - in: query
+          name: limit
+          required: false
+          description: The maximum number of messages to return. Defaults to 3.
+          schema:
+            type: number
+            example: 3
+            maximum: 10
+      responses:
+        200:
+          description: Successfully retrieved SMS messages
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPortalSMSResponse'
+        401:
+          description: Invalid or missing access token
+        403:
+          description: Access token missing required scopes
+        404:
+          description: SMS request not found
+        500:
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: './common.yaml#/components/schemas/ErrorResponse'
+                  - $ref: './common.yaml#/components/schemas/ErrorResponseUpstream'
+      security:
+        - OAuth2ClientCredentials:
+            - read:payer-portal-registration
+      summary: Get 2FA SMS Messages
+      tags:
+        - Payer Portal
+  /v1/emails:
+    get:
+      operationId: get-payer-portal-email-messages
+      security:
+        - OAuth2ClientCredentials:
+            - read:email
+      parameters:
+        - in: query
+          name: email
+          required: true
+          description: The email address to retrieve messages for
+          schema:
+            $ref: '#/components/schemas/EmailAddress'
+        - in: query
+          name: lookback
+          required: true
+          description: How far back to look for messages, in milliseconds
+          schema:
+            type: number
+            example: 100000
+            maximum: 600000
+        - in: query
+          name: limit
+          required: false
+          description: The maximum number of messages to return. Defaults to 3.
+          schema:
+            type: number
+            example: 3
+            maximum: 10
+      responses:
+        200:
+          description: Successfully retrieved email messages
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPortalEmailsResponse'
+        401:
+          description: Invalid or missing access token
+        403:
+          description: Access token missing required scopes
+        404:
+          description: Email request not found
+        500:
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: './common.yaml#/components/schemas/ErrorResponse'
+                  - $ref: './common.yaml#/components/schemas/ErrorResponseUpstream'
+      summary: Get Email Messages
+      tags:
+        - Payer Portal
+  /v1/sms-messages:
+    get:
+      operationId: get-payer-portal-sms-messages
+      parameters:
+        - in: query
+          name: phoneNumber
+          required: true
+          description: The phone number to retrieve messages for
+          schema:
+            $ref: '#/components/schemas/PhoneNumber'
+        - in: query
+          name: lookback
+          required: true
+          description: How far back to look for messages, in milliseconds
+          schema:
+            type: number
+            example: 100000
+            maximum: 600000
+        - in: query
+          name: limit
+          required: false
+          description: The maximum number of messages to return. Defaults to 3.
+          schema:
+            type: number
+            example: 3
+            maximum: 10
+      responses:
+        200:
+          description: Successfully retrieved SMS messages
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPortalSMSResponse'
+        401:
+          description: Invalid or missing access token
+        403:
+          description: Access token missing required scopes
+        404:
+          description: SMS request not found
+        500:
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: './common.yaml#/components/schemas/ErrorResponse'
+                  - $ref: './common.yaml#/components/schemas/ErrorResponseUpstream'
+      security:
+        - OAuth2ClientCredentials:
+            - read:sms-message
+      summary: Get SMS Messages
+      tags:
+        - Payer Portal
+  /v1/network/payers:
+    get:
+      summary: List Payer Network
+      description: Retrieves the list of supported payers and their portals
+      operationId: get-v1-network-payers
+      security:
+        - OAuth2ClientCredentials:
+            - read:payer-network
+      tags:
+        - Network
+      parameters:
+        - in: query
+          name: search
+          required: false
+          description: Search for a payer on either a common payer ID or a payer name
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successfully retrieved payer network
+          content:
+            application/json:
+              schema:
+                $ref: './network.yaml#/components/schemas/PayerNetwork'
+        401:
+          description: Invalid or missing access token
+        403:
+          description: Access token missing required scopes
+        500:
+          description: Internal Error
+  /v1/claim-retrieval-requests:
+    post:
+      description: >
+        Initiates the retrieval of claims data for a specified patient within a
+        specified time period
+      operationId: claim-retrieval-request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "./claim-retrieval.yaml#/components/schemas/ClaimRetrievalRequest"
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "./claim-retrieval.yaml#/components/schemas/ClaimRetrievalRequestResponse"
+          description: Successfully initiated a claim retrieval request
+        "401":
+          description: Invalid or missing access token
+        "403":
+          description: Access token missing required scopes
+        "422":
+          description: Request validation failed
+        "500":
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "./common.yaml#/components/schemas/ErrorResponse"
+                  - $ref: "./common.yaml#/components/schemas/ErrorResponseUpstream"
+          description: Internal Error
+      security:
+        - OAuth2ClientCredentials:
+            - create:claim-retrieval-request
+      summary: Claim Retrieval Request
+      tags:
+        - Claim Retrieval
+  /v1/claim-retrievals/{correlationId}:
+    get:
+      description: Get the status of a claim retrieval request
+      operationId: claim-retrieval-status
+      parameters:
+        - description: The correlation ID provided from the initial claim retrieval request
+          in: path
+          name: correlationId
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "./claim-retrieval.yaml#/components/schemas/ClaimRetrievalStatusResponse"
+                  - $ref: "./claim-retrieval.yaml#/components/schemas/ClaimRetrievalStatusResponseFailure"
+          description: Successfully retrieved a claim retrieval status
+        "401":
+          description: Invalid or missing access token
+        "403":
+          description: Access token missing required scopes
+        "404":
+          description: Claim retrieval request not Found
+        "422":
+          description: Request validation failed
+        "500":
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "./common.yaml#/components/schemas/ErrorResponse"
+                  - $ref: "./common.yaml#/components/schemas/ErrorResponseUpstream"
+                properties:
+                  details:
+                    description: Additional details about the error.
+                    items:
+                      $ref: "./common.yaml#/components/schemas/ErrorDetail"
+                    type: array
+                  type:
+                    $ref: "./common.yaml#/components/schemas/ErrorType"
+                required:
+                  - type
+                type: object
+          description: Internal Error
+      security:
+        - OAuth2ClientCredentials:
+            - read:claim-retrieval
+      summary: Claim Retrieval Status
+      tags:
+        - Claim Retrieval
+webhooks:
+  insuranceVerificationAsynchronous:
+    post:
+      description: >
+        Webhook call made upon completion of a verification, sending
+        the result of the verification.
+        
+        This webhook is called for asynchronous insurance verification requests issued via API,
+        and for requests initiated by the application (when configured).
+
+
+        The URL called is the webhook URL provided during onboarding.
+
+
+        A total of 3 attempts will be made to call the webhook URL, with
+        exponential backoff when the response returns an error status code.
+      operationId: insurance-verification-webhook
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: './insurance-verification.yaml#/components/schemas/InsuranceVerificationWebhookSuccess'
+                - $ref: './insurance-verification.yaml#/components/schemas/InsuranceVerificationWebhookFailure'
+        required: true
+      summary: Insurance Verification Webhook
+      tags:
+        - Insurance Verification

@@ -1,0 +1,131 @@
+version: '3.8'
+
+services:
+  # Main SpecGrade development service
+  specgrade:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      args:
+        GO_VERSION: 1.24.1
+    container_name: specgrade-dev
+    volumes:
+      # Mount source code for hot reload
+      - .:/app
+      - go-mod-cache:/go/pkg/mod
+      - go-build-cache:/root/.cache/go-build
+    working_dir: /app
+    environment:
+      - GO111MODULE=on
+      - CGO_ENABLED=0
+      - GOOS=linux
+      - GOARCH=amd64
+    ports:
+      - "8080:8080"  # For future web interface
+    command: >
+      sh -c "
+        echo 'Starting SpecGrade development environment...' &&
+        go mod download &&
+        go build -o specgrade . &&
+        echo 'SpecGrade built successfully!' &&
+        echo 'Running demo validation...' &&
+        ./specgrade --target-dir=./test/sample-spec --spec-version=3.1.0 &&
+        echo 'Development environment ready. Container will stay alive...' &&
+        tail -f /dev/null
+      "
+    networks:
+      - specgrade-network
+
+  # Test runner service
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      args:
+        GO_VERSION: 1.24.1
+    container_name: specgrade-test
+    volumes:
+      - .:/app
+      - go-mod-cache:/go/pkg/mod
+      - go-build-cache:/root/.cache/go-build
+    working_dir: /app
+    environment:
+      - GO111MODULE=on
+      - CGO_ENABLED=1  # Enable for race detection
+    command: >
+      sh -c "
+        echo 'Running SpecGrade tests...' &&
+        go mod download &&
+        go test -v -race -coverprofile=coverage.out ./... &&
+        go tool cover -html=coverage.out -o coverage.html &&
+        echo 'Tests completed! Coverage report: coverage.html'
+      "
+    profiles:
+      - test
+    networks:
+      - specgrade-network
+
+  # Linting service
+  lint:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      args:
+        GO_VERSION: 1.24.1
+    container_name: specgrade-lint
+    volumes:
+      - .:/app
+      - go-mod-cache:/go/pkg/mod
+    working_dir: /app
+    environment:
+      - GO111MODULE=on
+    command: >
+      sh -c "
+        echo 'Installing golangci-lint...' &&
+        go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest &&
+        echo 'Running linter...' &&
+        golangci-lint run --timeout=5m
+      "
+    profiles:
+      - lint
+    networks:
+      - specgrade-network
+
+  # Documentation generator
+  docs:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      args:
+        GO_VERSION: 1.24.1
+    container_name: specgrade-docs
+    volumes:
+      - .:/app
+      - go-mod-cache:/go/pkg/mod
+    working_dir: /app
+    environment:
+      - GO111MODULE=on
+    command: >
+      sh -c "
+        echo 'Building SpecGrade...' &&
+        go build -o specgrade . &&
+        echo 'Generating rule documentation...' &&
+        ./specgrade --docs > RULES.md &&
+        echo 'Documentation generated: RULES.md' &&
+        echo 'Listing available rules...' &&
+        ./specgrade rules ls
+      "
+    profiles:
+      - docs
+    networks:
+      - specgrade-network
+
+volumes:
+  go-mod-cache:
+    driver: local
+  go-build-cache:
+    driver: local
+
+networks:
+  specgrade-network:
+    driver: bridge

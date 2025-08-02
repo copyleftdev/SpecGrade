@@ -1,0 +1,103 @@
+components:
+  schemas:
+    CreateOrganizationRequest:
+      type: object
+      properties:
+        customerId:
+          type: string
+          description: Unique identifier for the customer
+        name:
+          type: string
+          description: Name of the organization
+          minLength: 1
+      required:
+        - customerId
+        - name
+    CreateOrganizationResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the organization
+        name:
+          type: string
+          description: Name of the organization
+        customerId:
+          type: string
+          description: Unique identifier for the customer
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the organization was created
+        createdBy:
+          type: string
+          description: Identifier of the user who created the organization
+    ListOrganizationClinicsResponse:
+      type: object
+      properties:
+        page:
+          type: integer
+          description: Current page number
+        size:
+          type: integer
+          description: Number of items per page
+        items:
+          type: array
+          description: List of clinics
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                description: Unique identifier for the clinic
+              name:
+                type: string
+                description: Name of the clinic
+              status:
+                type: string
+                description: Status of the clinic
+                enum:
+                  - Active
+                  - Inactive
+                example: Active
+    GetOrganizationResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the organization
+        name:
+          type: string
+          description: Name of the organization
+        customerId:
+          type: string
+          description: Unique identifier for the customer
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the organization was created
+        createdBy:
+          type: string
+          description: Identifier of the user who created the organization
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp when the organization was last updated
+        updatedBy:
+          type: string
+          description: Identifier of the user who last updated the organization
+      required:
+        - id
+        - name
+        - customerId
+        - createdAt
+        - createdBy
+    UpdateOrganizationRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the organization
+          minLength: 1
+      required:
+        - name

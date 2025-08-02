@@ -1,0 +1,3660 @@
+components:
+  schemas:
+    Address:
+      additionalProperties: false
+      properties:
+        address1:
+          $ref: './common.yaml#/components/schemas/NonEmptyString'
+        address2:
+          $ref: './common.yaml#/components/schemas/NonEmptyString'
+        addressee1:
+          $ref: './common.yaml#/components/schemas/NonEmptyString'
+        addressee2:
+          $ref: './common.yaml#/components/schemas/NonEmptyString'
+        city:
+          $ref: './common.yaml#/components/schemas/NonEmptyString'
+        state:
+          $ref: './common.yaml#/components/schemas/NonEmptyString'
+        zipCode:
+          $ref: './common.yaml#/components/schemas/NonEmptyString'
+      required:
+        - address1
+        - city
+        - state
+        - zipCode
+      type: object
+    Age:
+      $ref: '#/components/schemas/NonNegativeNumber'
+    AgeLimit:
+      properties:
+        range:
+          $ref: '#/components/schemas/NumberRangeOptionalEnd'
+        type:
+          $ref: '#/components/schemas/AgeLimitType'
+      required:
+        - type
+      type: object
+    AgeLimitType:
+      enum:
+        - Adult
+        - Child
+        - IRS
+        - Spouse
+        - Student
+        - Subscriber
+      type: string
+    Appointment:
+      properties:
+        serviceDate:
+          format: ISO-8601
+          type: string
+          example: '2020-01-31T00:00:00.000Z'
+      required:
+        - serviceDate
+      type: object
+    BasicCredentials:
+      properties:
+        password:
+          type: string
+        type:
+          enum:
+            - Basic
+          type: string
+        username:
+          type: string
+      required:
+        - type
+        - username
+        - password
+      type: object
+    BenefitPeriod:
+      additionalProperties: false
+      properties:
+        end:
+          $ref: '#/components/schemas/TransformerResultOfIso8601'
+        start:
+          $ref: '#/components/schemas/TransformerResultOfIso8601'
+        type:
+          $ref: '#/components/schemas/TransformerResultOfBenefitPeriodType'
+      required:
+        - start
+        - end
+        - type
+      type: object
+    BenefitPeriodType:
+      enum:
+        - Calendar
+        - Carryover
+        - Contract
+        - Lifetime
+      type: string
+    BenefitPeriodV3:
+      additionalProperties: false
+      properties:
+        end:
+          $ref: '#/components/schemas/TransformerResultOfIso8601'
+        start:
+          $ref: '#/components/schemas/TransformerResultOfIso8601'
+        type:
+          $ref: '#/components/schemas/TransformerResultOfBenefitPeriodType'
+      required:
+        - start
+        - end
+        - type
+      type: object
+    Coinsurance:
+      properties:
+        deductibleApplies:
+          $ref: '#/components/schemas/TransformerResultOfBoolean'
+        inNetworkFee:
+          $ref: '#/components/schemas/TransformerResultOfCurrency'
+        networkStatus:
+          $ref: '#/components/schemas/TransformerResultOfNetworkStatus'
+        percentage:
+          $ref: '#/components/schemas/TransformerResultOfPercentage'
+        planType:
+          $ref: '#/components/schemas/TransformerResultOfPlanType'
+        serviceTypes:
+          $ref: '#/components/schemas/TransformerResultOfServiceTypes'
+      type: object
+    CoinsuranceV3:
+      additionalProperties: false
+      properties:
+        disclaimers:
+          $ref: '#/components/schemas/NonEmptyStringArray'
+        percentage:
+          $ref: '#/components/schemas/TransformerResultOfPercentage'
+      required:
+        - percentage
+      type: object
+    CoinsuranceV3Array:
+      items:
+        $ref: '#/components/schemas/CoinsuranceV3'
+      type: array
+    CoordinationOfBenefits:
+      properties:
+        externalDescription:
+          type: string
+        externalTargets:
+          items:
+            $ref: '#/components/schemas/MemberType'
+          type: array
+        internalDescription:
+          type: string
+        internalTargets:
+          items:
+            $ref: '#/components/schemas/MemberType'
+          type: array
+        paymentOptionType:
+          $ref: '#/components/schemas/PaymentOptionType'
+        paymentOrder:
+          $ref: '#/components/schemas/PaymentOrder'
+      type: object
+    CoordinationOfBenefitsV3:
+      additionalProperties: false
+      minProperties: 1
+      properties:
+        externalDescription:
+          $ref: './common.yaml#/components/schemas/NonEmptyString'
+        externalTargets:
+          $ref: '#/components/schemas/MemberTypeArray'
+        internalDescription:
+          $ref: './common.yaml#/components/schemas/NonEmptyString'
+        internalTargets:
+          $ref: '#/components/schemas/MemberTypeArray'
+        paymentOptionType:
+          $ref: '#/components/schemas/PaymentOptionType'
+        paymentOrder:
+          $ref: '#/components/schemas/PaymentOrder'
+      required: [ ]
+      type: object
+    CountOptionalUnit:
+      properties:
+        unit:
+          type: number
+        value:
+          $ref: '#/components/schemas/CountOptionalUnit'
+      required:
+        - unit
+      type: object
+    Copayment:
+      properties:
+        amount:
+          $ref: '#/components/schemas/TransformerResultOfCurrency'
+        planType:
+          $ref: '#/components/schemas/TransformerResultOfPlanType'
+        serviceTypes:
+          $ref: '#/components/schemas/TransformerResultOfServiceTypes'
+      type: object
+    CopaymentV3:
+      additionalProperties: false
+      properties:
+        amount:
+          $ref: '#/components/schemas/TransformerResultOfCurrency'
+        disclaimers:
+          $ref: '#/components/schemas/NonEmptyStringArray'
+      required:
+        - amount
+      type: object
+    CopaymentV3Array:
+      items:
+        $ref: '#/components/schemas/CopaymentV3'
+      type: array
+    CountUnit:
+      enum:
+        - Films
+        - Procedure
+        - Quadrants
+        - Replacements
+        - Teeth
+        - ToothSurface
+      type: string
+    CoverageLevel:
+      enum:
+        - Family
+        - Individual
+      type: string
+    CoverageStatus:
+      enum:
+        - Covered
+        - NotCovered
+      type: string
+    Credentials:
+      anyOf:
+        - $ref: '#/components/schemas/BasicCredentials'
+        - $ref: '#/components/schemas/EmailCredentials'
+        - $ref: '#/components/schemas/SmsCredential'
+      discriminator:
+        propertyName: type
+    Currency:
+      $ref: '#/components/schemas/NonNegativeNumber'
+    Deductible:
+      properties:
+        coverageLevel:
+          $ref: '#/components/schemas/TransformerResultOfCoverageLevel'
+        networkStatus:
+          $ref: '#/components/schemas/TransformerResultOfNetworkStatus'
+        planType:
+          $ref: '#/components/schemas/TransformerResultOfPlanType'
+        remainingAmount:
+          $ref: '#/components/schemas/TransformerResultOfCurrency'
+        serviceTypes:
+          $ref: '#/components/schemas/TransformerResultOfServiceTypes'
+        totalAmount:
+          $ref: '#/components/schemas/TransformerResultOfCurrency'
+      type: object
+    DeductibleV3:
+      additionalProperties: false
+      properties:
+        categories:
+          $ref: '#/components/schemas/TransformerResultOfProcedureCategoryArray'
+        coverageLevel:
+          $ref: '#/components/schemas/TransformerResultOfCoverageLevel'
+        disclaimers:
+          $ref: '#/components/schemas/DisclaimerArray'
+        network:
+          $ref: '#/components/schemas/Network'
+        remainingAmount:
+          $ref: '#/components/schemas/TransformerResultOfCurrency'
+        totalAmount:
+          $ref: '#/components/schemas/TransformerResultOfCurrency'
+      required:
+        - categories
+        - coverageLevel
+        - network
+        - remainingAmount
+        - totalAmount
+      type: object
+    DeductibleV3Array:
+      items:
+        $ref: '#/components/schemas/DeductibleV3'
+      type: array
+    Dependent:
+      properties:
+        dateOfBirth:
+          $ref: '#/components/schemas/TransformerResultOfIso8601'
+        firstName:
+          $ref: '#/components/schemas/TransformerResultOfString'
+        gender:
+          $ref: '#/components/schemas/TransformerResultOfGender'
+        history:
+          items:
+            $ref: '#/components/schemas/ServiceVisit'
+          type: array
+        id:
+          $ref: '#/components/schemas/TransformerResultOfString'
+        lastName:
+          $ref: '#/components/schemas/TransformerResultOfString'
+        relationship:
+          $ref: '#/components/schemas/TransformerResultOfRelationshipToSubscriber'
+      required:
+        - dateOfBirth
+        - firstName
+        - history
+        - id
+        - lastName
+        - relationship
+      type: object
+    DependentV3:
+      additionalProperties: false
+      properties:
+        address:
+          $ref: '#/components/schemas/TransformerResultOfAddress'
+        assignedProvider:
+          $ref: '#/components/schemas/TransformerResultOfProvider'
+        assignedToOffice:
+          type: boolean
+        dateOfBirth:
+          $ref: '#/components/schemas/TransformerResultOfIso8601'
+        firstName:
+          $ref: '#/components/schemas/TransformerResultOfNonEmptyString'
+        gender:
+          $ref: '#/components/schemas/TransformerResultOfGender'
+        history:
+          $ref: '#/components/schemas/VisitArray'
+        id:
+          $ref: '#/components/schemas/TransformerResultOfMemberId'
+        lastName:
+          $ref: '#/components/schemas/TransformerResultOfNonEmptyString'
+        relationship:
+          $ref: '#/components/schemas/TransformerResultOfRelationshipToSubscriberV3'
+      required:
+        - dateOfBirth
+        - firstName
+        - history
+        - id
+        - lastName
+        - relationship
+      type: object
+    Disclaimer:
+      additionalProperties: false
+      properties:
+        description:
+          $ref: './common.yaml#/components/schemas/NonEmptyString'
+        type:
+          $ref: '#/components/schemas/DisclaimerType'
+      required:
+        - description
+        - type
+      type: object
+    DisclaimerArray:
+      items:
+        $ref: '#/components/schemas/Disclaimer'
+      type: array
+    DisclaimerType:
+      enum:
+        - AdditionalInformation
+        - AgeLimit
+        - AssignmentOfBenefits
+        - BasisOfPayment
+        - ChildAgeLimit
+        - ChildCoveredToAge
+        - COBRule
+        - DentalAccidentCoverage
+        - DualCoverage
+        - GroupInternalDualCoverage
+        - IRSAgeLimit
+        - MaximumsAndDeductibles
+        - MissingToothClause
+        - MissingToothCoverage
+        - OfficeAssignment
+        - OrthodonticAgeLimit
+        - OrthodonticChildAgeLimit
+        - OrthodonticIRSAgeLimit
+        - OrthodonticPayment
+        - OrthodonticSpouseAgeLimit
+        - OrthodonticStudentAgeLimit
+        - OrthodonticSubscriberAgeLimit
+        - Payment
+        - PregnancyBenefits
+        - Procedures
+        - RemovalOfImpactedTeeth
+        - SpouseAgeLimit
+        - StudentAgeLimit
+        - StudentCoveredToAge
+        - StudentDocumentRequired
+        - SubscriberAgeLimit
+        - TakeOverGroup
+      type: string
+    EmailCredentials:
+      properties:
+        email:
+          format: email
+          type: string
+        password:
+          type: string
+        type:
+          enum:
+            - Email
+          type: string
+        username:
+          type: string
+      required:
+        - type
+        - username
+        - password
+        - email
+      type: object
+    EnrollmentStatus:
+      enum:
+        - Enrolled
+        - NotEnrolled
+      type: string
+    ExpandedCoverage:
+      properties:
+        enrollmentStatus:
+          $ref: '#/components/schemas/TransformerResultOfEnrollmentStatus'
+        planName:
+          $ref: '#/components/schemas/TransformerResultOfString'
+      type: object
+    ExpandedCoverageV3:
+      additionalProperties: false
+      properties:
+        enrollmentStatus:
+          $ref: '#/components/schemas/EnrollmentStatus'
+        planName:
+          $ref: '#/components/schemas/PlanName'
+      required:
+        - enrollmentStatus
+        - planName
+      type: object
+    Frequency:
+      properties:
+        count:
+          $ref: '#/components/schemas/CountOptionalUnit'
+        limitations:
+          items:
+            $ref: '#/components/schemas/FrequencyLimitation'
+          type: array
+        period:
+          $ref: '#/components/schemas/TimeValueWithUnit'
+      required:
+        - count
+        - limitations
+        - period
+      type: object
+    FrequencyLimitation:
+      enum:
+        - Age
+        - ExcludeWisdomTeeth
+        - PerAdult
+        - PerArch
+        - PerChild
+        - PerDenture
+        - PerProvider
+        - PerQuadrant
+        - PerSite
+        - PerSurface
+        - PerTooth
+        - PerVisit
+        - PermanentMolarsOnly
+      type: string
+    FrequencyLimitationType:
+      enum:
+        - Age
+        - ExcludeWisdomTeeth
+        - PerAdult
+        - PerArch
+        - PerChild
+        - PerDenture
+        - PerProvider
+        - PerQuadrant
+        - PerSite
+        - PerSurface
+        - PerTooth
+        - PerVisit
+        - PermanentMolarsOnly
+      type: string
+    FrequencyLimitationTypeArray:
+      items:
+        $ref: '#/components/schemas/FrequencyLimitationType'
+      type: array
+    FrequencyV3:
+      additionalProperties: false
+      properties:
+        count:
+          $ref: '#/components/schemas/ValueWithUnitOfNonNegativeNumberAndOptionalCountUnit'
+        limitations:
+          $ref: '#/components/schemas/FrequencyLimitationTypeArray'
+        period:
+          $ref: '#/components/schemas/ValueWithUnitOfNonNegativeNumberAndTimeUnit'
+      required:
+        - count
+        - limitations
+        - period
+      type: object
+    Gender:
+      enum:
+        - Male
+        - Female
+      type: string
+    GoogleStorageUri:
+      pattern: ^gs://(.*)/(.*)$
+      type: string
+    Group:
+      properties:
+        id:
+          $ref: '#/components/schemas/TransformerResultOfString'
+        name:
+          $ref: '#/components/schemas/TransformerResultOfString'
+      type: object
+    GroupId:
+      $ref: './common.yaml#/components/schemas/NonEmptyString'
+    GroupName:
+      $ref: './common.yaml#/components/schemas/NonEmptyString'
+    GroupV3:
+      additionalProperties: false
+      properties:
+        id:
+          $ref: '#/components/schemas/TransformerResultOfGroupId'
+        name:
+          $ref: '#/components/schemas/TransformerResultOfGroupName'
+      required:
+        - id
+        - name
+      type: object
+    InNetwork:
+      additionalProperties: false
+      properties:
+        name:
+          $ref: '#/components/schemas/NetworkName'
+        status:
+          enum:
+            - InNetwork
+          type: string
+      required:
+        - name
+        - status
+      type: object
+    InsuranceVerification:
+      properties:
+        dependent:
+          $ref: '#/components/schemas/Dependent'
+        mismatches:
+          $ref: '#/components/schemas/MismatchArray'
+        plan:
+          $ref: '#/components/schemas/Plan'
+        subscriber:
+          $ref: '#/components/schemas/Subscriber'
+      required:
+        - plan
+        - subscriber
+      type: object
+    InsuranceVerificationV3:
+      additionalProperties: false
+      properties:
+        attachments:
+          $ref: '#/components/schemas/MemberCoverageAttachmentArray'
+        dependent:
+          $ref: '#/components/schemas/DependentV3'
+        mismatches:
+          $ref: '#/components/schemas/MismatchArray'
+        plan:
+          $ref: '#/components/schemas/PlanV3'
+        subscriber:
+          $ref: '#/components/schemas/SubscriberV3'
+        verificationProvider:
+          $ref: '#/components/schemas/TransformerResultOfProvider'
+        verificationTime:
+          $ref: './common.yaml#/components/schemas/Iso8601'
+      propertyNames:
+        pattern: ^[a-z][A-Za-z0-9]*$
+      required:
+        - plan
+        - subscriber
+        - verificationTime
+      type: object
+    InsuranceVerificationWebhookFailure:
+      properties:
+        correlationId:
+          description: The correlation ID provided in the request
+          type: string
+        pmsIds:
+          description: "This field is only present when requestSource is \"Application\"."
+          $ref: '#/components/schemas/PmsIds'
+        priority:
+          description: The priority provided in the request
+          type: string
+        result:
+          $ref: '#/components/schemas/InsuranceVerificationAsynchronousFailureResult'
+          description: Details about the error of the verification
+        requestSource:
+          $ref: '#/components/schemas/RequestSource'
+        status:
+          description: The status of the verification request. This is always Failed.
+          enum:
+            - Failed
+          type: string
+        version:
+          description: >-
+            The version of the verification request. This is the same as the
+            version provided in the request.
+          example: 1.1.0
+      required:
+        - correlationId
+        - priority
+        - status
+        - version
+        - result
+      type: object
+    InsuranceVerificationAsynchronousFailureResult:
+      oneOf:
+        - $ref: './common.yaml#/components/schemas/ErrorResponse'
+        - $ref: './common.yaml#/components/schemas/ErrorResponseUpstream'
+    InsuranceVerificationAsynchronousResponse:
+      anyOf:
+        - $ref: '#/components/schemas/InsuranceVerificationWebhookFailure'
+    InsuranceVerificationWebhookSuccess:
+      properties:
+        correlationId:
+          description: The correlation ID provided in the request
+          type: string
+        pmsIds:
+          description: "This field is only present when requestSource is \"Application\"."
+          $ref: '#/components/schemas/PmsIds'
+        priority:
+          description: The priority provided in the request
+          type: string
+        result:
+          oneOf:
+            - $ref: '#/components/schemas/InsuranceVerification'
+            - $ref: '#/components/schemas/InsuranceVerificationV3'
+        requestSource:
+          $ref: '#/components/schemas/RequestSource'
+        status:
+          description: The status of the verification request. This is always Succeeded.
+          enum:
+            - Succeeded
+          type: string
+        version:
+          description: >-
+            The version of the verification request. This is the same as the
+            version provided in the request.
+          example: 1.1.0
+      required:
+        - correlationId
+        - priority
+        - result
+        - requestSource
+        - status
+        - version
+      type: object
+    InsuranceVerificationRequestAsynchronous:
+      properties:
+        appointment:
+          $ref: '#/components/schemas/Appointment'
+        categories:
+          description: >-
+            Service categories to include in the response. If the empty array is
+            passed, the response will include all categories.
+          items:
+            $ref: '#/components/schemas/ServiceCategory'
+          type: array
+        clinicId:
+          description: >-
+            Identifier of the clinic to which the verification request is
+            associated.
+          type: string
+        correlationId:
+          description: >-
+            An identifier for the verification. This must be unique for each
+            request.
+          type: string
+        credentials:
+          description: >-
+            Credentials are used by RPA requests to interact with third-party
+            services (e.g. a payer website or an API)
+          example: [
+            {
+              password: 'password',
+              type: 'Basic',
+              username: 'username',
+            }
+          ]
+          items:
+            $ref: '#/components/schemas/Credentials'
+          type: array
+        dependent:
+          $ref: '#/components/schemas/Member'
+          description: >-
+            The dependent to verify. If not provided, it is assumed that the
+            subscriber is the member to verify.
+        loginMethod:
+          $ref: './common.yaml#/components/schemas/LoginMethod'
+          description: >-
+            Specifies the login method required for
+            [supported payers](/docs/login-method-payers)
+        networkStatuses:
+          description: >-
+            The network statuses to include in the response. If the empty array
+            is passed, the response will include all statuses.
+          example: []
+          items:
+            $ref: '#/components/schemas/NetworkStatus'
+          type: array
+        office:
+          $ref: '#/components/schemas/Office'
+          description: Information about the office
+        payer:
+          description: The payer for the member's insurance
+          properties:
+            id:
+              $ref: './common.yaml#/components/schemas/PayerId'
+            variantId:
+              $ref: '#/components/schemas/PayerVariantId'
+          type: object
+        planTypes:
+          description: >-
+            The plan types desired to be seen in the response. To include all plan
+            types, pass an empty array.
+          example: []
+          items:
+            $ref: '#/components/schemas/PlanType'
+            type: string
+          type: array
+        portalId:
+          description: >-
+            Zuub-provided identifier for a portal
+          type: number
+        priority:
+          $ref: '#/components/schemas/Priority'
+        procedureCodes:
+          description: >-
+            Procedure codes to include in the response. If the empty array is
+            passed, the response will include all procedure codes. Procedure
+            codes must be in the format /^D[0-9]{4}$/.
+          example: []
+          items:
+            pattern: ^D[0-9]{4}$
+            type: string
+          type: array
+        provider:
+          $ref: '#/components/schemas/Provider'
+        subscriber:
+          $ref: '#/components/schemas/Member'
+          description: >-
+            The subscriber for the member's insurance. If no dependent
+            specified, the verification will be for this member.
+        version:
+          $ref: '#/components/schemas/Version'
+      required:
+        - appointment
+        - categories
+        - correlationId
+        - credentials
+        - networkStatuses
+        - office
+        - payer
+        - planTypes
+        - priority
+        - provider
+        - subscriber
+        - version
+      type: object
+    InsuranceVerificationRequestSynchronous:
+      properties:
+        appointment:
+          $ref: '#/components/schemas/Appointment'
+        categories:
+          description: >-
+            Service categories to include in the response. If the empty array is
+            passed the response will include all categories.
+          items:
+            $ref: '#/components/schemas/ServiceCategory'
+          type: array
+        correlationId:
+          description: >-
+            An identifier for the verification. This must be unique for each
+            request.
+          type: string
+        credentials:
+          description: >-
+            This is not used for synchronous requests, so it should always be
+            empty
+          example: []
+          items:
+            $ref: '#/components/schemas/Credentials'
+          type: array
+        dependent:
+          $ref: '#/components/schemas/Member'
+          description: >-
+            The dependent to verify. If not provided, it is assumed that the
+            subscriber is the member to verify.
+        networkStatuses:
+          description: >-
+            The network statuses to include in the response. If the empty array
+            is passed the response will include all statuses.
+          example: []
+          items:
+            $ref: '#/components/schemas/NetworkStatus'
+          type: array
+        office:
+          $ref: '#/components/schemas/Office'
+          description: Information about the office
+        payer:
+          description: The payer for the member's insurance
+          properties:
+            id:
+              $ref: './common.yaml#/components/schemas/PayerId'
+          type: object
+        planTypes:
+          description: >-
+            The plan types desired to be seen in the response. To include all plan
+            types, pass an empty array.
+          example: []
+          items:
+            $ref: '#/components/schemas/PlanType'
+            type: string
+          type: array
+        priority:
+          $ref: '#/components/schemas/Priority'
+        procedureCodes:
+          description: >-
+            Procedure codes to include in the response. If the empty array is
+            passed, the response will include all procedure codes.
+          example:
+            - D1234
+            - D1235
+          items:
+            pattern: ^D[0-9]{4}$
+            type: string
+          type: array
+        provider:
+          $ref: '#/components/schemas/Provider'
+        subscriber:
+          $ref: '#/components/schemas/Member'
+          description: >-
+            The subscriber for the member's insurance. If no dependent
+            specified, the verification will be for this member.
+        version:
+          $ref: '#/components/schemas/Version'
+      required:
+        - appointment
+        - categories
+        - correlationId
+        - credentials
+        - networkStatuses
+        - office
+        - payer
+        - planTypes
+        - priority
+        - provider
+        - subscriber
+        - version
+      type: object
+    Iso8601ValueRange:
+      properties:
+        end:
+          format: date-time
+          type: string
+        start:
+          format: date-time
+          type: string
+      type: object
+    Iso8601ValueRangeOptionalEnd:
+      properties:
+        end:
+          format: date-time
+          type: string
+        start:
+          format: date-time
+          type: string
+      required:
+        - start
+      type: object
+    Limitation:
+      properties:
+        age:
+          $ref: '#/components/schemas/TransformerResultOfAgeRange'
+        allocationRemaining:
+          $ref: '#/components/schemas/TransformerResultOfNumber'
+        description:
+          $ref: '#/components/schemas/TransformerResultOfString'
+        disclaimers:
+          items:
+            $ref: '#/components/schemas/Disclaimer'
+          type: array
+        frequency:
+          $ref: '#/components/schemas/TransformerResultOfFrequency'
+        networkStatus:
+          $ref: '#/components/schemas/TransformerResultOfNetworkStatus'
+        planType:
+          $ref: '#/components/schemas/TransformerResultOfPlanType'
+        serviceEligibility:
+          items:
+            $ref: '#/components/schemas/ServiceEligibility'
+          type: array
+        serviceLocations:
+          $ref: '#/components/schemas/TransformerResultOfServiceLocations'
+        serviceTypes:
+          $ref: '#/components/schemas/TransformerResultOfServiceTypes'
+      required:
+        - description
+        - networkStatus
+        - serviceEligibility
+        - serviceTypes
+      type: object
+    LimitationV3:
+      oneOf:
+        - additionalProperties: false
+          properties:
+            age:
+              $ref: '#/components/schemas/ValueRangeOfAgeAndOptionalAge'
+            description:
+              $ref: './common.yaml#/components/schemas/NonEmptyString'
+            type:
+              enum:
+                - Age
+              type: string
+          required:
+            - age
+            - type
+          type: object
+        - additionalProperties: false
+          properties:
+            age:
+              $ref: '#/components/schemas/ValueRangeOfAgeAndOptionalAge'
+            description:
+              $ref: './common.yaml#/components/schemas/NonEmptyString'
+            frequency:
+              $ref: '#/components/schemas/FrequencyV3'
+            type:
+              enum:
+                - AgeAndFrequency
+              type: string
+          required:
+            - age
+            - frequency
+            - type
+          type: object
+        - additionalProperties: false
+          properties:
+            age:
+              $ref: '#/components/schemas/ValueRangeOfAgeAndOptionalAge'
+            description:
+              $ref: './common.yaml#/components/schemas/NonEmptyString'
+            frequency:
+              $ref: '#/components/schemas/FrequencyV3'
+            locations:
+              $ref: '#/components/schemas/ProcedureLocationArray'
+            type:
+              enum:
+                - AgeAndFrequencyAndLocation
+              type: string
+          required:
+            - age
+            - frequency
+            - locations
+            - type
+          type: object
+        - additionalProperties: false
+          properties:
+            description:
+              $ref: './common.yaml#/components/schemas/NonEmptyString'
+            frequency:
+              $ref: '#/components/schemas/FrequencyV3'
+            type:
+              enum:
+                - Frequency
+              type: string
+          required:
+            - frequency
+            - type
+          type: object
+        - additionalProperties: false
+          properties:
+            description:
+              $ref: './common.yaml#/components/schemas/NonEmptyString'
+            frequency:
+              $ref: '#/components/schemas/FrequencyV3'
+            locations:
+              $ref: '#/components/schemas/ProcedureLocationArray'
+            type:
+              enum:
+                - FrequencyAndLocation
+              type: string
+          required:
+            - frequency
+            - locations
+            - type
+          type: object
+        - additionalProperties: false
+          properties:
+            description:
+              $ref: './common.yaml#/components/schemas/NonEmptyString'
+            locations:
+              $ref: '#/components/schemas/ProcedureLocationArray'
+            type:
+              enum:
+                - Location
+              type: string
+          required:
+            - locations
+            - type
+          type: object
+    LimitationV3Array:
+      items:
+        $ref: '#/components/schemas/LimitationV3'
+      type: array
+    LimitedMaximum:
+      additionalProperties: false
+      properties:
+        benefitPeriodType:
+          $ref: '#/components/schemas/TransformerResultOfBenefitPeriodType'
+        categories:
+          $ref: '#/components/schemas/TransformerResultOfProcedureCategoryArray'
+        coverageLevel:
+          $ref: '#/components/schemas/TransformerResultOfCoverageLevel'
+        disclaimers:
+          $ref: '#/components/schemas/DisclaimerArray'
+        isUnlimited:
+          enum:
+            - false
+          type: boolean
+        network:
+          $ref: '#/components/schemas/Network'
+        remainingAmount:
+          $ref: '#/components/schemas/TransformerResultOfCurrency'
+        totalAmount:
+          $ref: '#/components/schemas/TransformerResultOfCurrency'
+      required:
+        - benefitPeriodType
+        - categories
+        - coverageLevel
+        - network
+        - remainingAmount
+        - isUnlimited
+        - totalAmount
+      type: object
+    MaximumCoverage:
+      properties:
+        benefitPeriodType:
+          $ref: '#/components/schemas/TransformerResultOfBenefitPeriodType'
+        coverageLevel:
+          $ref: '#/components/schemas/TransformerResultOfCoverageLevel'
+        networkStatus:
+          $ref: '#/components/schemas/TransformerResultOfNetworkStatus'
+        planType:
+          $ref: '#/components/schemas/TransformerResultOfPlanType'
+        remainingAmount:
+          $ref: '#/components/schemas/TransformerResultOfCurrency'
+        serviceTypes:
+          $ref: '#/components/schemas/TransformerResultOfServiceTypes'
+        totalAmount:
+          $ref: '#/components/schemas/TransformerResultOfCurrency'
+      required:
+        - benefitPeriodType
+        - coverageLevel
+        - networkStatus
+        - remainingAmount
+        - serviceTypes
+        - totalAmount
+      type: object
+    MaximumV3:
+      oneOf:
+        - $ref: '#/components/schemas/UnlimitedMaximum'
+        - $ref: '#/components/schemas/LimitedMaximum'
+    MaximumV3Array:
+      items:
+        $ref: '#/components/schemas/MaximumV3'
+      type: array
+    Member:
+      properties:
+        address:
+          $ref: '#/components/schemas/MemberAddress'
+        dateOfBirth:
+          format: ISO-8601
+          type: string
+          example: '1990-01-31T00:00:00.000Z'
+        firstName:
+          type: string
+        groupId:
+          type: string
+        id:
+          description: This is the member ID
+          type: string
+        lastName:
+          type: string
+      required:
+        - id
+        - firstName
+        - lastName
+        - dateOfBirth
+      type: object
+    MemberAddress:
+      properties:
+        zipCode:
+          pattern: ^\d{5}$
+          type: string
+      required:
+        - zipCode
+      type: object
+    MemberCoverageAttachment:
+      additionalProperties: false
+      properties:
+        type:
+          $ref: './common.yaml#/components/schemas/MimeType'
+        uri:
+          $ref: '#/components/schemas/GoogleStorageUri'
+      required:
+        - type
+        - uri
+      type: object
+    MemberCoverageAttachmentArray:
+      items:
+        $ref: '#/components/schemas/MemberCoverageAttachment'
+      type: array
+    MemberId:
+      $ref: 'common.yaml#/components/schemas/NonEmptyString'
+    MemberType:
+      enum:
+        - Dependent
+        - Spouse
+        - Subscriber
+      type: string
+    MemberTypeArray:
+      items:
+        $ref: '#/components/schemas/MemberType'
+      type: array
+    Mismatch:
+      oneOf:
+        - $ref: '#/components/schemas/MismatchDate'
+        - $ref: '#/components/schemas/MismatchString'
+    MismatchArray:
+      items:
+        $ref: '#/components/schemas/Mismatch'
+      type: array
+    MismatchDate:
+      oneOf:
+        - $ref: '#/components/schemas/MismatchDateWithBothValuesPresent'
+        - $ref: '#/components/schemas/MismatchDateWithMissingResultValue'
+        - $ref: '#/components/schemas/MismatchDateWithMissingRequestValue'
+        - $ref: '#/components/schemas/MismatchWithBothValuesMissing'
+    MismatchDateWithBothValuesPresent:
+      additionalProperties: false
+      properties:
+        path:
+          $ref: '#/components/schemas/MismatchPath'
+          example: '/subscriber/dateOfBirth'
+        request:
+          allOf:
+            - $ref: './common.yaml#/components/schemas/Iso8601'
+            - example: '1990-01-31T00:00:00.000Z'
+        result:
+          allOf:
+            - $ref: './common.yaml#/components/schemas/Iso8601'
+            - example: '1991-01-31T00:00:00.000Z'
+        type:
+          $ref: '#/components/schemas/MismatchType'
+          example: 'BothPresent'
+      required:
+        - path
+        - request
+        - result
+        - type
+      type: object
+    MismatchDateWithMissingResultValue:
+      additionalProperties: false
+      properties:
+        path:
+          $ref: '#/components/schemas/MismatchPath'
+          example: '/subscriber/dateOfBirth'
+        request:
+          allOf:
+            - $ref: './common.yaml#/components/schemas/Iso8601'
+            - example: '1990-01-31T00:00:00.000Z'
+        type:
+          $ref: '#/components/schemas/MismatchType'
+          example: 'ResultMissing'
+      required:
+        - path
+        - request
+        - type
+      type: object
+    MismatchDateWithMissingRequestValue:
+      additionalProperties: false
+      properties:
+        path:
+          $ref: '#/components/schemas/MismatchPath'
+          example: '/subscriber/dateOfBirth'
+        result:
+          allOf:
+            - $ref: './common.yaml#/components/schemas/Iso8601'
+            - example: '1991-01-31T00:00:00.000Z'
+        type:
+          $ref: '#/components/schemas/MismatchType'
+          example: 'RequestMissing'
+      required:
+        - path
+        - result
+        - type
+      type: object
+    MismatchPath:
+      enum:
+        - /dependent/dateOfBirth
+        - /dependent/firstName
+        - /dependent/id
+        - /dependent/lastName
+        - /plan/group/id
+        - /subscriber/dateOfBirth
+        - /subscriber/firstName
+        - /subscriber/id
+        - /subscriber/lastName
+      type: string
+    MismatchType:
+      enum:
+        - BothMissing
+        - BothPresent
+        - RequestMissing
+        - ResultMissing
+      type: string
+    MismatchString:
+      oneOf:
+        - $ref: '#/components/schemas/MismatchStringWithBothValuesPresent'
+        - $ref: '#/components/schemas/MismatchStringWithMissingResultValue'
+        - $ref: '#/components/schemas/MismatchStringWithMissingRequestValue'
+        - $ref: '#/components/schemas/MismatchWithBothValuesMissing'
+    MismatchStringWithBothValuesPresent:
+      additionalProperties: false
+      properties:
+        path:
+          $ref: '#/components/schemas/MismatchPath'
+          example: '/subscriber/firstName'
+        request:
+          $ref: './common.yaml#/components/schemas/NonEmptyString'
+          example: 'John'
+        result:
+          $ref: './common.yaml#/components/schemas/NonEmptyString'
+          example: 'Jon'
+        type:
+          $ref: '#/components/schemas/MismatchType'
+          example: 'BothPresent'
+      required:
+        - path
+        - request
+        - result
+        - type
+      type: object
+    MismatchStringWithMissingResultValue:
+      additionalProperties: false
+      properties:
+        path:
+          $ref: '#/components/schemas/MismatchPath'
+          example: '/subscriber/firstName'
+        request:
+          $ref: './common.yaml#/components/schemas/NonEmptyString'
+          example: 'John'
+        type:
+          $ref: '#/components/schemas/MismatchType'
+          example: 'ResultMissing'
+      required:
+        - path
+        - request
+        - type
+      type: object
+    MismatchStringWithMissingRequestValue:
+      additionalProperties: false
+      properties:
+        path:
+          $ref: '#/components/schemas/MismatchPath'
+          example: '/subscriber/firstName'
+        result:
+          $ref: './common.yaml#/components/schemas/NonEmptyString'
+          example: 'Jon'
+        type:
+          $ref: '#/components/schemas/MismatchType'
+          example: 'RequestMissing'
+      required:
+        - path
+        - result
+        - type
+      type: object
+    MismatchWithBothValuesMissing:
+      additionalProperties: false
+      properties:
+        path:
+          $ref: '#/components/schemas/MismatchPath'
+          example: /plan/group/id
+        type:
+          $ref: '#/components/schemas/MismatchType'
+          example: 'BothMissing'
+      required:
+        - path
+        - type
+      type: object
+    MissingToothClause:
+      enum:
+        - Applies
+        - None
+      type: string
+    MouthArch:
+      enum:
+        - LA
+        - UA
+      type: string
+    MouthQuadrant:
+      enum:
+        - LL
+        - LR
+        - UL
+        - UR
+      type: string
+    Network:
+      oneOf:
+        - $ref: '#/components/schemas/InNetwork'
+        - $ref: '#/components/schemas/OutOfNetwork'
+    NetworkName:
+      $ref: './common.yaml#/components/schemas/NonEmptyString'
+    NetworkStatus:
+      enum:
+        - InNetwork
+        - OutOfNetwork
+      type: string
+    NonEmptyStringArray:
+      items:
+        $ref: './common.yaml#/components/schemas/NonEmptyString'
+      type: array
+    NonNegativeNumber:
+      minimum: 0
+      type: number
+    NumberRangeOptionalEnd:
+      properties:
+        end:
+          type: number
+        start:
+          type: number
+      required:
+        - start
+      type: object
+    Office:
+      properties:
+        address:
+          $ref: '#/components/schemas/OfficeAddress'
+        name:
+          type: string
+        taxId:
+          type: string
+      required:
+        - name
+      type: object
+    OfficeAddress:
+      properties:
+        address1:
+          type: string
+        address2:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        zipCode:
+          type: string
+      required:
+        - address1
+        - city
+        - state
+        - zipCode
+      type: object
+    OrthodonticAgeLimit:
+      additionalProperties: false
+      properties:
+        end:
+          $ref: '#/components/schemas/Age'
+        start:
+          $ref: '#/components/schemas/Age'
+        type:
+          $ref: '#/components/schemas/OrthodonticAgeLimitType'
+      required:
+        - start
+        - type
+      type: object
+    OrthodonticAgeLimitArray:
+      items:
+        $ref: '#/components/schemas/OrthodonticAgeLimit'
+      type: array
+    OrthodonticAgeLimitType:
+      enum:
+        - Adult
+        - Child
+        - IRS
+        - Spouse
+        - Student
+        - Subscriber
+      type: string
+    OrthodonticBillingPeriodType:
+      enum:
+        - Monthly
+        - Yearly
+        - Quarterly
+      type: string
+    OrthodonticProvisions:
+      properties:
+        ageLimits:
+          $ref: '#/components/schemas/TransformerResultOfAgeLimits'
+        billingPeriodType:
+          $ref: '#/components/schemas/OrthodonticBillingPeriodType'
+        takeOver:
+          $ref: '#/components/schemas/TransformerResultOfBoolean'
+      required:
+        - ageLimits
+        - billingPeriodType
+        - takeOver
+      type: object
+    OrthodonticProvisionsV3:
+      additionalProperties: false
+      properties:
+        ageLimits:
+          $ref: '#/components/schemas/TransformerResultOfOrthodonticAgeLimitArray'
+        billingPeriodType:
+          $ref: '#/components/schemas/TransformerResultOfOrthodonticBillingPeriodType'
+        takeOver:
+          $ref: '#/components/schemas/TransformerResultOfBoolean'
+      required:
+        - ageLimits
+        - billingPeriodType
+        - takeOver
+      type: object
+    OutOfNetwork:
+      additionalProperties: false
+      properties:
+        status:
+          enum:
+            - OutOfNetwork
+          type: string
+      required:
+        - status
+      type: object
+    OutOfPocketMaximum:
+      properties:
+        benefitPeriodType:
+          $ref: '#/components/schemas/TransformerResultOfBenefitPeriodType'
+        coverageLevel:
+          $ref: '#/components/schemas/TransformerResultOfCoverageLevel'
+        networkStatus:
+          $ref: '#/components/schemas/TransformerResultOfNetworkStatus'
+        planType:
+          $ref: '#/components/schemas/TransformerResultOfPlanType'
+        remainingAmount:
+          $ref: '#/components/schemas/TransformerResultOfCurrency'
+        serviceTypes:
+          $ref: '#/components/schemas/TransformerResultOfServiceTypes'
+        totalAmount:
+          $ref: '#/components/schemas/TransformerResultOfCurrency'
+      required:
+        - benefitPeriodType
+        - coverageLevel
+        - networkStatus
+        - planType
+        - remainingAmount
+        - serviceTypes
+        - totalAmount
+      type: object
+    OutOfPocketMaximums:
+      properties:
+        disclaimers:
+          items:
+            $ref: '#/components/schemas/Disclaimer'
+          type: array
+        items:
+          items:
+            $ref: '#/components/schemas/OutOfPocketMaximum'
+          type: array
+      required:
+        - disclaimers
+        - items
+      type: object
+    OutOfPocketMaximumsV3:
+      additionalProperties: false
+      properties:
+        disclaimers:
+          $ref: '#/components/schemas/NonEmptyStringArray'
+        items:
+          $ref: '#/components/schemas/OutOfPocketMaximumV3Array'
+      required:
+        - items
+      type: object
+    OutOfPocketMaximumV3:
+      additionalProperties: false
+      properties:
+        benefitPeriodType:
+          $ref: '#/components/schemas/BenefitPeriodType'
+        coverageLevel:
+          $ref: '#/components/schemas/TransformerResultOfCoverageLevel'
+        remainingAmount:
+          $ref: '#/components/schemas/TransformerResultOfCurrency'
+        totalAmount:
+          $ref: '#/components/schemas/TransformerResultOfCurrency'
+      required:
+        - benefitPeriodType
+        - coverageLevel
+        - remainingAmount
+        - totalAmount
+      type: object
+    OutOfPocketMaximumV3Array:
+      items:
+        $ref: '#/components/schemas/OutOfPocketMaximumV3'
+      type: array
+    Payer:
+      additionalProperties: false
+      properties:
+        id:
+          $ref: './common.yaml#/components/schemas/PayerId'
+        name:
+          $ref: './common.yaml#/components/schemas/NonEmptyString'
+      required:
+        - id
+        - name
+      type: object
+    PayerVariantId:
+      description: The ID of the variant for a specific payer. See [the full list of payer variants here](/docs/payer-variants).
+      enum:
+        - va_01jy2e8y34f7pr1z0nc155wa2w
+        - va_01jt3z5g03fvgvdckf8phe0871
+        - va_01jt3z5g03fvgvdcknnzva76zk
+        - va_01jt3z5g03fvgvdckza24dz2tb
+        - va_01jt3z5g03fvgvdcm4rpmt2y6c
+        - va_01jt3z5g03fvgvdcm9tywm7nsr
+        - va_01jt3z5g03fvgvdck1n5rm3631
+        - va_01jt3z5g03fvgvdcmqzv7r6hww
+        - va_01jt3z5g03fvgvdcmz97kh4v9f
+        - va_01jt3z5g03fvgvdcn3q6p6krkz
+        - va_01jt3z5g04fvgvdcn8q48jn4xv
+        - va_01jt3z5g04fvgvdcngje43er1s
+        - va_01jt3z5g04fvgvdcnyemhnr2fe
+        - va_01jt3z5g04fvgvdcp1kfxm3r15
+        - va_01jt3z5g04fvgvdcpb4msjs28k
+        - va_01jt3z5g04fvgvdcpn9mwzj3ng
+        - va_01jt3z5g04fvgvdcpn9mwzj3ng
+        - va_01jt3z5g04fvgvdcps3wpchn1d
+        - va_01jt3z5g04fvgvdcq39rd8trrv
+        - va_01jt3z5g04fvgvdcqe0aj0j18k
+        - va_01jt3z5g04fvgvdcqhs0awhx4x
+        - va_01jt3z5g04fvgvdcqy39g7h44b
+        - va_01jt3z5g04fvgvdcr2hhcxf6h7
+        - va_01jt3z5g04fvgvdcrdrh1r6scm
+        - va_01jt3z5g04fvgvdcrna2mm0kd5
+        - va_01jt3z5g04fvgvdcrw1adh3311
+        - va_01jt3z5g04fvgvdcs6kkmx2k9a
+        - va_01jt3z5g04fvgvdcsep25zqkpr
+        - va_01jt3z5g04fvgvdcspw94matdg
+        - va_01jt3z5g04fvgvdcstbk7868jq
+        - va_01jt3z5g04fvgvdct5yj5rt5pg
+        - va_01jt3z5g04fvgvdctbpq2zfp8w
+        - va_01jt3z5g04fvgvdctj423tkzm0
+        - va_01jt3z5g04fvgvdctwck5tb18k
+        - va_01jt3z5g04fvgvdcv7m8583zqa
+        - va_01jt3z5g04fvgvdcvaypp4x3fj
+        - va_01jt3z5g04fvgvdcvn5nvwdq1m
+        - va_01jt3z5g04fvgvdcvy3h6zbnhn
+        - va_01jt3z5g04fvgvdcw6k1avdmrh
+        - va_01jt3z5g04fvgvdcwejtms1pty
+        - va_01jt3z5g04fvgvdcwjfsakn40z
+        - va_01jt3z5g04fvgvdcwz4sa0mfs9
+        - va_01jt3z5g04fvgvdcx34kdkya7y
+        - va_01jt3z5g04fvgvdcxb5yy126fw
+        - va_01jt3z5g04fvgvdcxkfj2st3pk
+        - va_01jt3z5g04fvgvdcxwr8je9sw4
+        - va_01jt3z5g05fvgvdcy7e32r1q5e
+        - va_01jt6fty01ez09anmcq4q4wbp9
+        - va_01jt6ftzhxftj8k418tsj6g30c
+      type: string
+    PaymentOptionType:
+      enum:
+        - AllowedAmount
+        - NonDuplication
+        - Standard
+      type: string
+    PaymentOrder:
+      enum:
+        - Birthday
+        - First
+        - Second
+      type: string
+    Percentage:
+      $ref: '#/components/schemas/ValueRangeOfNonNegativeNumber'
+    Plan:
+      properties:
+        benefitPeriod:
+          $ref: '#/components/schemas/TransformerResultOfBenefitPeriod'
+        benefitPeriodType:
+          $ref: '#/components/schemas/TransformerResultOfBenefitPeriodType'
+        claimAddress:
+          $ref: '#/components/schemas/TransformerResultOfAddress'
+        coinsurances:
+          items:
+            $ref: '#/components/schemas/Coinsurance'
+          type: array
+        coordinationOfBenefits:
+          $ref: '#/components/schemas/TransformerResultOfCoordinationOfBenefits'
+        copayments:
+          items:
+            $ref: '#/components/schemas/Copayment'
+          type: array
+        deductibles:
+          items:
+            $ref: '#/components/schemas/Deductible'
+          type: array
+        disclaimers:
+          items:
+            $ref: '#/components/schemas/Disclaimer'
+          type: array
+        exclusions:
+          items:
+            $ref: '#/components/schemas/ServiceExclusion'
+          type: array
+        expandedCoverage:
+          $ref: '#/components/schemas/ExpandedCoverage'
+        group:
+          $ref: '#/components/schemas/Group'
+        limitations:
+          items:
+            $ref: '#/components/schemas/Limitation'
+          type: array
+        maximumCoverages:
+          items:
+            $ref: '#/components/schemas/MaximumCoverage'
+          type: array
+        missingToothClause:
+          $ref: '#/components/schemas/TransformerResultOfMissingToothClause'
+        name:
+          $ref: '#/components/schemas/TransformerResultOfString'
+        orthodonticProvisions:
+          $ref: '#/components/schemas/OrthodonticProvisions'
+        outOfPocketMaximums:
+          $ref: '#/components/schemas/OutOfPocketMaximums'
+        payerId:
+          $ref: '#/components/schemas/TransformerResultOfPayerId'
+        planType:
+          $ref: '#/components/schemas/TransformerResultOfPlanType'
+        policyPeriod:
+          $ref: '#/components/schemas/TransformerResultOfPolicyPeriod'
+        preApprovals:
+          items:
+            $ref: '#/components/schemas/ServiceType'
+          type: array
+        standardDeductibles:
+          items:
+            $ref: '#/components/schemas/Deductible'
+          type: array
+        standardMaximumCoverages:
+          items:
+            $ref: '#/components/schemas/MaximumCoverage'
+          type: array
+        subGroup:
+          $ref: '#/components/schemas/SubGroup'
+        waitingPeriods:
+          items:
+            $ref: '#/components/schemas/WaitingPeriod'
+          type: array
+      required:
+        - benefitPeriod
+        - benefitPeriodType
+        - claimAddress
+        - coinsurances
+        - copayments
+        - deductibles
+        - disclaimers
+        - exclusions
+        - group
+        - limitations
+        - maximumCoverages
+        - name
+        - orthodonticProvisions
+        - payerId
+        - planType
+        - policyPeriod
+        - standardDeductibles
+        - standardMaximumCoverages
+        - waitingPeriods
+      type: object
+    PlanName:
+      $ref: './common.yaml#/components/schemas/NonEmptyString'
+    PlanType:
+      enum:
+        - Arkansas Medicare Advantage
+        - DPPOAdvantage
+        - DeltaDentalSmiles
+        - DeltaLegion
+        - EPO
+        - FederalDental
+        - HMO
+        - Healthy Kids Dental/MIChild
+        - Healthy Michigan Plan
+        - Medicaid
+        - Medicare
+        - PDP
+        - PDPPlus
+        - PPO
+        - Premier
+      type: string
+    PlanV3:
+      additionalProperties: false
+      properties:
+        benefitPeriod:
+          $ref: '#/components/schemas/BenefitPeriodV3'
+        claimsAddress:
+          $ref: '#/components/schemas/TransformerResultOfAddress'
+        coordinationOfBenefits:
+          $ref: '#/components/schemas/TransformerResultOfCoordinationOfBenefitsV3'
+        deductibles:
+          $ref: '#/components/schemas/DeductibleV3Array'
+        dependentMaximumAge:
+          $ref: '#/components/schemas/TransformerResultOfAge'
+        disclaimers:
+          $ref: '#/components/schemas/DisclaimerArray'
+        expandedCoverage:
+          $ref: '#/components/schemas/TransformerResultOfExpandedCoverage'
+        feeScheduleName:
+          $ref: '#/components/schemas/TransformerResultOfNonEmptyString'
+        group:
+          $ref: '#/components/schemas/GroupV3'
+        maximums:
+          $ref: '#/components/schemas/MaximumV3Array'
+        missingToothClause:
+          $ref: '#/components/schemas/TransformerResultOfMissingToothClause'
+        name:
+          $ref: '#/components/schemas/TransformerResultOfPlanName'
+        networkName:
+          $ref: '#/components/schemas/TransformerResultOfNetworkName'
+        orthodonticProvisions:
+          $ref: '#/components/schemas/OrthodonticProvisionsV3'
+        outOfPocketMaximums:
+          $ref: '#/components/schemas/OutOfPocketMaximumsV3'
+        payer:
+          $ref: '#/components/schemas/TransformerResultOfPayer'
+        policyPeriod:
+          $ref: '#/components/schemas/TransformerResultOfPolicyPeriodV3'
+        procedures:
+          $ref: '#/components/schemas/ProcedureArray'
+        standardDeductibles:
+          $ref: '#/components/schemas/DeductibleV3Array'
+        standardMaximums:
+          $ref: '#/components/schemas/MaximumV3Array'
+        subGroup:
+          $ref: '#/components/schemas/GroupV3'
+        type:
+          $ref: '#/components/schemas/TransformerResultOfPlanType'
+      required:
+        - benefitPeriod
+        - claimsAddress
+        - dependentMaximumAge
+        - disclaimers
+        - feeScheduleName
+        - group
+        - maximums
+        - name
+        - networkName
+        - orthodonticProvisions
+        - payer
+        - policyPeriod
+        - procedures
+        - standardMaximums
+        - type
+      type: object
+    PmsIds:
+      type: object
+      properties:
+        appointmentId:
+          type: string
+          description: The PMS appointment ID
+        clinicId:
+          type: string
+          description: The PMS clinic ID
+        patientId:
+          type: string
+          description: The PMS patient ID
+      required:
+        - clinicId
+    PolicyPeriod:
+      $ref: '#/components/schemas/ValueRangeOfIso8601AndOptionalIso8601'
+    Procedure:
+      additionalProperties: false
+      properties:
+        allocationRemaining:
+          $ref: '#/components/schemas/NonNegativeNumber'
+        allowedAmount:
+          $ref: '#/components/schemas/TransformerResultOfCurrency'
+        category:
+          $ref: '#/components/schemas/ProcedureCategory'
+        code:
+          $ref: '#/components/schemas/ProcedureCode'
+        coinsurance:
+          $ref: '#/components/schemas/CoinsuranceV3Array'
+        copayment:
+          $ref: '#/components/schemas/CopaymentV3Array'
+        coverageStatus:
+          $ref: '#/components/schemas/CoverageStatus'
+        deductibleApplies:
+          $ref: '#/components/schemas/TransformerResultOfBoolean'
+        disclaimers:
+          $ref: '#/components/schemas/DisclaimerArray'
+        downgrade:
+          $ref: '#/components/schemas/TransformerResultOfProcedureDowngrade'
+        eligibility:
+          $ref: '#/components/schemas/ProcedureEligibilityArray'
+        group:
+          $ref: '#/components/schemas/ProcedureGroup'
+        limitations:
+          $ref: '#/components/schemas/TransformerResultOfLimitationV3Array'
+        name:
+          $ref: '#/components/schemas/ProcedureName'
+        network:
+          $ref: '#/components/schemas/Network'
+        outOfPocketMaximums:
+          $ref: '#/components/schemas/OutOfPocketMaximumV3Array'
+        preAuthorization:
+          $ref: '#/components/schemas/TransformerResultOfBoolean'
+        sharedFrequency:
+          $ref: '#/components/schemas/TransformerResultOfProcedureCodeArray'
+        waitingPeriod:
+          $ref: '#/components/schemas/TransformerResultOfWaitingPeriodV3'
+      required:
+        - coverageStatus
+        - name
+        - network
+      type: object
+    ProcedureArray:
+      items:
+        $ref: '#/components/schemas/Procedure'
+      type: array
+    ProcedureCategory:
+      enum:
+        - AdjunctiveGeneralServices
+        - BasicRestorative
+        - Diagnostic
+        - Endodontics
+        - ImplantService
+        - MajorRestorative
+        - MaxillofacialSurgery
+        - OralSurgery
+        - Orthodontics
+        - PeriodonticsNonSurgical
+        - PeriodonticsSurgical
+        - Preventive
+        - ProsthodonticsFixed
+        - ProsthodonticsRemovable
+      type: string
+    ProcedureCategoryArray:
+      items:
+        $ref: '#/components/schemas/ProcedureCategory'
+      type: array
+    ProcedureCode:
+      pattern: ^D[0-9]{4}$
+      type: string
+    ProcedureCodeArray:
+      items:
+        $ref: '#/components/schemas/ProcedureCode'
+      type: array
+    ProcedureDowngrade:
+      additionalProperties: false
+      properties:
+        code:
+          $ref: '#/components/schemas/ProcedureCode'
+        disclaimers:
+          $ref: '#/components/schemas/DisclaimerArray'
+        location:
+          $ref: '#/components/schemas/ProcedureLocation'
+      required:
+        - disclaimers
+      type: object
+    ProcedureEligibilityArray:
+      items:
+        $ref: '#/components/schemas/ProcedureEligibility'
+      type: array
+    ProcedureEligibilityStatus:
+      enum:
+        - Eligible
+        - NotEligible
+      type: string
+    ProcedureEligibility:
+      additionalProperties: false
+      properties:
+        date:
+          $ref: '#/components/schemas/TransformerResultOfIso8601'
+        locations:
+          $ref: '#/components/schemas/TransformerResultOfProcedureLocationArray'
+        status:
+          $ref: '#/components/schemas/TransformerResultOfProcedureEligibilityStatus'
+      required:
+        - status
+      type: object
+    ProcedureGroup:
+      enum:
+        - AdjunctiveServices
+        - CleaningAndFluoride
+        - CrownsInlaysAndOnlays
+        - Dentures
+        - EndodonticProcedures
+        - FixedPartialDentureRetainers
+        - FixedProsthetics
+        - ImplantSupportedProsthetics
+        - MiscellaneousServices
+        - Nomenclature
+        - NonSurgicalPeriodontalServices
+        - OralSurgery
+        - Orthodontics
+        - OtherRepairProcedures
+        - OtherRestorations
+        - PalliativeTreatmentEmergency
+        - PathologyLab
+        - PreventiveExams
+        - Restorations
+        - Sealants
+        - SpaceMaintainers
+        - SurgicalImplantProcedures
+        - SurgicalPeriodontalServices
+        - TestsAndExaminations
+        - Xrays
+      type: string
+    ProcedureLocation:
+      oneOf:
+        - additionalProperties: false
+          properties:
+            arch:
+              $ref: '#/components/schemas/MouthArch'
+          required:
+            - arch
+          type: object
+        - additionalProperties: false
+          properties:
+            quadrant:
+              $ref: '#/components/schemas/MouthQuadrant'
+          required:
+            - quadrant
+          type: object
+        - additionalProperties: false
+          properties:
+            toothCode:
+              $ref: '#/components/schemas/ToothCode'
+            toothSurface:
+              $ref: '#/components/schemas/ToothSurface'
+          required:
+            - toothCode
+          type: object
+    ProcedureLocationArray:
+      items:
+        $ref: '#/components/schemas/ProcedureLocation'
+      type: array
+    ProcedureName:
+      additionalProperties: false
+      properties:
+        type:
+          $ref: '#/components/schemas/ProcedureNameType'
+        value:
+          $ref: './common.yaml#/components/schemas/NonEmptyString'
+      required:
+        - type
+        - value
+      type: object
+    ProcedureNameType:
+      enum:
+        - Custom
+        - Standard
+      type: string
+    Priority:
+      type: string
+      enum:
+        - High
+        - Normal
+      example: Normal
+    Provider:
+      description: The provider rendering services for the member.
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        nationalProviderId:
+          example: '1234567890'
+          type: string
+      type: object
+    RequestSource:
+      example: Application
+      enum:
+          - Application
+          - API
+      type: string
+    RelationshipToSubscriber:
+      enum:
+        - Dependent
+        - Spouse
+      type: string
+    ServiceCategory:
+      enum:
+        - AdjunctiveGeneralServices
+        - BasicRestorative
+        - Diagnostic
+        - Endodontics
+        - ImplantService
+        - MajorRestorative
+        - Maxillofacial
+        - OralSurgery
+        - Orthodontics
+        - PeriodonticsNonSurgical
+        - PeriodonticsSurgical
+        - Preventive
+        - ProsthodonticsFixed
+        - ProsthodonticsRemovable
+      type: string
+    ServiceEligibility:
+      properties:
+        date:
+          $ref: '#/components/schemas/TransformerResultOfIso8601'
+        locations:
+          $ref: '#/components/schemas/TransformerResultOfServiceLocations'
+        status:
+          $ref: '#/components/schemas/ServiceEligibilityStatus'
+      required:
+        - date
+        - status
+      type: object
+    ServiceEligibilityStatus:
+      enum:
+        - Eligible
+        - NotEligible
+      type: string
+    ServiceExclusion:
+      properties:
+        disclaimer:
+          items:
+            $ref: '#/components/schemas/Disclaimer'
+          type: array
+        serviceTypes:
+          $ref: '#/components/schemas/TransformerResultOfServiceTypes'
+      type: object
+    ServiceLocation:
+      properties:
+        arch:
+          $ref: '#/components/schemas/MouthArch'
+        quadrant:
+          $ref: '#/components/schemas/MouthQuadrant'
+        toothCode:
+          $ref: '#/components/schemas/ToothCode'
+        toothSurface:
+          $ref: '#/components/schemas/ToothSurface'
+      type: object
+    ServiceType:
+      description: At least one of the following fields will always be present.
+      properties:
+        category:
+          $ref: '#/components/schemas/ServiceCategory'
+        code:
+          $ref: '#/components/schemas/ToothCode'
+        type:
+          type: string
+      type: object
+    ServiceVisit:
+      properties:
+        date:
+          $ref: '#/components/schemas/TransformerResultOfIso8601'
+        locations:
+          $ref: '#/components/schemas/TransformerResultOfServiceLocations'
+        serviceType:
+          $ref: '#/components/schemas/TransformerResultOfServiceTypes'
+      type: object
+    SmsCredential:
+      properties:
+        password:
+          type: string
+        phoneNumber:
+          format: ^\+1[0-9]{10}$
+          type: string
+        type:
+          enum:
+            - SMS
+          type: string
+        username:
+          type: string
+      required:
+        - type
+        - username
+        - password
+        - phoneNumber
+      type: object
+    SubGroup:
+      description: At least one of the two properties will be present.
+      properties:
+        id:
+          $ref: '#/components/schemas/TransformerResultOfString'
+        name:
+          $ref: '#/components/schemas/TransformerResultOfString'
+      type: object
+    Subscriber:
+      properties:
+        dateOfBirth:
+          $ref: '#/components/schemas/TransformerResultOfIso8601'
+        firstName:
+          $ref: '#/components/schemas/TransformerResultOfString'
+        gender:
+          $ref: '#/components/schemas/TransformerResultOfGender'
+        history:
+          items:
+            $ref: '#/components/schemas/ServiceVisit'
+          type: array
+        id:
+          $ref: '#/components/schemas/TransformerResultOfString'
+        lastName:
+          $ref: '#/components/schemas/TransformerResultOfString'
+      required:
+        - dateOfBirth
+        - firstName
+        - history
+        - id
+        - lastName
+      type: object
+    SubscriberV3:
+      additionalProperties: false
+      properties:
+        address:
+          $ref: '#/components/schemas/TransformerResultOfAddress'
+        assignedProvider:
+          $ref: '#/components/schemas/TransformerResultOfProvider'
+        assignedToOffice:
+          type: boolean
+        dateOfBirth:
+          $ref: '#/components/schemas/TransformerResultOfIso8601'
+        firstName:
+          $ref: '#/components/schemas/TransformerResultOfNonEmptyString'
+        gender:
+          $ref: '#/components/schemas/TransformerResultOfGender'
+        history:
+          $ref: '#/components/schemas/VisitArray'
+        id:
+          $ref: '#/components/schemas/TransformerResultOfMemberId'
+        lastName:
+          $ref: '#/components/schemas/TransformerResultOfNonEmptyString'
+      required:
+        - dateOfBirth
+        - firstName
+        - id
+        - lastName
+      type: object
+    TimeUnit:
+      enum:
+        - CalendarYear
+        - ConsecutiveCalendarYears
+        - ConsecutiveMonths
+        - ContractPeriod
+        - Days
+        - FiscalYear
+        - FloatingDays
+        - FloatingMonths
+        - FloatingYears
+        - Lifetime
+        - Months
+        - PlanYear
+        - ServiceYear
+        - Visit
+        - Years
+      type: string
+    TimeValueWithUnit:
+      properties:
+        unit:
+          type: number
+        value:
+          $ref: '#/components/schemas/TimeUnit'
+      type: object
+    ToothCode:
+      enum:
+        - A,
+        - AS,
+        - B,
+        - BS,
+        - C,
+        - CS,
+        - D,
+        - DS,
+        - E,
+        - ES,
+        - F,
+        - FS,
+        - G,
+        - GS,
+        - H,
+        - HS,
+        - I,
+        - IS,
+        - J,
+        - JS,
+        - K,
+        - KS,
+        - L,
+        - LS,
+        - M,
+        - MS,
+        - N,
+        - NS,
+        - O,
+        - OS,
+        - P,
+        - PS,
+        - Q,
+        - QS,
+        - R,
+        - RS,
+        - S,
+        - SS,
+        - T,
+        - TS,
+        - 1,
+        - 2,
+        - 3,
+        - 4,
+        - 5,
+        - 6,
+        - 7,
+        - 8,
+        - 9,
+        - 10,
+        - 11,
+        - 12,
+        - 13,
+        - 14,
+        - 15,
+        - 16,
+        - 17,
+        - 18,
+        - 19,
+        - 20,
+        - 21,
+        - 22,
+        - 23,
+        - 24,
+        - 25,
+        - 26,
+        - 27,
+        - 28,
+        - 29,
+        - 30,
+        - 31,
+        - 32,
+        - 51,
+        - 52,
+        - 53,
+        - 54,
+        - 55,
+        - 56,
+        - 57,
+        - 58,
+        - 59,
+        - 60,
+        - 61,
+        - 62,
+        - 63,
+        - 64,
+        - 65,
+        - 66,
+        - 67,
+        - 68,
+        - 69,
+        - 70,
+        - 71,
+        - 72,
+        - 73,
+        - 74,
+        - 75,
+        - 76,
+        - 77,
+        - 78,
+        - 79,
+        - 80,
+        - 81,
+        - 82,
+      type: string
+    ToothSurface:
+      enum:
+        - Buccal
+        - Distal
+        - Facial
+        - Incisal
+        - Labial
+        - Lingual
+        - Mesial
+        - Occlusal
+      type: string
+    TransformerResultMissingOriginal:
+      additionalProperties: false
+      properties:
+        missing:
+          enum:
+            - true
+          type: boolean
+      required:
+        - missing
+      type: object
+    TransformerResultNotTransformed:
+      properties:
+        missing:
+          enum:
+            - false
+          type: boolean
+        original:
+          items:
+            $ref: './common.yaml#/components/schemas/NonEmptyString'
+          type: array
+        transformed:
+          enum:
+            - false
+          type: boolean
+      required:
+        - missing
+        - transformed
+        - original
+      type: object
+    TransformerResultTransformedAddress:
+      properties:
+        final:
+          $ref: '#/components/schemas/Address'
+        missing:
+          enum:
+            - false
+          type: boolean
+        original:
+          items:
+            type: string
+          type: array
+        transformed:
+          enum:
+            - true
+          type: boolean
+      required:
+        - missing
+        - transformed
+        - original
+        - final
+      type: object
+    TransformerResultOfAddress:
+      oneOf:
+        - $ref: '#/components/schemas/TransformerResultMissingOriginal'
+        - $ref: '#/components/schemas/TransformerResultNotTransformed'
+        - $ref: '#/components/schemas/TransformerResultTransformedAddress'
+    TransformerResultTransformedAge:
+      additionalProperties: false
+      properties:
+        final:
+          $ref: '#/components/schemas/Age'
+        missing:
+          enum:
+            - false
+          type: boolean
+        original:
+          $ref: '#/components/schemas/NonEmptyStringArray'
+        transformed:
+          enum:
+            - true
+          type: boolean
+      required:
+        - final
+        - missing
+        - original
+        - transformed
+      type: object
+    TransformerResultOfAge:
+      oneOf:
+        - $ref: '#/components/schemas/TransformerResultMissingOriginal'
+        - $ref: '#/components/schemas/TransformerResultTransformedAge'
+        - $ref: '#/components/schemas/TransformerResultNotTransformed'
+    TransformerResultTransformedAgeLimits:
+      properties:
+        final:
+          items:
+            $ref: '#/components/schemas/AgeLimit'
+          type: array
+        missing:
+          enum:
+            - false
+          type: boolean
+        original:
+          items:
+            type: string
+          type: array
+        transformed:
+          enum:
+            - true
+          type: boolean
+      required:
+        - missing
+        - transformed
+        - original
+        - final
+      type: object
+    TransformerResultOfAgeLimits:
+      oneOf:
+        - $ref: '#/components/schemas/TransformerResultMissingOriginal'
+        - $ref: '#/components/schemas/TransformerResultNotTransformed'
+        - $ref: '#/components/schemas/TransformerResultTransformedAgeLimits'
+    TransformerResultTransformedAgeRange:
+      properties:
+        final:
+          $ref: '#/components/schemas/NumberRangeOptionalEnd'
+        missing:
+          enum:
+            - false
+          type: boolean
+        original:
+          items:
+            type: string
+          type: array
+        transformed:
+          enum:
+            - true
+          type: boolean
+      type: object
+    TransformerResultOfAgeRange:
+      oneOf:
+        - $ref: '#/components/schemas/TransformerResultMissingOriginal'
+        - $ref: '#/components/schemas/TransformerResultNotTransformed'
+        - $ref: '#/components/schemas/TransformerResultTransformedAgeRange'
+    TransformerResultTransformedBenefitPeriod:
+      properties:
+        final:
+          $ref: '#/components/schemas/Iso8601ValueRange'
+        missing:
+          enum:
+            - false
+          type: boolean
+        original:
+          items:
+            type: string
+          type: array
+        transformed:
+          enum:
+            - true
+          type: boolean
+      required:
+        - missing
+        - transformed
+        - original
+        - final
+      type: object
+    TransformerResultOfBenefitPeriod:
+      oneOf:
+        - $ref: '#/components/schemas/TransformerResultMissingOriginal'
+        - $ref: '#/components/schemas/TransformerResultNotTransformed'
+        - $ref: '#/components/schemas/TransformerResultTransformedBenefitPeriod'
+    TransformerResultTransformedBenefitPeriodType:
+      additionalProperties: false
+      properties:
+        final:
+          $ref: '#/components/schemas/BenefitPeriodType'
+        missing:
+          enum:
+            - false
+          type: boolean
+        original:
+          $ref: '#/components/schemas/NonEmptyStringArray'
+        transformed:
+          enum:
+            - true
+          type: boolean
+      required:
+        - final
+        - missing
+        - original
+        - transformed
+      type: object
+    TransformerResultOfBenefitPeriodType:
+      oneOf:
+        - $ref: '#/components/schemas/TransformerResultMissingOriginal'
+        - $ref: '#/components/schemas/TransformerResultTransformedBenefitPeriodType'
+        - $ref: '#/components/schemas/TransformerResultNotTransformed'
+    TransformerResultOrthodonticBillingPeriodType:
+      additionalProperties: false
+      properties:
+        final:
+          $ref: '#/components/schemas/OrthodonticBillingPeriodType'
+        missing:
+          enum:
+            - false
+          type: boolean
+        original:
+          $ref: '#/components/schemas/NonEmptyStringArray'
+        transformed:
+          enum:
+            - true
+          type: boolean
+      required:
+        - final
+        - missing
+        - original
+        - transformed
+      type: object
+    TransformerResultOfOrthodonticBillingPeriodType:
+      oneOf:
+        - $ref: '#/components/schemas/TransformerResultMissingOriginal'
+        - $ref: '#/components/schemas/TransformerResultOrthodonticBillingPeriodType'
+        - $ref: '#/components/schemas/TransformerResultNotTransformed'
+    TransformerResultTransformedBoolean:
+      properties:
+        final:
+          type: boolean
+        missing:
+          enum:
+            - false
+          type: boolean
+        original:
+          items:
+            type: string
+          type: array
+        transformed:
+          enum:
+            - true
+          type: boolean
+      required:
+        - missing
+        - transformed
+        - original
+        - final
+      type: object
+    TransformerResultOfBoolean:
+      oneOf:
+        - $ref: '#/components/schemas/TransformerResultMissingOriginal'
+        - $ref: '#/components/schemas/TransformerResultNotTransformed'
+        - $ref: '#/components/schemas/TransformerResultTransformedBoolean'
+    TransformerResultTransformedCoordinationOfBenefits:
+      properties:
+        final:
+          $ref: '#/components/schemas/CoordinationOfBenefits'
+        missing:
+          enum:
+            - false
+          type: boolean
+        original:
+          items:
+            type: string
+          type: array
+        transformed:
+          enum:
+            - true
+          type: boolean
+      required:
+        - missing
+        - transformed
+        - original
+        - final
+      type: object
+    TransformerResultOfCoordinationOfBenefits:
+      oneOf:
+        - $ref: '#/components/schemas/TransformerResultMissingOriginal'
+        - $ref: '#/components/schemas/TransformerResultNotTransformed'
+        - $ref: '#/components/schemas/TransformerResultTransformedCoordinationOfBenefits'
+    TransformerResultTransformedCoordinationOfBenefitsV3:
+      additionalProperties: false
+      properties:
+        final:
+          $ref: '#/components/schemas/CoordinationOfBenefits'
+        missing:
+          enum:
+            - false
+          type: boolean
+        original:
+          $ref: '#/components/schemas/NonEmptyStringArray'
+        transformed:
+          enum:
+            - true
+          type: boolean
+      required:
+        - final
+        - missing
+        - original
+        - transformed
+      type: object
+    TransformerResultOfCoordinationOfBenefitsV3:
+      oneOf:
+        - $ref: '#/components/schemas/TransformerResultMissingOriginal'
+        - $ref: '#/components/schemas/TransformerResultTransformedCoordinationOfBenefits'
+        - $ref: '#/components/schemas/TransformerResultNotTransformed'
+    TransformerResultTransformedCoverageLevel:
+      properties:
+        final:
+          $ref: '#/components/schemas/CoverageLevel'
+        missing:
+          enum:
+            - false
+          type: boolean
+        original:
+          $ref: '#/components/schemas/NonEmptyStringArray'
+        transformed:
+          enum:
+            - true
+          type: boolean
+      required:
+        - missing
+        - transformed
+        - original
+        - final
+      type: object
+    TransformerResultOfCoverageLevel:
+      oneOf:
+        - $ref: '#/components/schemas/TransformerResultMissingOriginal'
+        - $ref: '#/components/schemas/TransformerResultNotTransformed'
+        - $ref: '#/components/schemas/TransformerResultTransformedCoverageLevel'
+    TransformerResultTransformedCurrency:
+      properties:
+        final:
+          example: $100.00
+          type: string
+        missing:
+          enum:
+            - false
+          type: boolean
+        original:
+          items:
+            type: string
+          type: array
+        transformed:
+          enum:
+            - true
+          type: boolean
+      required:
+        - missing
+        - transformed
+        - original
+        - final
+      type: object
+    TransformerResultOfCurrency:
+      oneOf:
+        - $ref: '#/components/schemas/TransformerResultMissingOriginal'
+        - $ref: '#/components/schemas/TransformerResultNotTransformed'
+        - $ref: '#/components/schemas/TransformerResultTransformedCurrency'
+    TransformerResultTransformedEnrollmentStatus:
+      properties:
+        final:
+          $ref: '#/components/schemas/EnrollmentStatus'
+        missing:
+          enum:
+            - false
+          type: boolean
+        original:
+          items:
+            type: string
+          type: array
+        transformed:
+          enum:
+            - true
+          type: boolean
+      required:
+        - missing
+        - transformed
+        - original
+        - final
+      type: object
+    TransformerResultOfEnrollmentStatus:
+      oneOf:
+        - $ref: '#/components/schemas/TransformerResultMissingOriginal'
+        - $ref: '#/components/schemas/TransformerResultNotTransformed'
+        - $ref: '#/components/schemas/TransformerResultTransformedEnrollmentStatus'
+    TransformerResultTransformedExpandedCoverage:
+      additionalProperties: false
+      properties:
+        final:
+          $ref: '#/components/schemas/ExpandedCoverageV3'
+        missing:
+          enum:
+            - false
+          type: boolean
+        original:
+          $ref: '#/components/schemas/NonEmptyStringArray'
+        transformed:
+          enum:
+            - true
+          type: boolean
+      required:
+        - final
+        - missing
+        - original
+        - transformed
+      type: object
+    TransformerResultOfExpandedCoverage:
+      oneOf:
+        - $ref: '#/components/schemas/TransformerResultMissingOriginal'
+        - $ref: '#/components/schemas/TransformerResultTransformedExpandedCoverage'
+        - $ref: '#/components/schemas/TransformerResultNotTransformed'
+    TransformerResultTransformedFrequency:
+      properties:
+        final:
+          $ref: '#/components/schemas/Frequency'
+        missing:
+          enum:
+            - false
+          type: boolean
+        original:
+          items:
+            type: string
+          type: array
+        transformed:
+          enum:
+            - true
+          type: boolean
+      required:
+        - missing
+        - transformed
+        - original
+        - final
+      type: object
+    TransformerResultOfFrequency:
+      oneOf:
+        - $ref: '#/components/schemas/TransformerResultMissingOriginal'
+        - $ref: '#/components/schemas/TransformerResultNotTransformed'
+        - $ref: '#/components/schemas/TransformerResultTransformedFrequency'
+    TransformerResultTransformedGender:
+      properties:
+        final:
+          $ref: '#/components/schemas/Gender'
+        missing:
+          enum:
+            - false
+          type: boolean
+        original:
+          items:
+            type: string
+          type: array
+        transformed:
+          enum:
+            - true
+          type: boolean
+      required:
+        - missing
+        - transformed
+        - original
+        - final
+      type: object
+    TransformerResultOfGender:
+      oneOf:
+        - $ref: '#/components/schemas/TransformerResultMissingOriginal'
+        - $ref: '#/components/schemas/TransformerResultNotTransformed'
+        - $ref: '#/components/schemas/TransformerResultTransformedGender'
+    TransformerResultTransformedGroupId:
+      additionalProperties: false
+      properties:
+        final:
+          $ref: '#/components/schemas/GroupId'
+        missing:
+          enum:
+            - false
+          type: boolean
+        original:
+          $ref: '#/components/schemas/NonEmptyStringArray'
+        transformed:
+          enum:
+            - true
+          type: boolean
+      required:
+        - final
+        - missing
+        - original
+        - transformed
+      type: object
+    TransformerResultOfGroupId:
+      oneOf:
+        - $ref: '#/components/schemas/TransformerResultMissingOriginal'
+        - $ref: '#/components/schemas/TransformerResultTransformedGroupId'
+        - $ref: '#/components/schemas/TransformerResultNotTransformed'
+    TransformerResultTransformedGroupName:
+      additionalProperties: false
+      properties:
+        final:
+          $ref: '#/components/schemas/GroupName'
+        missing:
+          enum:
+            - false
+          type: boolean
+        original:
+          $ref: '#/components/schemas/NonEmptyStringArray'
+        transformed:
+          enum:
+            - true
+          type: boolean
+      required:
+        - final
+        - missing
+        - original
+        - transformed
+      type: object
+    TransformerResultOfGroupName:
+      oneOf:
+        - $ref: '#/components/schemas/TransformerResultMissingOriginal'
+        - $ref: '#/components/schemas/TransformerResultTransformedGroupName'
+        - $ref: '#/components/schemas/TransformerResultNotTransformed'
+    TransformerResultTransformedIso8601:
+      additionalProperties: false
+      properties:
+        final:
+          $ref: './common.yaml#/components/schemas/Iso8601'
+        missing:
+          enum:
+            - false
+          type: boolean
+        original:
+          $ref: '#/components/schemas/NonEmptyStringArray'
+        transformed:
+          enum:
+            - true
+          type: boolean
+      required:
+        - final
+        - missing
+        - original
+        - transformed
+      type: object
+    TransformerResultOfIso8601:
+      oneOf:
+        - $ref: '#/components/schemas/TransformerResultMissingOriginal'
+        - $ref: '#/components/schemas/TransformerResultTransformedIso8601'
+        - $ref: '#/components/schemas/TransformerResultNotTransformed'
+    TransformerResultTransformedLimitationV3Array:
+      additionalProperties: false
+      properties:
+        final:
+          $ref: '#/components/schemas/LimitationV3Array'
+        missing:
+          enum:
+            - false
+          type: boolean
+        original:
+          $ref: '#/components/schemas/NonEmptyStringArray'
+        transformed:
+          enum:
+            - true
+          type: boolean
+      required:
+        - final
+        - missing
+        - original
+        - transformed
+      type: object
+    TransformerResultOfLimitationV3Array:
+      oneOf:
+        - $ref: '#/components/schemas/TransformerResultMissingOriginal'
+        - $ref: '#/components/schemas/TransformerResultTransformedLimitationV3Array'
+        - $ref: '#/components/schemas/TransformerResultNotTransformed'
+    TransformerResultTransformerMemberId:
+      additionalProperties: false
+      properties:
+        final:
+          $ref: '#/components/schemas/MemberId'
+        missing:
+          enum:
+            - false
+          type: boolean
+        original:
+          $ref: '#/components/schemas/NonEmptyStringArray'
+        transformed:
+          enum:
+            - true
+          type: boolean
+      required:
+        - final
+        - missing
+        - original
+        - transformed
+      type: object
+    TransformerResultOfMemberId:
+      oneOf:
+        - $ref: '#/components/schemas/TransformerResultMissingOriginal'
+        - $ref: '#/components/schemas/TransformerResultTransformerMemberId'
+        - $ref: '#/components/schemas/TransformerResultNotTransformed'
+    TransformerResultTransformedMissingToothClause:
+      properties:
+        final:
+          $ref: '#/components/schemas/MissingToothClause'
+        missing:
+          enum:
+            - false
+          type: boolean
+        original:
+          items:
+            type: string
+          type: array
+        transformed:
+          enum:
+            - true
+          type: boolean
+      required:
+        - missing
+        - transformed
+        - original
+        - final
+      type: object
+    TransformerResultOfMissingToothClause:
+      oneOf:
+        - $ref: '#/components/schemas/TransformerResultMissingOriginal'
+        - $ref: '#/components/schemas/TransformerResultNotTransformed'
+        - $ref: '#/components/schemas/TransformerResultTransformedMissingToothClause'
+    TransformerResultTransformedNetworkName:
+      additionalProperties: false
+      properties:
+        final:
+          $ref: '#/components/schemas/NetworkName'
+        missing:
+          enum:
+            - false
+          type: boolean
+        original:
+          $ref: '#/components/schemas/NonEmptyStringArray'
+        transformed:
+          enum:
+            - true
+          type: boolean
+      required:
+        - final
+        - missing
+        - original
+        - transformed
+      type: object
+    TransformerResultOfNetworkName:
+      oneOf:
+        - $ref: '#/components/schemas/TransformerResultMissingOriginal'
+        - $ref: '#/components/schemas/TransformerResultTransformedNetworkName'
+        - $ref: '#/components/schemas/TransformerResultNotTransformed'
+    TransformerResultTransformedNetworkStatus:
+      properties:
+        final:
+          $ref: '#/components/schemas/NetworkStatus'
+        missing:
+          enum:
+            - false
+          type: boolean
+        original:
+          items:
+            type: string
+          type: array
+        transformed:
+          enum:
+            - true
+          type: boolean
+      required:
+        - missing
+        - transformed
+        - original
+        - final
+      type: object
+    TransformerResultOfNetworkStatus:
+      oneOf:
+        - $ref: '#/components/schemas/TransformerResultMissingOriginal'
+        - $ref: '#/components/schemas/TransformerResultNotTransformed'
+        - $ref: '#/components/schemas/TransformerResultTransformedNetworkStatus'
+    TransformerResultTransformedNonEmptyString:
+      additionalProperties: false
+      properties:
+        final:
+          $ref: './common.yaml#/components/schemas/NonEmptyString'
+        missing:
+          enum:
+            - false
+          type: boolean
+        original:
+          $ref: '#/components/schemas/NonEmptyStringArray'
+        transformed:
+          enum:
+            - true
+          type: boolean
+      required:
+        - final
+        - missing
+        - original
+        - transformed
+      type: object
+    TransformerResultOfNonEmptyString:
+      oneOf:
+        - $ref: '#/components/schemas/TransformerResultMissingOriginal'
+        - $ref: '#/components/schemas/TransformerResultTransformedNonEmptyString'
+        - $ref: '#/components/schemas/TransformerResultNotTransformed'
+    TransformerResultTransformedNumber:
+      properties:
+        final:
+          type: number
+        missing:
+          enum:
+            - false
+          type: boolean
+        original:
+          items:
+            type: string
+          type: array
+        transformed:
+          enum:
+            - true
+          type: boolean
+      required:
+        - missing
+        - transformed
+        - original
+        - final
+      type: object
+    TransformerResultOfNumber:
+      oneOf:
+        - $ref: '#/components/schemas/TransformerResultMissingOriginal'
+        - $ref: '#/components/schemas/TransformerResultNotTransformed'
+        - $ref: '#/components/schemas/TransformerResultTransformedNumber'
+    TransformerResultTransformedOrthodonticAgeLimitArray:
+      additionalProperties: false
+      properties:
+        final:
+          $ref: '#/components/schemas/OrthodonticAgeLimitArray'
+        missing:
+          enum:
+            - false
+          type: boolean
+        original:
+          $ref: '#/components/schemas/NonEmptyStringArray'
+        transformed:
+          enum:
+            - true
+          type: boolean
+      required:
+        - final
+        - missing
+        - original
+        - transformed
+      type: object
+    TransformerResultOfOrthodonticAgeLimitArray:
+      oneOf:
+        - $ref: '#/components/schemas/TransformerResultMissingOriginal'
+        - $ref: '#/components/schemas/TransformerResultTransformedOrthodonticAgeLimitArray'
+        - $ref: '#/components/schemas/TransformerResultNotTransformed'
+    TransformerResultTransformedPayer:
+      additionalProperties: false
+      properties:
+        final:
+          $ref: '#/components/schemas/Payer'
+        missing:
+          enum:
+            - false
+          type: boolean
+        original:
+          $ref: '#/components/schemas/NonEmptyStringArray'
+        transformed:
+          enum:
+            - true
+          type: boolean
+      required:
+        - final
+        - missing
+        - original
+        - transformed
+      type: object
+    TransformerResultOfPayer:
+      oneOf:
+        - $ref: '#/components/schemas/TransformerResultMissingOriginal'
+        - $ref: '#/components/schemas/TransformerResultTransformedPayer'
+        - $ref: '#/components/schemas/TransformerResultNotTransformed'
+    TransformerResultTransformedPayerId:
+      properties:
+        final:
+          $ref: './common.yaml#/components/schemas/PayerId'
+        missing:
+          enum:
+            - false
+          type: boolean
+        original:
+          items:
+            type: string
+          type: array
+        transformed:
+          enum:
+            - true
+          type: boolean
+      required:
+        - missing
+        - transformed
+        - original
+        - final
+      type: object
+    TransformerResultOfPayerId:
+      oneOf:
+        - $ref: '#/components/schemas/TransformerResultMissingOriginal'
+        - $ref: '#/components/schemas/TransformerResultNotTransformed'
+        - $ref: '#/components/schemas/TransformerResultTransformedPayerId'
+    TransformerResultTransformedPercentage:
+      properties:
+        final:
+          example: '%20'
+          type: string
+        missing:
+          enum:
+            - false
+          type: boolean
+        original:
+          items:
+            type: string
+          type: array
+        transformed:
+          enum:
+            - true
+          type: boolean
+      required:
+        - missing
+        - transformed
+        - original
+        - final
+      type: object
+    TransformerResultOfPercentage:
+      oneOf:
+        - $ref: '#/components/schemas/TransformerResultMissingOriginal'
+        - $ref: '#/components/schemas/TransformerResultNotTransformed'
+        - $ref: '#/components/schemas/TransformerResultTransformedPercentage'
+    TransformerResultTransformedPlanName:
+      additionalProperties: false
+      properties:
+        final:
+          $ref: '#/components/schemas/PlanName'
+        missing:
+          enum:
+            - false
+          type: boolean
+        original:
+          $ref: '#/components/schemas/NonEmptyStringArray'
+        transformed:
+          enum:
+            - true
+          type: boolean
+      required:
+        - final
+        - missing
+        - original
+        - transformed
+      type: object
+    TransformerResultOfPlanName:
+      oneOf:
+        - $ref: '#/components/schemas/TransformerResultMissingOriginal'
+        - $ref: '#/components/schemas/TransformerResultTransformedPlanName'
+        - $ref: '#/components/schemas/TransformerResultNotTransformed'
+    TransformerResultTransformedPlanType:
+      properties:
+        final:
+          $ref: '#/components/schemas/PlanType'
+        missing:
+          enum:
+            - false
+          type: boolean
+        original:
+          items:
+            type: string
+          type: array
+        transformed:
+          enum:
+            - true
+          type: boolean
+      required:
+        - missing
+        - transformed
+        - original
+        - final
+      type: object
+    TransformerResultOfPlanType:
+      oneOf:
+        - $ref: '#/components/schemas/TransformerResultMissingOriginal'
+        - $ref: '#/components/schemas/TransformerResultNotTransformed'
+        - $ref: '#/components/schemas/TransformerResultTransformedPlanType'
+    TransformerResultTransformedPolicyPeriod:
+      properties:
+        final:
+          $ref: '#/components/schemas/Iso8601ValueRangeOptionalEnd'
+        missing:
+          enum:
+            - false
+          type: boolean
+        original:
+          items:
+            type: string
+          type: array
+        transformed:
+          enum:
+            - true
+          type: boolean
+      required:
+        - missing
+        - transformed
+        - original
+      type: object
+    TransformerResultOfPolicyPeriod:
+      oneOf:
+        - $ref: '#/components/schemas/TransformerResultMissingOriginal'
+        - $ref: '#/components/schemas/TransformerResultNotTransformed'
+        - $ref: '#/components/schemas/TransformerResultTransformedPolicyPeriod'
+    TransformerResultTransformedPolicyPeriodV3:
+      additionalProperties: false
+      properties:
+        final:
+          $ref: '#/components/schemas/PolicyPeriod'
+        missing:
+          enum:
+            - false
+          type: boolean
+        original:
+          $ref: '#/components/schemas/NonEmptyStringArray'
+        transformed:
+          enum:
+            - true
+          type: boolean
+      required:
+        - final
+        - missing
+        - original
+        - transformed
+      type: object
+    TransformerResultOfPolicyPeriodV3:
+      oneOf:
+        - $ref: '#/components/schemas/TransformerResultMissingOriginal'
+        - $ref: '#/components/schemas/TransformerResultTransformedPolicyPeriodV3'
+        - $ref: '#/components/schemas/TransformerResultNotTransformed'
+    TransformerResultTransformedProcedureCategoryArray:
+      additionalProperties: false
+      properties:
+        final:
+          $ref: '#/components/schemas/ProcedureCategoryArray'
+        missing:
+          enum:
+            - false
+          type: boolean
+        original:
+          $ref: '#/components/schemas/NonEmptyStringArray'
+        transformed:
+          enum:
+            - true
+          type: boolean
+      required:
+        - final
+        - missing
+        - original
+        - transformed
+      type: object
+    TransformerResultOfProcedureCategoryArray:
+      oneOf:
+        - $ref: '#/components/schemas/TransformerResultMissingOriginal'
+        - $ref: '#/components/schemas/TransformerResultTransformedProcedureCategoryArray'
+        - $ref: '#/components/schemas/TransformerResultNotTransformed'
+    TransformerResultTransformedProcedureCodeArray:
+      additionalProperties: false
+      properties:
+        final:
+          $ref: '#/components/schemas/ProcedureCodeArray'
+        missing:
+          enum:
+            - false
+          type: boolean
+        original:
+          $ref: '#/components/schemas/NonEmptyStringArray'
+        transformed:
+          enum:
+            - true
+          type: boolean
+      required:
+        - final
+        - missing
+        - original
+        - transformed
+      type: object
+    TransformerResultOfProcedureCodeArray:
+      oneOf:
+        - $ref: '#/components/schemas/TransformerResultMissingOriginal'
+        - $ref: '#/components/schemas/TransformerResultTransformedProcedureCodeArray'
+        - $ref: '#/components/schemas/TransformerResultNotTransformed'
+    TransformerResultTransformedProcedureDowngrade:
+      additionalProperties: false
+      properties:
+        final:
+          $ref: '#/components/schemas/ProcedureDowngrade'
+        missing:
+          enum:
+            - false
+          type: boolean
+        original:
+          $ref: '#/components/schemas/NonEmptyStringArray'
+        transformed:
+          enum:
+            - true
+          type: boolean
+      required:
+        - final
+        - missing
+        - original
+        - transformed
+      type: object
+    TransformerResultOfProcedureDowngrade:
+      oneOf:
+        - $ref: '#/components/schemas/TransformerResultMissingOriginal'
+        - $ref: '#/components/schemas/TransformerResultTransformedProcedureDowngrade'
+        - $ref: '#/components/schemas/TransformerResultNotTransformed'
+    TransformerResultTransformedProcedureEligibilityStatus:
+      additionalProperties: false
+      properties:
+        final:
+          $ref: '#/components/schemas/ProcedureEligibilityStatus'
+        missing:
+          enum:
+            - false
+          type: boolean
+        original:
+          $ref: '#/components/schemas/NonEmptyStringArray'
+        transformed:
+          enum:
+            - true
+          type: boolean
+      required:
+        - final
+        - missing
+        - original
+        - transformed
+      type: object
+    TransformerResultOfProcedureEligibilityStatus:
+      oneOf:
+        - $ref: '#/components/schemas/TransformerResultMissingOriginal'
+        - $ref: '#/components/schemas/TransformerResultTransformedProcedureEligibilityStatus'
+        - $ref: '#/components/schemas/TransformerResultNotTransformed'
+    TransformerResultTransformedProcedureLocationArray:
+      additionalProperties: false
+      properties:
+        final:
+          $ref: '#/components/schemas/ProcedureLocationArray'
+        missing:
+          enum:
+            - false
+          type: boolean
+        original:
+          $ref: '#/components/schemas/NonEmptyStringArray'
+        transformed:
+          enum:
+            - true
+          type: boolean
+      required:
+        - final
+        - missing
+        - original
+        - transformed
+      type: object
+    TransformerResultOfProcedureLocationArray:
+      oneOf:
+        - $ref: '#/components/schemas/TransformerResultMissingOriginal'
+        - $ref: '#/components/schemas/TransformerResultTransformedProcedureLocationArray'
+        - $ref: '#/components/schemas/TransformerResultNotTransformed'
+    TransformerResultTransformedProvider:
+      additionalProperties: false
+      properties:
+        final:
+          $ref: '#/components/schemas/Provider'
+        missing:
+          enum:
+            - false
+          type: boolean
+        original:
+          $ref: '#/components/schemas/NonEmptyStringArray'
+        transformed:
+          enum:
+            - true
+          type: boolean
+      required:
+        - final
+        - missing
+        - original
+        - transformed
+      type: object
+    TransformerResultOfProvider:
+      oneOf:
+        - $ref: '#/components/schemas/TransformerResultMissingOriginal'
+        - $ref: '#/components/schemas/TransformerResultTransformedProvider'
+        - $ref: '#/components/schemas/TransformerResultNotTransformed'
+    TransformerResultTransformedRelationshipToSubscriber:
+      properties:
+        final:
+          $ref: '#/components/schemas/RelationshipToSubscriber'
+        missing:
+          enum:
+            - false
+          type: boolean
+        original:
+          items:
+            type: string
+          type: array
+        transformed:
+          enum:
+            - true
+          type: boolean
+      required:
+        - missing
+        - transformed
+        - original
+        - final
+      type: object
+    TransformerResultOfRelationshipToSubscriber:
+      oneOf:
+        - $ref: '#/components/schemas/TransformerResultMissingOriginal'
+        - $ref: '#/components/schemas/TransformerResultNotTransformed'
+        - $ref: '#/components/schemas/TransformerResultTransformedRelationshipToSubscriber'
+    TransformerResultOfRelationshipToSubscriberV3:
+      oneOf:
+        - $ref: '#/components/schemas/TransformerResultMissingOriginal'
+        - $ref: '#/components/schemas/TransformerResultNotTransformed'
+        - additionalProperties: false
+          properties:
+            final:
+              $ref: '#/components/schemas/RelationshipToSubscriber'
+            missing:
+              enum:
+                - false
+              type: boolean
+            original:
+              $ref: '#/components/schemas/NonEmptyStringArray'
+            transformed:
+              enum:
+                - true
+              type: boolean
+          required:
+            - final
+            - missing
+            - original
+            - transformed
+          type: object
+    TransformerResultTransformedServiceLocations:
+      properties:
+        final:
+          items:
+            $ref: '#/components/schemas/ServiceLocation'
+          type: array
+        missing:
+          enum:
+            - false
+          type: boolean
+        original:
+          items:
+            type: string
+          type: array
+        transformed:
+          enum:
+            - true
+          type: boolean
+      required:
+        - missing
+        - transformed
+        - original
+        - final
+      type: object
+    TransformerResultOfServiceLocations:
+      oneOf:
+        - $ref: '#/components/schemas/TransformerResultMissingOriginal'
+        - $ref: '#/components/schemas/TransformerResultNotTransformed'
+        - $ref: '#/components/schemas/TransformerResultTransformedServiceLocations'
+    TransformerResultTransformedServiceTypes:
+      properties:
+        final:
+          items:
+            $ref: '#/components/schemas/ServiceType'
+          type: array
+        missing:
+          enum:
+            - false
+          type: boolean
+        original:
+          items:
+            type: string
+          type: array
+        transformed:
+          enum:
+            - true
+          type: boolean
+      required:
+        - missing
+        - transformed
+        - original
+        - final
+      type: object
+    TransformerResultOfServiceTypes:
+      oneOf:
+        - $ref: '#/components/schemas/TransformerResultMissingOriginal'
+        - $ref: '#/components/schemas/TransformerResultNotTransformed'
+        - $ref: '#/components/schemas/TransformerResultTransformedServiceTypes'
+    TransformerResultTransformedString:
+      properties:
+        final:
+          type: string
+        missing:
+          enum:
+            - false
+          type: boolean
+        original:
+          items:
+            type: string
+          type: array
+        transformed:
+          enum:
+            - true
+          type: boolean
+      required:
+        - missing
+        - transformed
+        - original
+        - final
+      type: object
+    TransformerResultOfString:
+      oneOf:
+        - $ref: '#/components/schemas/TransformerResultMissingOriginal'
+        - $ref: '#/components/schemas/TransformerResultNotTransformed'
+        - $ref: '#/components/schemas/TransformerResultTransformedString'
+    TransformerResultTransformedWaitingPeriodV3:
+      additionalProperties: false
+      properties:
+        final:
+          $ref: '#/components/schemas/WaitingPeriodV3'
+        missing:
+          enum:
+            - false
+          type: boolean
+        original:
+          $ref: '#/components/schemas/NonEmptyStringArray'
+        transformed:
+          enum:
+            - true
+          type: boolean
+      required:
+        - final
+        - missing
+        - original
+        - transformed
+      type: object
+    TransformerResultOfWaitingPeriodV3:
+      oneOf:
+        - $ref: '#/components/schemas/TransformerResultMissingOriginal'
+        - $ref: '#/components/schemas/TransformerResultTransformedWaitingPeriodV3'
+        - $ref: '#/components/schemas/TransformerResultNotTransformed'
+    UnlimitedMaximum:
+      additionalProperties: false
+      properties:
+        benefitPeriodType:
+          $ref: '#/components/schemas/TransformerResultOfBenefitPeriodType'
+        categories:
+          $ref: '#/components/schemas/TransformerResultOfProcedureCategoryArray'
+        coverageLevel:
+          $ref: '#/components/schemas/TransformerResultOfCoverageLevel'
+        disclaimers:
+          $ref: '#/components/schemas/DisclaimerArray'
+        isUnlimited:
+          enum:
+            - true
+          type: boolean
+        network:
+          $ref: '#/components/schemas/Network'
+        remainingAmount:
+          $ref: '#/components/schemas/TransformerResultOfCurrency'
+      required:
+        - benefitPeriodType
+        - categories
+        - coverageLevel
+        - network
+        - remainingAmount
+        - isUnlimited
+      type: object
+    ValueRangeOfAgeAndOptionalAge:
+      additionalProperties: false
+      properties:
+        end:
+          $ref: '#/components/schemas/Age'
+        start:
+          $ref: '#/components/schemas/Age'
+      required:
+        - start
+      type: object
+    ValueRangeOfIso8601AndOptionalIso8601:
+      additionalProperties: false
+      properties:
+        end:
+          $ref: './common.yaml#/components/schemas/Iso8601'
+        start:
+          $ref: './common.yaml#/components/schemas/Iso8601'
+      required:
+        - start
+      type: object
+    ValueRangeOfNonNegativeNumber:
+      additionalProperties: false
+      properties:
+        end:
+          $ref: '#/components/schemas/NonNegativeNumber'
+        start:
+          $ref: '#/components/schemas/NonNegativeNumber'
+      required:
+        - start
+        - end
+      type: object          
+    ValueWithUnitOfNonNegativeNumberAndOptionalCountUnit:
+      additionalProperties: false
+      properties:
+        unit:
+          $ref: '#/components/schemas/CountUnit'
+        value:
+          $ref: '#/components/schemas/NonNegativeNumber'
+      required:
+        - value
+      type: object
+    ValueWithUnitOfNonNegativeNumberAndTimeUnit:
+      additionalProperties: false
+      properties:
+        unit:
+          $ref: '#/components/schemas/TimeUnit'
+        value:
+          $ref: '#/components/schemas/NonNegativeNumber'
+      required:
+        - value
+        - unit
+      type: object
+    Version:
+      description: The version of insurance verification desired in the response.
+      enum:
+        - 1.0.0
+        - 1.1.0
+        - 3.0.0
+      type: string
+    Visit:
+      oneOf:
+        - additionalProperties: false
+          properties:
+            categories:
+              $ref: '#/components/schemas/ProcedureCategoryArray'
+            date:
+              $ref: '#/components/schemas/TransformerResultOfIso8601'
+            locations:
+              $ref: '#/components/schemas/TransformerResultOfProcedureLocationArray'
+          required:
+            - date
+            - categories
+          type: object
+        - additionalProperties: false
+          properties:
+            codes:
+              $ref: '#/components/schemas/ProcedureCodeArray'
+            date:
+              $ref: '#/components/schemas/TransformerResultOfIso8601'
+            locations:
+              $ref: '#/components/schemas/TransformerResultOfProcedureLocationArray'
+          required:
+            - date
+            - codes
+          type: object
+    VisitArray:
+      items:
+        $ref: '#/components/schemas/Visit'
+      type: array
+    WaitingPeriod:
+      properties:
+        end:
+          $ref: '#/components/schemas/TransformerResultOfIso8601'
+        serviceTypes:
+          $ref: '#/components/schemas/TransformerResultOfServiceTypes'
+        start:
+          $ref: '#/components/schemas/TransformerResultOfIso8601'
+      required:
+        - start
+        - serviceTypes
+      type: object
+    WaitingPeriodV3:
+      additionalProperties: false
+      properties:
+        applies:
+          type: boolean
+        end:
+          $ref: './common.yaml#/components/schemas/Iso8601'
+        start:
+          $ref: './common.yaml#/components/schemas/Iso8601'
+      required:
+        - applies
+      type: object
+

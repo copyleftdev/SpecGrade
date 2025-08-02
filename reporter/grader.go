@@ -1,7 +1,7 @@
 package reporter
 
 import (
-	"github.com/codetestcode/specgrade/core"
+	"github.com/copyleftdev/specgrade/core"
 )
 
 // DefaultGrader implements the standard grading logic

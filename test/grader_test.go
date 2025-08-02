@@ -3,8 +3,8 @@ package test
 import (
 	"testing"
 
-	"github.com/codetestcode/specgrade/core"
-	"github.com/codetestcode/specgrade/reporter"
+	"github.com/copyleftdev/specgrade/core"
+	"github.com/copyleftdev/specgrade/reporter"
 )
 
 func TestDefaultGrader(t *testing.T) {

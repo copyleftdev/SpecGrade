@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/getkin/kin-openapi/openapi3"
-	"github.com/codetestcode/specgrade/core"
+	"github.com/copyleftdev/specgrade/core"
 )
 
 // InfoTitleRule checks if the OpenAPI spec has a title in the info section

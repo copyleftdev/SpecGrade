@@ -1,7 +1,7 @@
 package registry
 
 import (
-	"github.com/codetestcode/specgrade/core"
+	"github.com/copyleftdev/specgrade/core"
 )
 
 // RuleRegistry manages the collection of validation rules

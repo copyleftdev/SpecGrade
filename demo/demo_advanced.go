@@ -5,18 +5,18 @@ import (
 	"os"
 	"path/filepath"
 
-	"../core"
-	"../fetcher"
-	"../registry"
-	"../reporter"
-	"../rules"
-	"../runner"
-	"./generator"
+	"github.com/copyleftdev/specgrade/core"
+	"github.com/copyleftdev/specgrade/fetcher"
+	"github.com/copyleftdev/specgrade/registry"
+	"github.com/copyleftdev/specgrade/reporter"
+	"github.com/copyleftdev/specgrade/rules"
+	"github.com/copyleftdev/specgrade/runner"
+	"github.com/copyleftdev/specgrade/test/generator"
 )
 
 func main() {
 	fmt.Println("🚀 SpecGrade Advanced Testing Demonstration")
-	fmt.Println("=" * 50)
+	fmt.Println("==================================================")
 
 	// Setup registry and grader
 	reg := registry.NewDefaultRuleRegistry()

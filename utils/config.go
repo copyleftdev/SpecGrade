@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"gopkg.in/yaml.v3"
-	"github.com/codetestcode/specgrade/core"
+	"github.com/copyleftdev/specgrade/core"
 )
 
 // LoadConfig loads configuration from YAML file or creates default config

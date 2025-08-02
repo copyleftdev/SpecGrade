@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/codetestcode/specgrade/cmd"
+	"github.com/copyleftdev/specgrade/cmd"
 )
 
 func main() {

@@ -5,8 +5,8 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	"github.com/codetestcode/specgrade/registry"
-	"github.com/codetestcode/specgrade/rules"
+	"github.com/copyleftdev/specgrade/registry"
+	"github.com/copyleftdev/specgrade/rules"
 )
 
 var rulesCmd = &cobra.Command{

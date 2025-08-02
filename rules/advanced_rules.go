@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/getkin/kin-openapi/openapi3"
-	"github.com/codetestcode/specgrade/core"
+	"github.com/copyleftdev/specgrade/core"
 )
 
 // SchemaExampleConsistencyRule checks if examples match their declared types

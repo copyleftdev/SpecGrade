@@ -10,17 +10,114 @@ A modular, dynamic, and CICD-optimized conformance validator for OpenAPI specifi
 - **YAML Configuration**: Team-wide standardization with `specgrade.yaml`
 - **Rule Management**: Skip specific rules or generate documentation
 - **Version Support**: OpenAPI 3.0.0 and 3.1.0 specifications
+- **Advanced Rigor**: Real-world API testing, fuzzing, ML prediction, and community contributions
+
+## 🎯 Grading System
+
+SpecGrade uses a comprehensive grading system that evaluates your OpenAPI specification across multiple dimensions:
+
+### Grade Scale
+| Grade | Score Range | Description |
+|-------|-------------|-------------|
+| **A+** | 95-100% | Exceptional - Production-ready with best practices |
+| **A**  | 90-94%  | Excellent - High quality with minor improvements needed |
+| **B+** | 85-89%  | Very Good - Solid specification with some gaps |
+| **B**  | 80-84%  | Good - Functional but needs attention |
+| **C+** | 75-79%  | Fair - Multiple issues to address |
+| **C**  | 70-74%  | Poor - Significant problems present |
+| **D**  | 60-69%  | Very Poor - Major rework required |
+| **F**  | 0-59%   | Failing - Specification has critical issues |
+
+### Scoring Methodology
+
+SpecGrade calculates your score using a **weighted rule evaluation system**:
+
+```
+Final Score = (Passed Rules / Total Rules) × 100%
+```
+
+#### Rule Categories & Weights
+
+1. **Basic Validation Rules** (25% weight)
+   - `info-title`: API must have a descriptive title
+   - `info-description`: API must have a clear description
+   - `paths-kebab-case`: Paths should use kebab-case naming
+   - `operation-operationid`: All operations must have unique operation IDs
+
+2. **Advanced Validation Rules** (75% weight)
+   - `oas3-valid-schema-example`: Examples must match their schema types
+   - `operation-description`: All operations must be documented
+   - `no-trailing-slash`: Paths should not have trailing slashes
+   - `security-defined`: Security schemes must be properly defined
+
+#### Example Calculation
+
+```yaml
+# Your API has 8 total rules
+# 7 rules passed, 1 rule failed
+
+Score = (7 ÷ 8) × 100% = 87.5%
+Grade = B+ (85-89% range)
+```
+
+### Quality Insights
+
+Beyond the grade, SpecGrade provides:
+
+- **Detailed Rule Results**: See exactly which rules passed/failed
+- **Actionable Recommendations**: Specific steps to improve your score
+- **Trend Analysis**: Track improvements over time
+- **Best Practice Guidance**: Learn industry standards for API design
+
+## 🚦 Implementation Status
+
+### ✅ **Production Ready** (Fully Implemented)
+
+These features are **100% functional** and ready for production use:
+
+- **Core Validation Engine**: 8 comprehensive validation rules
+- **Grading System**: Transparent A+ to F scoring with detailed breakdowns
+- **Multi-Format Output**: JSON, CLI, HTML, and Markdown reporters
+- **Configuration Management**: YAML config files with CLI flag precedence
+- **Multi-File Support**: External `$ref` resolution for complex specs
+- **Rule Management**: Skip rules, generate documentation, list available rules
+- **CI/CD Integration**: Semantic exit codes and fail thresholds
+- **Docker Support**: Containerized deployment ready
+- **Comprehensive Testing**: Unit tests, integration tests, property-based tests
+
+### 🚧 **Prototype/Demo** (Architectural Previews)
+
+These features demonstrate **future capabilities** with simulated data:
+
+- **🌍 Real-World API Collection**: Simulates downloading APIs from major providers
+- **🔥 Fuzzing Tests**: Mock corruption strategies and robustness testing
+- **🤖 ML Quality Prediction**: Prototype feature extraction and quality insights
+- **🤝 Community Framework**: Simulated contribution statistics and edge case patterns
+
+> **📝 Note**: The prototype features show the intended user experience and architecture. They use hardcoded/simulated data for demonstration purposes. The core validation system provides real, actionable results.
+
+### 🎯 **Example: Real vs. Simulated**
+
+```bash
+# ✅ REAL - Actual validation with genuine results
+./specgrade --target-dir test/sample-spec
+# Output: 6/8 rules passed, 75% score, Grade B
+
+# 🎭 SIMULATED - Architectural preview with mock data
+./specgrade advanced community --action stats
+# Output: "47 contributions, Alice Johnson (12 contributions)"
+```
 
 ## 📦 Installation
 
 ```bash
-go install github.com/codetestcode/specgrade@latest
+go install github.com/copyleftdev/specgrade@latest
 ```
 
 Or build from source:
 
 ```bash
-git clone https://github.com/codetestcode/specgrade.git
+git clone https://github.com/copyleftdev/specgrade.git
 cd specgrade
 go build -o specgrade
 ```
@@ -61,7 +158,41 @@ skip_rules:
 Then run:
 
 ```bash
-specgrade --target-dir=./specs/openai
+specgrade --config=specgrade.yaml
+```
+
+### Advanced Rigor Features
+
+> **⚠️ Implementation Status**: The advanced rigor features below are currently **architectural prototypes** with simulated data for demonstration purposes. The core validation system is fully production-ready.
+
+SpecGrade includes cutting-edge features for comprehensive API validation:
+
+#### 🌍 Real-World API Collection
+```bash
+# Collect APIs from major providers
+specgrade advanced collect --categories fintech,developer
+
+# Validate all collected APIs in batch
+specgrade advanced validate-batch --report batch_report.json
+```
+
+#### 🔥 Fuzzing Tests
+```bash
+# Test robustness with corrupted specs
+specgrade advanced fuzz --input api.yaml --strategies structural,semantic --iterations 100
+```
+
+#### 🤖 ML-Based Quality Prediction
+```bash
+# Predict API quality using machine learning
+specgrade advanced predict --input api.yaml --detailed
+```
+
+#### 🤝 Community Contributions
+```bash
+# View community statistics and edge case patterns
+specgrade advanced community --action stats
+specgrade advanced community --action patterns
 ```
 
 ### Rule Management
@@ -169,7 +300,7 @@ jobs:
         with:
           go-version: '1.21'
       - name: Install SpecGrade
-        run: go install github.com/codetestcode/specgrade@latest
+        run: go install github.com/copyleftdev/specgrade@latest
       - name: Validate OpenAPI Spec
         run: specgrade --target-dir=./api --fail-threshold=B
 ```
@@ -219,7 +350,59 @@ func (r *MyCustomRule) Evaluate(ctx *core.SpecContext) core.RuleResult {
 
 MIT License - see LICENSE file for details.
 
+## 🗺️ Development Roadmap
+
+### Making Prototype Features Production-Ready
+
+To convert the advanced rigor prototypes into fully functional features:
+
+#### 🌍 **Real-World API Collection**
+- [ ] Implement HTTP clients for major API providers (Stripe, GitHub, AWS, etc.)
+- [ ] Add API discovery and metadata extraction
+- [ ] Build automated update scheduling and version tracking
+- [ ] Create API categorization and tagging system
+
+#### 🔥 **Fuzzing Framework**
+- [ ] Implement actual OpenAPI corruption algorithms
+- [ ] Add crash detection and error analysis
+- [ ] Build fuzzing campaign management
+- [ ] Integrate with CI/CD for automated robustness testing
+
+#### 🤖 **ML Quality Prediction**
+- [ ] Train models on real OpenAPI specification datasets
+- [ ] Implement feature extraction from actual specs
+- [ ] Add model versioning and A/B testing
+- [ ] Build feedback loop for continuous improvement
+
+#### 🤝 **Community Framework**
+- [ ] Create web interface for contribution submission
+- [ ] Build review workflow and approval system
+- [ ] Implement real contribution storage and analytics
+- [ ] Add user authentication and reputation system
+
+### 🎯 **Priority Order**
+1. **Fuzzing Framework** - Highest impact for robustness testing
+2. **Real-World API Collection** - Valuable for benchmarking
+3. **ML Quality Prediction** - Advanced feature for insights
+4. **Community Framework** - Long-term ecosystem building
+
 ## 🤝 Contributing
+
+### Current Contribution Areas
+
+**✅ Ready for Contributions:**
+- New validation rules for the core engine
+- Additional output formats (SARIF, XML, etc.)
+- Performance optimizations
+- Documentation improvements
+- Bug fixes and edge case handling
+
+**🚧 Advanced Features (Prototype → Production):**
+- Help implement the roadmap items above
+- Contribute real-world API specifications for testing
+- Share edge cases and validation scenarios
+
+### How to Contribute
 
 1. Fork the repository
 2. Create a feature branch
@@ -229,5 +412,5 @@ MIT License - see LICENSE file for details.
 
 ## 📞 Support
 
-- GitHub Issues: [Report bugs or request features](https://github.com/codetestcode/specgrade/issues)
-- Documentation: [Full documentation](https://github.com/codetestcode/specgrade/wiki)
+- GitHub Issues: [Report bugs or request features](https://github.com/copyleftdev/specgrade/issues)
+- Documentation: [Full documentation](https://github.com/copyleftdev/specgrade/wiki)

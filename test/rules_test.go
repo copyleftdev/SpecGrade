@@ -4,8 +4,8 @@ import (
 	"testing"
 
 	"github.com/getkin/kin-openapi/openapi3"
-	"github.com/codetestcode/specgrade/core"
-	"github.com/codetestcode/specgrade/rules"
+	"github.com/copyleftdev/specgrade/core"
+	"github.com/copyleftdev/specgrade/rules"
 )
 
 func TestInfoTitleRule(t *testing.T) {

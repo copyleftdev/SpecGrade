@@ -6,15 +6,15 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	"github.com/codetestcode/specgrade/ci"
-	"github.com/codetestcode/specgrade/core"
-	"github.com/codetestcode/specgrade/fetcher"
-	"github.com/codetestcode/specgrade/registry"
-	"github.com/codetestcode/specgrade/reporter"
-	"github.com/codetestcode/specgrade/rules"
-	"github.com/codetestcode/specgrade/runner"
-	"github.com/codetestcode/specgrade/utils"
-	"github.com/codetestcode/specgrade/versions"
+	"github.com/copyleftdev/specgrade/ci"
+	"github.com/copyleftdev/specgrade/core"
+	"github.com/copyleftdev/specgrade/fetcher"
+	"github.com/copyleftdev/specgrade/registry"
+	"github.com/copyleftdev/specgrade/reporter"
+	"github.com/copyleftdev/specgrade/rules"
+	"github.com/copyleftdev/specgrade/runner"
+	"github.com/copyleftdev/specgrade/utils"
+	"github.com/copyleftdev/specgrade/versions"
 )
 
 var (
@@ -178,8 +178,9 @@ func generateRuleDocumentation() error {
 	ruleRegistry := registry.NewRuleRegistry()
 	registerRules(ruleRegistry)
 
-	fmt.Println("# SpecGrade Rules Documentation\n")
-	fmt.Println("This document describes all available validation rules in SpecGrade.\n")
+	fmt.Println("# SpecGrade Rules Documentation")
+	fmt.Println("This document describes all available validation rules in SpecGrade.")
+	fmt.Println()
 
 	allRules := ruleRegistry.AllRules()
 	for _, rule := range allRules {
@@ -195,7 +196,7 @@ func generateRuleDocumentation() error {
 			}
 		}
 		fmt.Printf("**Applies to:** OpenAPI %s\n\n", strings.Join(versions, ", "))
-		fmt.Println("---\n")
+		fmt.Print("\n---\n")
 	}
 
 	return nil

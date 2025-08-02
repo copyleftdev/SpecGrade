@@ -10,24 +10,24 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/codetestcode/specgrade/core"
-	"github.com/codetestcode/specgrade/fetcher"
-	"github.com/codetestcode/specgrade/registry"
-	"github.com/codetestcode/specgrade/reporter"
-	"github.com/codetestcode/specgrade/rules"
-	"github.com/codetestcode/specgrade/runner"
-	"github.com/codetestcode/specgrade/test/generator"
+	"github.com/copyleftdev/specgrade/core"
+	"github.com/copyleftdev/specgrade/fetcher"
+	"github.com/copyleftdev/specgrade/registry"
+	"github.com/copyleftdev/specgrade/reporter"
+	"github.com/copyleftdev/specgrade/rules"
+	"github.com/copyleftdev/specgrade/runner"
+	"github.com/copyleftdev/specgrade/test/generator"
 )
 
 // TestSuiteRunner runs comprehensive validation tests
 type TestSuiteRunner struct {
-	registry *registry.DefaultRuleRegistry
+	registry *registry.RuleRegistry
 	grader   *reporter.DefaultGrader
 }
 
 // NewTestSuiteRunner creates a new test suite runner
 func NewTestSuiteRunner() *TestSuiteRunner {
-	reg := registry.NewDefaultRuleRegistry()
+	reg := registry.NewRuleRegistry()
 	
 	// Register all rules
 	reg.RegisterRule("3.1.0", &rules.InfoTitleRule{})

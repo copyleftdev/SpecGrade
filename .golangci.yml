@@ -9,6 +9,11 @@ run:
     - vendor
     - build
     - dist
+    - demo
+    - test/realworld
+    - test/fuzzing
+    - test/ml
+    - test/community
   skip-files:
     - ".*\\.pb\\.go$"
     - ".*_generated\\.go$"

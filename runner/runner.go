@@ -1,8 +1,8 @@
 package runner
 
 import (
-	"github.com/codetestcode/specgrade/core"
-	"github.com/codetestcode/specgrade/registry"
+	"github.com/copyleftdev/specgrade/core"
+	"github.com/copyleftdev/specgrade/registry"
 )
 
 // Runner executes validation rules against OpenAPI specs

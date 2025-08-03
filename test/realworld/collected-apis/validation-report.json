@@ -1,0 +1,49 @@
+{
+  "total_apis": 1,
+  "successful_apis": 0,
+  "failed_apis": 1,
+  "total_validation_time": 299271629,
+  "results": [
+    {
+      "api_name": "digitalocean",
+      "provider": "DigitalOcean",
+      "category": "cloud",
+      "expected_grade": "A",
+      "actual_grade": "",
+      "score": 0,
+      "rule_results": null,
+      "validation_time": 299045621,
+      "success": false,
+      "error": "SpecGrade execution failed: exit status 1",
+      "metadata": {
+        "name": "digitalocean",
+        "provider": "DigitalOcean",
+        "category": "cloud",
+        "version": "latest",
+        "source_url": "https://api-engineering.nyc3.digitaloceanspaces.com/spec-ci/DigitalOcean-public.v2.yaml",
+        "collected_at": "2025-08-02T19:56:31.413515612-07:00",
+        "expected_grade": "A",
+        "complexity_level": "medium",
+        "description": "Simple cloud infrastructure management",
+        "tags": [
+          "cloud",
+          "infrastructure",
+          "droplets",
+          "kubernetes"
+        ]
+      }
+    }
+  ],
+  "summary": {
+    "grade_distribution": {},
+    "category_stats": {},
+    "rule_stats": {},
+    "accuracy_metrics": {
+      "grade_accuracy": 0,
+      "score_correlation": 0,
+      "false_positive_rate": 0,
+      "false_negative_rate": 0
+    }
+  },
+  "generated_at": "2025-08-02T19:57:01.22956944-07:00"
+}

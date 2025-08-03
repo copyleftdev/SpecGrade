@@ -5,7 +5,6 @@ import (
 	"os"
 	"strings"
 
-	"github.com/spf13/cobra"
 	"github.com/copyleftdev/specgrade/ci"
 	"github.com/copyleftdev/specgrade/core"
 	"github.com/copyleftdev/specgrade/fetcher"
@@ -15,6 +14,7 @@ import (
 	"github.com/copyleftdev/specgrade/runner"
 	"github.com/copyleftdev/specgrade/utils"
 	"github.com/copyleftdev/specgrade/versions"
+	"github.com/spf13/cobra"
 )
 
 var (
@@ -143,8 +143,10 @@ func runSpecGrade(cmd *cobra.Command, args []string) error {
 		output = rep.FormatHTML(report, finalConfig.InputDir)
 	case "cli":
 		output = rep.FormatCLI(report, finalConfig.InputDir)
+	case "developer":
+		output = rep.FormatDeveloperCLI(report, finalConfig.InputDir)
 	default:
-		return fmt.Errorf("unsupported output format: %s", finalConfig.OutputFormat)
+		return fmt.Errorf("unsupported output format: %s (supported: json, cli, developer, markdown, html)", finalConfig.OutputFormat)
 	}
 
 	fmt.Print(output)
@@ -165,7 +167,7 @@ func registerRules(registry *registry.RuleRegistry) {
 	registry.Register(&rules.InfoVersionRule{})
 	registry.Register(&rules.PathsExistRule{})
 	registry.Register(&rules.OperationIDRule{})
-	
+
 	// Advanced quality rules
 	registry.Register(&rules.SchemaExampleConsistencyRule{})
 	registry.Register(&rules.OperationDescriptionRule{})
@@ -186,7 +188,7 @@ func generateRuleDocumentation() error {
 	for _, rule := range allRules {
 		fmt.Printf("## %s\n\n", rule.ID())
 		fmt.Printf("**Description:** %s\n\n", rule.Description())
-		
+
 		// Check which versions this rule applies to
 		versions := []string{}
 		testVersions := []string{"3.0.0", "3.1.0"}

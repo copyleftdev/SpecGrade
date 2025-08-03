@@ -5,8 +5,8 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/copyleftdev/specgrade/core"
+	"github.com/getkin/kin-openapi/openapi3"
 )
 
 // SchemaExampleConsistencyRule checks if examples match their declared types
@@ -26,7 +26,7 @@ func (r *SchemaExampleConsistencyRule) AppliesTo(version string) bool {
 
 func (r *SchemaExampleConsistencyRule) Evaluate(ctx *core.SpecContext) core.RuleResult {
 	issues := []string{}
-	
+
 	if ctx.Spec.Components != nil && ctx.Spec.Components.Schemas != nil {
 		for schemaName, schemaRef := range ctx.Spec.Components.Schemas {
 			if schemaRef.Value != nil {
@@ -51,6 +51,17 @@ func (r *SchemaExampleConsistencyRule) Evaluate(ctx *core.SpecContext) core.Rule
 }
 
 func (r *SchemaExampleConsistencyRule) checkSchemaExamples(schemaName string, schema *openapi3.Schema, path string) []string {
+	return r.checkSchemaExamplesWithDepth(schemaName, schema, path, 0, make(map[*openapi3.Schema]bool))
+}
+
+func (r *SchemaExampleConsistencyRule) checkSchemaExamplesWithDepth(schemaName string, schema *openapi3.Schema, path string, depth int, visited map[*openapi3.Schema]bool) []string {
+	// Prevent infinite recursion with depth limit and cycle detection
+	if depth > 10 || visited[schema] {
+		return []string{}
+	}
+	visited[schema] = true
+	defer func() { visited[schema] = false }()
+
 	issues := []string{}
 	currentPath := schemaName
 	if path != "" {
@@ -60,7 +71,7 @@ func (r *SchemaExampleConsistencyRule) checkSchemaExamples(schemaName string, sc
 	// Check direct example
 	if schema.Example != nil && schema.Type != "" {
 		if !r.isExampleValidForType(schema.Example, schema.Type) {
-			issues = append(issues, fmt.Sprintf("%s: %s example %v doesn't match type %s", 
+			issues = append(issues, fmt.Sprintf("%s: %s example %v doesn't match type %s",
 				currentPath, schema.Type, schema.Example, schema.Type))
 		}
 	}
@@ -73,7 +84,7 @@ func (r *SchemaExampleConsistencyRule) checkSchemaExamples(schemaName string, sc
 				if path != "" {
 					propPath = fmt.Sprintf("%s.%s", path, propName)
 				}
-				issues = append(issues, r.checkSchemaExamples(schemaName, propRef.Value, propPath)...)
+				issues = append(issues, r.checkSchemaExamplesWithDepth(schemaName, propRef.Value, propPath, depth+1, visited)...)
 			}
 		}
 	}
@@ -145,9 +156,9 @@ func (r *OperationDescriptionRule) Evaluate(ctx *core.SpecContext) core.RuleResu
 	shortDesc := 0
 
 	for _, pathItem := range ctx.Spec.Paths {
-		operations := []struct{
+		operations := []struct {
 			method string
-			op *openapi3.Operation
+			op     *openapi3.Operation
 		}{
 			{"GET", pathItem.Get},
 			{"POST", pathItem.Post},
@@ -225,7 +236,7 @@ func (r *ErrorResponseRule) Evaluate(ctx *core.SpecContext) core.RuleResult {
 
 	for _, pathItem := range ctx.Spec.Paths {
 		operations := []*openapi3.Operation{
-			pathItem.Get, pathItem.Post, pathItem.Put, 
+			pathItem.Get, pathItem.Post, pathItem.Put,
 			pathItem.Delete, pathItem.Patch, pathItem.Head, pathItem.Options,
 		}
 
@@ -257,18 +268,74 @@ func (r *ErrorResponseRule) Evaluate(ctx *core.SpecContext) core.RuleResult {
 		}
 	}
 
-	issues := []string{}
-	if missing400 > 0 {
-		issues = append(issues, fmt.Sprintf("%d missing 400 responses", missing400))
-	}
-	if missing500 > 0 {
-		issues = append(issues, fmt.Sprintf("%d missing 500 responses", missing500))
+	if missing400 > 0 || missing500 > 0 {
+		detail := "Missing error responses: "
+		if missing400 > 0 {
+			detail += fmt.Sprintf("%d missing 400 responses", missing400)
+		}
+		if missing500 > 0 {
+			if missing400 > 0 {
+				detail += ", "
+			}
+			detail += fmt.Sprintf("%d missing 500 responses", missing500)
+		}
+
+		return core.RuleResult{
+			RuleID:   r.ID(),
+			Passed:   false,
+			Detail:   detail,
+			Severity: "warning",
+			Category: "error_handling",
+			Location: &core.RuleLocation{
+				Path:        "$.paths",
+				Component:   "operations",
+				File:        "openapi.yaml",
+				FileRef:     "openapi.yaml:paths section (operations missing error responses)",
+				SpecSection: "paths",
+			},
+			Suggestion: &core.ActionableFix{
+				Title:       "Add Error Response Definitions",
+				Description: "Define proper error responses to help API consumers handle failures gracefully",
+				Example: `responses:
+  '200':
+    description: Success
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/User'
+  '400':
+    description: Bad Request - Invalid input
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/Error'
+  '500':
+    description: Internal Server Error`,
+				References: []string{
+					"https://spec.openapis.org/oas/v3.0.3#responses-object",
+					"https://tools.ietf.org/html/rfc7231#section-6",
+				},
+				SchemaRef: "https://spec.openapis.org/oas/v3.0.3#responses-object",
+			},
+			Impact: &core.ImpactAnalysis{
+				Severity:    "warning",
+				Category:    "error_handling",
+				Description: "Missing error responses reduce API usability and debugging capability",
+			},
+			Metadata: map[string]string{
+				"missing_400":      fmt.Sprintf("%d", missing400),
+				"missing_500":      fmt.Sprintf("%d", missing500),
+				"total_operations": fmt.Sprintf("%d", totalOps),
+				"fix_priority":     "medium",
+				"error_type":       "missing_responses",
+			},
+		}
 	}
 
 	return core.RuleResult{
 		RuleID: r.ID(),
 		Passed: false,
-		Detail: fmt.Sprintf("Missing error responses: %s", strings.Join(issues, ", ")),
+		Detail: fmt.Sprintf("Missing error responses: %s", strings.Join([]string{fmt.Sprintf("%d missing 400 responses", missing400), fmt.Sprintf("%d missing 500 responses", missing500)}, ", ")),
 	}
 }
 

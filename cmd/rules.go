@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/spf13/cobra"
 	"github.com/copyleftdev/specgrade/registry"
 	"github.com/copyleftdev/specgrade/rules"
+	"github.com/spf13/cobra"
 )
 
 var rulesCmd = &cobra.Command{
@@ -29,7 +29,7 @@ func init() {
 
 func listRules(cmd *cobra.Command, args []string) error {
 	ruleRegistry := registry.NewRuleRegistry()
-	
+
 	// Register all rules
 	ruleRegistry.Register(&rules.InfoTitleRule{})
 	ruleRegistry.Register(&rules.InfoVersionRule{})
@@ -37,13 +37,13 @@ func listRules(cmd *cobra.Command, args []string) error {
 	ruleRegistry.Register(&rules.OperationIDRule{})
 
 	allRules := ruleRegistry.AllRules()
-	
+
 	fmt.Printf("📋 Available Rules (%d total)\n\n", len(allRules))
-	
+
 	for _, rule := range allRules {
 		fmt.Printf("🔍 %s\n", rule.ID())
 		fmt.Printf("   Description: %s\n", rule.Description())
-		
+
 		// Check which versions this rule applies to
 		versions := []string{}
 		testVersions := []string{"3.0.0", "3.1.0"}
@@ -54,6 +54,6 @@ func listRules(cmd *cobra.Command, args []string) error {
 		}
 		fmt.Printf("   Applies to: OpenAPI %s\n\n", strings.Join(versions, ", "))
 	}
-	
+
 	return nil
 }

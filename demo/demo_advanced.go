@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/copyleftdev/specgrade/core"
 	"github.com/copyleftdev/specgrade/fetcher"
@@ -19,32 +20,32 @@ func main() {
 	fmt.Println("==================================================")
 
 	// Setup registry and grader
-	reg := registry.NewDefaultRuleRegistry()
-	reg.RegisterRule("3.1.0", &rules.InfoTitleRule{})
-	reg.RegisterRule("3.1.0", &rules.InfoVersionRule{})
-	reg.RegisterRule("3.1.0", &rules.PathsExistRule{})
-	reg.RegisterRule("3.1.0", &rules.OperationIDRule{})
-	reg.RegisterRule("3.1.0", &rules.SchemaExampleConsistencyRule{})
-	reg.RegisterRule("3.1.0", &rules.OperationDescriptionRule{})
-	reg.RegisterRule("3.1.0", &rules.ErrorResponseRule{})
-	reg.RegisterRule("3.1.0", &rules.SecuritySchemeRule{})
+	reg := registry.NewRuleRegistry()
+	reg.Register(&rules.InfoTitleRule{})
+	reg.Register(&rules.InfoVersionRule{})
+	reg.Register(&rules.PathsExistRule{})
+	reg.Register(&rules.OperationIDRule{})
+	reg.Register(&rules.SchemaExampleConsistencyRule{})
+	reg.Register(&rules.OperationDescriptionRule{})
+	reg.Register(&rules.ErrorResponseRule{})
+	reg.Register(&rules.SecuritySchemeRule{})
 
 	grader := &reporter.DefaultGrader{}
-	testRunner := &runner.DefaultRunner{Registry: reg}
+	testRunner := runner.NewRunner(reg, []string{})
 
 	// Test 1: Grade Distribution Validation
 	fmt.Println("\n📊 Test 1: Grade Distribution Validation")
-	fmt.Println("-" * 40)
-	
+	fmt.Println(strings.Repeat("-", 40))
+
 	gen := generator.NewSpecGenerator()
 	profiles := generator.PredefinedProfiles()
-	
+
 	for profileName, profile := range profiles {
 		fmt.Printf("Testing profile: %s (target: %s)\n", profileName, profile.TargetGrade)
-		
+
 		// Generate spec
 		specContent := gen.GenerateSpec(profile)
-		
+
 		// Create temp directory and file
 		tmpDir, err := os.MkdirTemp("", fmt.Sprintf("specgrade_test_%s", profileName))
 		if err != nil {
@@ -52,37 +53,40 @@ func main() {
 			continue
 		}
 		defer os.RemoveAll(tmpDir)
-		
+
 		specFile := filepath.Join(tmpDir, "openapi.yaml")
 		err = os.WriteFile(specFile, []byte(specContent), 0644)
 		if err != nil {
 			fmt.Printf("❌ Error writing spec file: %v\n", err)
 			continue
 		}
-		
+
 		// Load and validate
-		loader := &fetcher.LocalSpecLoader{TargetDir: tmpDir}
+		loader := fetcher.NewLocalSpecLoader(tmpDir)
 		spec, err := loader.Load("3.1.0")
 		if err != nil {
 			fmt.Printf("❌ Error loading spec: %v\n", err)
 			continue
 		}
-		
+
 		// Run validation
 		ctx := &core.SpecContext{
 			Spec:    spec,
 			Version: "3.1.0",
 		}
-		
-		results := testRunner.Run(ctx, []string{})
-		
+
+		results := testRunner.Run(ctx)
+
 		// Grade results
+		grade := grader.Grade(results)
+		score := grader.CalculateScore(results)
 		report := &core.Report{
 			Version: "3.1.0",
 			Rules:   results,
+			Grade:   grade,
+			Score:   score,
 		}
-		grader.Grade(report)
-		
+
 		// Display results
 		status := "✅"
 		if profile.TargetGrade != report.Grade {
@@ -95,7 +99,7 @@ func main() {
 				"poor":      {"C", "D"},
 				"failing":   {"D", "F"},
 			}
-			
+
 			validGrades := expectedGrades[profileName]
 			found := false
 			for _, grade := range validGrades {
@@ -108,17 +112,17 @@ func main() {
 				status = "⚠️"
 			}
 		}
-		
-		fmt.Printf("  %s %s: Grade %s (Score: %d) - Expected: %s\n", 
+
+		fmt.Printf("  %s %s: Grade %s (Score: %d) - Expected: %s\n",
 			status, profileName, report.Grade, report.Score, profile.TargetGrade)
 	}
 
 	// Test 2: Edge Cases
 	fmt.Println("\n🔬 Test 2: Edge Case Handling")
-	fmt.Println("-" * 40)
-	
+	fmt.Println(strings.Repeat("-", 40))
+
 	edgeGen := generator.NewEdgeCaseGenerator()
-	
+
 	edgeCases := []struct {
 		name     string
 		specFunc func() string
@@ -145,13 +149,13 @@ func main() {
 			desc:     "50 endpoints specification",
 		},
 	}
-	
+
 	for _, tc := range edgeCases {
 		fmt.Printf("Testing edge case: %s (%s)\n", tc.name, tc.desc)
-		
+
 		// Generate spec
 		specContent := tc.specFunc()
-		
+
 		// Create temp directory and file
 		tmpDir, err := os.MkdirTemp("", fmt.Sprintf("specgrade_edge_%s", tc.name))
 		if err != nil {
@@ -159,45 +163,48 @@ func main() {
 			continue
 		}
 		defer os.RemoveAll(tmpDir)
-		
+
 		specFile := filepath.Join(tmpDir, "openapi.yaml")
 		err = os.WriteFile(specFile, []byte(specContent), 0644)
 		if err != nil {
 			fmt.Printf("❌ Error writing spec file: %v\n", err)
 			continue
 		}
-		
+
 		// Load and validate
-		loader := &fetcher.LocalSpecLoader{TargetDir: tmpDir}
+		loader := fetcher.NewLocalSpecLoader(tmpDir)
 		spec, err := loader.Load("3.1.0")
 		if err != nil {
 			fmt.Printf("❌ Error loading spec: %v\n", err)
 			continue
 		}
-		
+
 		// Run validation
 		ctx := &core.SpecContext{
 			Spec:    spec,
 			Version: "3.1.0",
 		}
-		
-		results := testRunner.Run(ctx, []string{})
-		
+
+		results := testRunner.Run(ctx)
+
 		// Grade results
+		grade := grader.Grade(results)
+		score := grader.CalculateScore(results)
 		report := &core.Report{
 			Version: "3.1.0",
 			Rules:   results,
+			Grade:   grade,
+			Score:   score,
 		}
-		grader.Grade(report)
-		
-		fmt.Printf("  ✅ %s: Grade %s (Score: %d) - Handled gracefully\n", 
+
+		fmt.Printf("  ✅ %s: Grade %s (Score: %d) - Handled gracefully\n",
 			tc.name, report.Grade, report.Score)
 	}
 
 	// Test 3: Performance Analysis
 	fmt.Println("\n⚡ Test 3: Performance Analysis")
-	fmt.Println("-" * 40)
-	
+	fmt.Println(strings.Repeat("-", 40))
+
 	performanceTests := []struct {
 		name      string
 		endpoints int
@@ -206,13 +213,13 @@ func main() {
 		{"medium", 50},
 		{"large", 100},
 	}
-	
+
 	for _, pt := range performanceTests {
 		fmt.Printf("Testing performance: %s (%d endpoints)\n", pt.name, pt.endpoints)
-		
+
 		// Generate massive spec
 		specContent := edgeGen.GenerateMassiveSpec(pt.endpoints)
-		
+
 		// Create temp directory and file
 		tmpDir, err := os.MkdirTemp("", fmt.Sprintf("specgrade_perf_%s", pt.name))
 		if err != nil {
@@ -220,38 +227,41 @@ func main() {
 			continue
 		}
 		defer os.RemoveAll(tmpDir)
-		
+
 		specFile := filepath.Join(tmpDir, "openapi.yaml")
 		err = os.WriteFile(specFile, []byte(specContent), 0644)
 		if err != nil {
 			fmt.Printf("❌ Error writing spec file: %v\n", err)
 			continue
 		}
-		
+
 		// Load and validate
-		loader := &fetcher.LocalSpecLoader{TargetDir: tmpDir}
+		loader := fetcher.NewLocalSpecLoader(tmpDir)
 		spec, err := loader.Load("3.1.0")
 		if err != nil {
 			fmt.Printf("❌ Error loading spec: %v\n", err)
 			continue
 		}
-		
+
 		// Run validation
 		ctx := &core.SpecContext{
 			Spec:    spec,
 			Version: "3.1.0",
 		}
-		
-		results := testRunner.Run(ctx, []string{})
-		
+
+		results := testRunner.Run(ctx)
+
 		// Grade results
+		grade := grader.Grade(results)
+		score := grader.CalculateScore(results)
 		report := &core.Report{
 			Version: "3.1.0",
 			Rules:   results,
+			Grade:   grade,
+			Score:   score,
 		}
-		grader.Grade(report)
-		
-		fmt.Printf("  ✅ %s: Grade %s (Score: %d) - %d endpoints processed\n", 
+
+		fmt.Printf("  ✅ %s: Grade %s (Score: %d) - %d endpoints processed\n",
 			pt.name, report.Grade, report.Score, pt.endpoints)
 	}
 

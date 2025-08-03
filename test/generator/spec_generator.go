@@ -21,29 +21,29 @@ func NewSpecGenerator() *SpecGenerator {
 
 // QualityProfile defines the expected quality characteristics
 type QualityProfile struct {
-	TargetGrade        string  // A+, A, B, C, D, F
+	TargetGrade         string  // A+, A, B, C, D, F
 	MissingDescriptions float64 // 0.0 = none missing, 1.0 = all missing
-	TypeMismatches     int     // Number of intentional type/example mismatches
-	MissingErrorCodes  float64 // 0.0 = all present, 1.0 = all missing
-	SecurityIssues     bool    // Whether to include security problems
-	ComplexityLevel    int     // 1-5, affects number of paths/schemas
+	TypeMismatches      int     // Number of intentional type/example mismatches
+	MissingErrorCodes   float64 // 0.0 = all present, 1.0 = all missing
+	SecurityIssues      bool    // Whether to include security problems
+	ComplexityLevel     int     // 1-5, affects number of paths/schemas
 }
 
 // GenerateSpec creates an OpenAPI spec matching the quality profile
 func (g *SpecGenerator) GenerateSpec(profile QualityProfile) string {
 	spec := strings.Builder{}
-	
+
 	// Header
 	spec.WriteString("openapi: 3.1.0\n")
 	spec.WriteString("info:\n")
 	spec.WriteString("  title: Generated Test API\n")
 	spec.WriteString("  version: 1.0.0\n")
-	
+
 	// Conditionally add description based on quality profile
 	if g.rand.Float64() > profile.MissingDescriptions {
 		spec.WriteString("  description: A generated API for testing SpecGrade\n")
 	}
-	
+
 	// Security schemes (or lack thereof)
 	if !profile.SecurityIssues {
 		spec.WriteString("components:\n")
@@ -52,24 +52,24 @@ func (g *SpecGenerator) GenerateSpec(profile QualityProfile) string {
 		spec.WriteString("      type: http\n")
 		spec.WriteString("      scheme: bearer\n")
 	}
-	
+
 	// Generate paths based on complexity
 	spec.WriteString("paths:\n")
 	numPaths := profile.ComplexityLevel * 3
-	
+
 	for i := 0; i < numPaths; i++ {
 		pathName := fmt.Sprintf("/resource%d", i+1)
 		spec.WriteString(fmt.Sprintf("  %s:\n", pathName))
-		
+
 		// GET operation
 		spec.WriteString("    get:\n")
 		spec.WriteString(fmt.Sprintf("      operationId: getResource%d\n", i+1))
-		
+
 		// Conditionally add description
 		if g.rand.Float64() > profile.MissingDescriptions {
 			spec.WriteString(fmt.Sprintf("      description: Retrieve resource %d\n", i+1))
 		}
-		
+
 		// Add responses
 		spec.WriteString("      responses:\n")
 		spec.WriteString("        '200':\n")
@@ -81,18 +81,18 @@ func (g *SpecGenerator) GenerateSpec(profile QualityProfile) string {
 		spec.WriteString("                properties:\n")
 		spec.WriteString("                  id:\n")
 		spec.WriteString("                    type: integer\n")
-		
+
 		// Intentionally add type mismatches
 		if profile.TypeMismatches > 0 && i < profile.TypeMismatches {
 			spec.WriteString("                    example: \"not_a_number\"\n") // String example for integer type
 		} else {
 			spec.WriteString("                    example: 123\n")
 		}
-		
+
 		spec.WriteString("                  name:\n")
 		spec.WriteString("                    type: string\n")
 		spec.WriteString("                    example: \"Resource Name\"\n")
-		
+
 		// Conditionally add error responses
 		if g.rand.Float64() > profile.MissingErrorCodes {
 			spec.WriteString("        '400':\n")
@@ -100,14 +100,14 @@ func (g *SpecGenerator) GenerateSpec(profile QualityProfile) string {
 			spec.WriteString("        '500':\n")
 			spec.WriteString("          description: Internal Server Error\n")
 		}
-		
+
 		// Add security if not problematic
 		if !profile.SecurityIssues {
 			spec.WriteString("      security:\n")
 			spec.WriteString("        - bearerAuth: []\n")
 		}
 	}
-	
+
 	return spec.String()
 }
 
@@ -229,7 +229,7 @@ func (g *EdgeCaseGenerator) GenerateDeepNesting(depth int) string {
 	spec.WriteString("          content:\n")
 	spec.WriteString("            application/json:\n")
 	spec.WriteString("              schema:\n")
-	
+
 	// Create deeply nested object
 	for i := 0; i < depth; i++ {
 		indent := strings.Repeat("  ", 8+i*2)
@@ -243,12 +243,12 @@ func (g *EdgeCaseGenerator) GenerateDeepNesting(depth int) string {
 			spec.WriteString(fmt.Sprintf("%s  level%d:\n", indent, i))
 		}
 	}
-	
+
 	// Final property
 	finalIndent := strings.Repeat("  ", 8+depth*2)
 	spec.WriteString(fmt.Sprintf("%stype: string\n", finalIndent))
 	spec.WriteString(fmt.Sprintf("%sexample: \"Deep value at level %d\"\n", finalIndent, depth))
-	
+
 	return spec.String()
 }
 
@@ -296,7 +296,7 @@ func (g *EdgeCaseGenerator) GenerateMassiveSpec(numEndpoints int) string {
 	spec.WriteString("  version: 1.0.0\n")
 	spec.WriteString("  description: Large-scale API with many endpoints\n")
 	spec.WriteString("paths:\n")
-	
+
 	for i := 0; i < numEndpoints; i++ {
 		spec.WriteString(fmt.Sprintf("  /endpoint%d:\n", i))
 		spec.WriteString("    get:\n")
@@ -318,6 +318,6 @@ func (g *EdgeCaseGenerator) GenerateMassiveSpec(numEndpoints int) string {
 		spec.WriteString("        '500':\n")
 		spec.WriteString("          description: Internal Server Error\n")
 	}
-	
+
 	return spec.String()
 }

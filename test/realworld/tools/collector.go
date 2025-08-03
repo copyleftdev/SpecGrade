@@ -27,14 +27,14 @@ type APIMetadata struct {
 
 // APISource defines where to collect an API specification from
 type APISource struct {
-	Name        string
-	Provider    string
-	Category    string
-	URL         string
+	Name          string
+	Provider      string
+	Category      string
+	URL           string
 	ExpectedGrade string
-	Complexity  string
-	Description string
-	Tags        []string
+	Complexity    string
+	Description   string
+	Tags          []string
 }
 
 // Collector handles downloading and organizing real-world API specifications
@@ -170,7 +170,7 @@ func (c *Collector) CollectAPI(source APISource) error {
 	// Create directory structure
 	categoryDir := filepath.Join(c.BaseDir, source.Category)
 	apiDir := filepath.Join(categoryDir, source.Name)
-	
+
 	if err := os.MkdirAll(apiDir, 0755); err != nil {
 		return fmt.Errorf("failed to create directory %s: %w", apiDir, err)
 	}
@@ -278,9 +278,9 @@ specgrade --target-dir=. --spec-version=3.1.0 --output-format=json
 // CollectAll downloads all APIs from the curated source list
 func (c *Collector) CollectAll() error {
 	sources := GetRealWorldAPISources()
-	
+
 	fmt.Printf("🌍 Collecting %d real-world API specifications...\n", len(sources))
-	
+
 	successCount := 0
 	for _, source := range sources {
 		if err := c.CollectAPI(source); err != nil {
@@ -288,11 +288,11 @@ func (c *Collector) CollectAll() error {
 			continue
 		}
 		successCount++
-		
+
 		// Be respectful to API providers
 		time.Sleep(1 * time.Second)
 	}
-	
+
 	fmt.Printf("🎉 Successfully collected %d/%d APIs\n", successCount, len(sources))
 	return nil
 }
@@ -300,56 +300,56 @@ func (c *Collector) CollectAll() error {
 // UpdateAPI re-downloads a specific API to get the latest version
 func (c *Collector) UpdateAPI(apiName string) error {
 	sources := GetRealWorldAPISources()
-	
+
 	for _, source := range sources {
 		if source.Name == apiName {
 			return c.CollectAPI(source)
 		}
 	}
-	
+
 	return fmt.Errorf("API '%s' not found in source list", apiName)
 }
 
 // ListCollectedAPIs returns information about all collected APIs
 func (c *Collector) ListCollectedAPIs() ([]APIMetadata, error) {
 	var apis []APIMetadata
-	
+
 	categories := []string{"fintech", "developer", "cloud", "communication", "ecommerce", "analytics", "social"}
-	
+
 	for _, category := range categories {
 		categoryDir := filepath.Join(c.BaseDir, category)
-		
+
 		if _, err := os.Stat(categoryDir); os.IsNotExist(err) {
 			continue
 		}
-		
+
 		entries, err := os.ReadDir(categoryDir)
 		if err != nil {
 			continue
 		}
-		
+
 		for _, entry := range entries {
 			if !entry.IsDir() {
 				continue
 			}
-			
+
 			metadataPath := filepath.Join(categoryDir, entry.Name(), "metadata.json")
 			metadataFile, err := os.Open(metadataPath)
 			if err != nil {
 				continue
 			}
-			
+
 			var metadata APIMetadata
 			if err := json.NewDecoder(metadataFile).Decode(&metadata); err != nil {
 				metadataFile.Close()
 				continue
 			}
 			metadataFile.Close()
-			
+
 			apis = append(apis, metadata)
 		}
 	}
-	
+
 	return apis, nil
 }
 
@@ -359,7 +359,7 @@ func (c *Collector) GetAPIStats() (map[string]interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	
+
 	stats := map[string]interface{}{
 		"total_apis": len(apis),
 		"categories": make(map[string]int),
@@ -367,13 +367,13 @@ func (c *Collector) GetAPIStats() (map[string]interface{}, error) {
 		"grades":     make(map[string]int),
 		"complexity": make(map[string]int),
 	}
-	
+
 	for _, api := range apis {
 		stats["categories"].(map[string]int)[api.Category]++
 		stats["providers"].(map[string]int)[api.Provider]++
 		stats["grades"].(map[string]int)[api.ExpectedGrade]++
 		stats["complexity"].(map[string]int)[api.ComplexityLevel]++
 	}
-	
+
 	return stats, nil
 }

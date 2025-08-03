@@ -36,7 +36,7 @@ including Stripe, GitHub, AWS, Google, and others for comprehensive validation t
 
 		// This would use the collector we built
 		fmt.Printf("📥 Collecting APIs to: %s\n", outputDir)
-		
+
 		if len(categories) > 0 {
 			fmt.Printf("📂 Categories: %v\n", categories)
 		} else {
@@ -76,12 +76,12 @@ including Stripe, GitHub, AWS, Google, and others for comprehensive validation t
 				}
 			}
 
-			fmt.Printf("📥 [%d/%d] Collecting %s API from %s...\n", 
+			fmt.Printf("📥 [%d/%d] Collecting %s API from %s...\n",
 				i+1, len(apiSources), api.name, api.provider)
-			
+
 			// Simulate API collection
 			time.Sleep(100 * time.Millisecond)
-			
+
 			fmt.Printf("✅ Successfully collected %s API\n", api.name)
 			successCount++
 		}
@@ -140,17 +140,17 @@ and generate comprehensive reports on quality patterns and issues.`,
 				continue
 			}
 
-			fmt.Printf("📋 [%d/%d] Validating %s (%s)...\n", 
+			fmt.Printf("📋 [%d/%d] Validating %s (%s)...\n",
 				i+1, len(apis), api.name, api.provider)
-			
+
 			time.Sleep(50 * time.Millisecond)
-			
-			fmt.Printf("   Expected: %s | Actual: %s | Score: %d%%\n", 
+
+			fmt.Printf("   Expected: %s | Actual: %s | Score: %d%%\n",
 				api.expectedGrade, api.actualGrade, api.score)
-			
+
 			totalAPIs++
 			successfulAPIs++
-			
+
 			if api.expectedGrade == api.actualGrade {
 				gradeAccuracy++
 			}
@@ -165,11 +165,11 @@ and generate comprehensive reports on quality patterns and issues.`,
 
 		// Generate report
 		report := map[string]interface{}{
-			"total_apis":        totalAPIs,
-			"successful_apis":   successfulAPIs,
-			"grade_accuracy":    accuracy,
-			"validation_time":   "2.3s",
-			"generated_at":      time.Now(),
+			"total_apis":      totalAPIs,
+			"successful_apis": successfulAPIs,
+			"grade_accuracy":  accuracy,
+			"validation_time": "2.3s",
+			"generated_at":    time.Now(),
 		}
 
 		if outputReport != "" {
@@ -234,16 +234,16 @@ robustness and error handling capabilities.`,
 			for _, strategy := range strategies {
 				for i := 0; i < iterations; i++ {
 					fmt.Printf("🔥 Strategy: %s, Iteration: %d/%d\n", strategy, i+1, iterations)
-					
+
 					// Simulate fuzzing
 					time.Sleep(10 * time.Millisecond)
-					
+
 					totalFuzzed++
-					
+
 					// Simulate occasional crashes (5% rate)
 					if totalFuzzed%20 == 0 {
 						crashCount++
-						fmt.Printf("💥 Crash detected! Saved crash case to %s\n", 
+						fmt.Printf("💥 Crash detected! Saved crash case to %s\n",
 							filepath.Join(outputDir, fmt.Sprintf("crash_%d.yaml", crashCount)))
 					}
 				}
@@ -286,13 +286,13 @@ based on extracted features and patterns from real-world APIs.`,
 		time.Sleep(200 * time.Millisecond)
 
 		features := map[string]float64{
-			"description_coverage":   0.85,
-			"example_coverage":       0.72,
-			"type_consistency":       0.95,
-			"status_code_coverage":   0.68,
-			"security_scheme_count":  1.0,
-			"restfulness_score":      0.88,
-			"naming_consistency":     0.91,
+			"description_coverage":  0.85,
+			"example_coverage":      0.72,
+			"type_consistency":      0.95,
+			"status_code_coverage":  0.68,
+			"security_scheme_count": 1.0,
+			"restfulness_score":     0.88,
+			"naming_consistency":    0.91,
 		}
 
 		fmt.Println("✅ Feature extraction complete")
@@ -309,11 +309,11 @@ based on extracted features and patterns from real-world APIs.`,
 		time.Sleep(100 * time.Millisecond)
 
 		prediction := map[string]interface{}{
-			"predicted_grade":   "B+",
-			"predicted_score":   82,
-			"confidence":        0.87,
-			"prediction_time":   "45ms",
-			"model_version":     "1.0.0",
+			"predicted_grade": "B+",
+			"predicted_score": 82,
+			"confidence":      0.87,
+			"prediction_time": "45ms",
+			"model_version":   "1.0.0",
 		}
 
 		insights := []string{
@@ -357,7 +357,7 @@ var communityCmd = &cobra.Command{
 and collaborative improvement of SpecGrade validation capabilities.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		action, _ := cmd.Flags().GetString("action")
-		
+
 		fmt.Println("🤝 SpecGrade Advanced: Community Framework")
 		fmt.Println("==========================================")
 
@@ -378,14 +378,14 @@ and collaborative improvement of SpecGrade validation capabilities.`,
 
 func showCommunityStats() error {
 	fmt.Println("📊 Community Statistics:")
-	
+
 	stats := map[string]interface{}{
-		"total_contributions":    47,
-		"pending_reviews":        8,
-		"total_contributors":     23,
-		"edge_cases_discovered":  156,
-		"apis_contributed":       12,
-		"rules_submitted":        5,
+		"total_contributions":   47,
+		"pending_reviews":       8,
+		"total_contributors":    23,
+		"edge_cases_discovered": 156,
+		"apis_contributed":      12,
+		"rules_submitted":       5,
 	}
 
 	fmt.Printf("   Total Contributions: %d\n", stats["total_contributions"])
@@ -397,7 +397,7 @@ func showCommunityStats() error {
 
 	fmt.Println("\n🏆 Top Contributors:")
 	contributors := []struct {
-		name    string
+		name     string
 		contribs int
 		category string
 	}{
@@ -409,7 +409,7 @@ func showCommunityStats() error {
 	}
 
 	for i, contrib := range contributors {
-		fmt.Printf("   %d. %s (%d contributions - %s)\n", 
+		fmt.Printf("   %d. %s (%d contributions - %s)\n",
 			i+1, contrib.name, contrib.contribs, contrib.category)
 	}
 
@@ -419,25 +419,25 @@ func showCommunityStats() error {
 func submitContribution(cmd *cobra.Command) error {
 	contribType, _ := cmd.Flags().GetString("type")
 	title, _ := cmd.Flags().GetString("title")
-	
+
 	fmt.Printf("📝 Submitting %s contribution: %s\n", contribType, title)
 	fmt.Println("✅ Contribution submitted successfully!")
 	fmt.Println("📋 Contribution ID: contrib_abc123def456")
 	fmt.Println("⏳ Status: Pending Review")
 	fmt.Println("📧 You will be notified when reviewed")
-	
+
 	return nil
 }
 
 func reviewContributions() error {
 	fmt.Println("📋 Pending Contributions for Review:")
-	
+
 	contributions := []struct {
-		id       string
-		title    string
+		id          string
+		title       string
 		contribType string
-		author   string
-		submitted string
+		author      string
+		submitted   string
 	}{
 		{"contrib_001", "Unicode handling edge case", "edge_case", "Alice Johnson", "2 days ago"},
 		{"contrib_002", "Shopify Partners API", "real_world_api", "Bob Smith", "1 day ago"},
@@ -446,18 +446,18 @@ func reviewContributions() error {
 
 	for i, contrib := range contributions {
 		fmt.Printf("   %d. [%s] %s\n", i+1, contrib.id, contrib.title)
-		fmt.Printf("      Type: %s | Author: %s | Submitted: %s\n", 
+		fmt.Printf("      Type: %s | Author: %s | Submitted: %s\n",
 			contrib.contribType, contrib.author, contrib.submitted)
 	}
 
 	fmt.Println("\n💡 Use 'specgrade advanced community --action=review --id=<contrib_id>' to review")
-	
+
 	return nil
 }
 
 func discoverEdgePatterns() error {
 	fmt.Println("🔍 Discovered Edge Case Patterns:")
-	
+
 	patterns := []struct {
 		name      string
 		frequency int
@@ -477,7 +477,7 @@ func discoverEdgePatterns() error {
 	}
 
 	fmt.Println("\n💡 These patterns help improve SpecGrade's validation rules")
-	
+
 	return nil
 }
 
@@ -487,7 +487,7 @@ func showCommunityHelp() error {
 	fmt.Println("   --action=submit    Submit a new contribution")
 	fmt.Println("   --action=review    Review pending contributions")
 	fmt.Println("   --action=patterns  Discover edge case patterns")
-	
+
 	return nil
 }
 

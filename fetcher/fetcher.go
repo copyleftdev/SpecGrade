@@ -45,7 +45,7 @@ func (l *LocalSpecLoader) Load(version string) (*openapi3.T, error) {
 	// Create a loader that can resolve external references
 	loader := openapi3.NewLoader()
 	loader.IsExternalRefsAllowed = true
-	
+
 	// Load the spec from file (this will automatically resolve external $ref)
 	spec, err := loader.LoadFromFile(specFile)
 	if err != nil {

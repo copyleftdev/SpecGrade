@@ -7,8 +7,8 @@ import (
 
 // Runner executes validation rules against OpenAPI specs
 type Runner struct {
-	registry   *registry.RuleRegistry
-	skipRules  map[string]bool
+	registry  *registry.RuleRegistry
+	skipRules map[string]bool
 }
 
 // NewRunner creates a new rule runner

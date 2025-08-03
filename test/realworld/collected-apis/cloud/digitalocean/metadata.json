@@ -1,0 +1,17 @@
+{
+  "name": "digitalocean",
+  "provider": "DigitalOcean",
+  "category": "cloud",
+  "version": "latest",
+  "source_url": "https://api-engineering.nyc3.digitaloceanspaces.com/spec-ci/DigitalOcean-public.v2.yaml",
+  "collected_at": "2025-08-02T19:56:31.413515612-07:00",
+  "expected_grade": "A",
+  "complexity_level": "medium",
+  "description": "Simple cloud infrastructure management",
+  "tags": [
+    "cloud",
+    "infrastructure",
+    "droplets",
+    "kubernetes"
+  ]
+}

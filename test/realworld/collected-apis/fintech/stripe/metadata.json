@@ -1,0 +1,17 @@
+{
+  "name": "stripe",
+  "provider": "Stripe",
+  "category": "fintech",
+  "version": "latest",
+  "source_url": "https://raw.githubusercontent.com/stripe/openapi/master/openapi/spec3.yaml",
+  "collected_at": "2025-08-02T19:59:08.006803193-07:00",
+  "expected_grade": "A+",
+  "complexity_level": "high",
+  "description": "Payment processing with complex webhooks and subscriptions",
+  "tags": [
+    "payments",
+    "webhooks",
+    "subscriptions",
+    "complex"
+  ]
+}

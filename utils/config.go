@@ -5,8 +5,8 @@ import (
 	"io/ioutil"
 	"os"
 
-	"gopkg.in/yaml.v3"
 	"github.com/copyleftdev/specgrade/core"
+	"gopkg.in/yaml.v3"
 )
 
 // LoadConfig loads configuration from YAML file or creates default config

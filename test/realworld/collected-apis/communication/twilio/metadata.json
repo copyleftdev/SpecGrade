@@ -1,0 +1,17 @@
+{
+  "name": "twilio",
+  "provider": "Twilio",
+  "category": "communication",
+  "version": "latest",
+  "source_url": "https://raw.githubusercontent.com/twilio/twilio-oai/main/spec/yaml/twilio_api_v2010.yaml",
+  "collected_at": "2025-08-02T19:57:46.434440016-07:00",
+  "expected_grade": "B+",
+  "complexity_level": "medium",
+  "description": "SMS, voice, and communication services",
+  "tags": [
+    "sms",
+    "voice",
+    "communication",
+    "telephony"
+  ]
+}

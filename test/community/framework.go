@@ -26,48 +26,48 @@ const (
 type ContributionStatus string
 
 const (
-	StatusPending   ContributionStatus = "pending"
-	StatusReviewing ContributionStatus = "reviewing"
-	StatusApproved  ContributionStatus = "approved"
-	StatusRejected  ContributionStatus = "rejected"
+	StatusPending    ContributionStatus = "pending"
+	StatusReviewing  ContributionStatus = "reviewing"
+	StatusApproved   ContributionStatus = "approved"
+	StatusRejected   ContributionStatus = "rejected"
 	StatusIntegrated ContributionStatus = "integrated"
 )
 
 // Contribution represents a community-submitted test case or improvement
 type Contribution struct {
-	ID              string             `json:"id"`
-	Type            ContributionType   `json:"type"`
-	Title           string             `json:"title"`
-	Description     string             `json:"description"`
-	Contributor     Contributor        `json:"contributor"`
-	SubmittedAt     time.Time          `json:"submitted_at"`
-	Status          ContributionStatus `json:"status"`
-	ReviewNotes     string             `json:"review_notes,omitempty"`
-	ReviewedBy      string             `json:"reviewed_by,omitempty"`
-	ReviewedAt      *time.Time         `json:"reviewed_at,omitempty"`
-	IntegratedAt    *time.Time         `json:"integrated_at,omitempty"`
-	
+	ID           string             `json:"id"`
+	Type         ContributionType   `json:"type"`
+	Title        string             `json:"title"`
+	Description  string             `json:"description"`
+	Contributor  Contributor        `json:"contributor"`
+	SubmittedAt  time.Time          `json:"submitted_at"`
+	Status       ContributionStatus `json:"status"`
+	ReviewNotes  string             `json:"review_notes,omitempty"`
+	ReviewedBy   string             `json:"reviewed_by,omitempty"`
+	ReviewedAt   *time.Time         `json:"reviewed_at,omitempty"`
+	IntegratedAt *time.Time         `json:"integrated_at,omitempty"`
+
 	// Content specific to contribution type
-	EdgeCaseData     *EdgeCaseContribution     `json:"edge_case_data,omitempty"`
-	APIData          *APIContribution          `json:"api_data,omitempty"`
-	RuleData         *RuleContribution         `json:"rule_data,omitempty"`
-	BugReportData    *BugReportContribution    `json:"bug_report_data,omitempty"`
-	ImprovementData  *ImprovementContribution  `json:"improvement_data,omitempty"`
-	
+	EdgeCaseData    *EdgeCaseContribution    `json:"edge_case_data,omitempty"`
+	APIData         *APIContribution         `json:"api_data,omitempty"`
+	RuleData        *RuleContribution        `json:"rule_data,omitempty"`
+	BugReportData   *BugReportContribution   `json:"bug_report_data,omitempty"`
+	ImprovementData *ImprovementContribution `json:"improvement_data,omitempty"`
+
 	// Metadata
-	Tags            []string           `json:"tags"`
-	Difficulty      string             `json:"difficulty"` // easy, medium, hard
-	Impact          string             `json:"impact"`     // low, medium, high
-	TestResults     *TestResults       `json:"test_results,omitempty"`
+	Tags        []string     `json:"tags"`
+	Difficulty  string       `json:"difficulty"` // easy, medium, hard
+	Impact      string       `json:"impact"`     // low, medium, high
+	TestResults *TestResults `json:"test_results,omitempty"`
 }
 
 // Contributor represents someone who submits contributions
 type Contributor struct {
-	Name         string    `json:"name"`
-	Email        string    `json:"email,omitempty"`
-	Organization string    `json:"organization,omitempty"`
-	GitHub       string    `json:"github,omitempty"`
-	Contributions int      `json:"total_contributions"`
+	Name          string    `json:"name"`
+	Email         string    `json:"email,omitempty"`
+	Organization  string    `json:"organization,omitempty"`
+	GitHub        string    `json:"github,omitempty"`
+	Contributions int       `json:"total_contributions"`
 	FirstContrib  time.Time `json:"first_contribution"`
 	LastContrib   time.Time `json:"last_contribution"`
 }
@@ -84,64 +84,64 @@ type EdgeCaseContribution struct {
 
 // APIContribution represents a real-world API specification submission
 type APIContribution struct {
-	APIName         string            `json:"api_name"`
-	Provider        string            `json:"provider"`
-	Category        string            `json:"category"`
-	SpecContent     string            `json:"spec_content"`
-	SourceURL       string            `json:"source_url,omitempty"`
-	Version         string            `json:"version"`
-	IsAnonymized    bool              `json:"is_anonymized"`
-	ExpectedGrade   string            `json:"expected_grade,omitempty"`
-	KnownIssues     []string          `json:"known_issues,omitempty"`
-	Metadata        map[string]string `json:"metadata"`
+	APIName       string            `json:"api_name"`
+	Provider      string            `json:"provider"`
+	Category      string            `json:"category"`
+	SpecContent   string            `json:"spec_content"`
+	SourceURL     string            `json:"source_url,omitempty"`
+	Version       string            `json:"version"`
+	IsAnonymized  bool              `json:"is_anonymized"`
+	ExpectedGrade string            `json:"expected_grade,omitempty"`
+	KnownIssues   []string          `json:"known_issues,omitempty"`
+	Metadata      map[string]string `json:"metadata"`
 }
 
 // RuleContribution represents a new validation rule submission
 type RuleContribution struct {
-	RuleName        string   `json:"rule_name"`
-	RuleID          string   `json:"rule_id"`
-	Description     string   `json:"description"`
-	Category        string   `json:"category"`
-	Severity        string   `json:"severity"`
-	Implementation  string   `json:"implementation"` // Go code
-	TestCases       []string `json:"test_cases"`
-	Documentation   string   `json:"documentation"`
-	References      []string `json:"references"`
+	RuleName       string   `json:"rule_name"`
+	RuleID         string   `json:"rule_id"`
+	Description    string   `json:"description"`
+	Category       string   `json:"category"`
+	Severity       string   `json:"severity"`
+	Implementation string   `json:"implementation"` // Go code
+	TestCases      []string `json:"test_cases"`
+	Documentation  string   `json:"documentation"`
+	References     []string `json:"references"`
 }
 
 // BugReportContribution represents a bug report submission
 type BugReportContribution struct {
-	BugType         string            `json:"bug_type"` // crash, incorrect_result, performance
-	SpecGradeVersion string           `json:"specgrade_version"`
-	InputSpec       string            `json:"input_spec"`
-	ExpectedOutput  string            `json:"expected_output"`
-	ActualOutput    string            `json:"actual_output"`
-	ErrorMessage    string            `json:"error_message,omitempty"`
-	StackTrace      string            `json:"stack_trace,omitempty"`
-	Environment     map[string]string `json:"environment"`
-	ReproSteps      []string          `json:"reproduction_steps"`
+	BugType          string            `json:"bug_type"` // crash, incorrect_result, performance
+	SpecGradeVersion string            `json:"specgrade_version"`
+	InputSpec        string            `json:"input_spec"`
+	ExpectedOutput   string            `json:"expected_output"`
+	ActualOutput     string            `json:"actual_output"`
+	ErrorMessage     string            `json:"error_message,omitempty"`
+	StackTrace       string            `json:"stack_trace,omitempty"`
+	Environment      map[string]string `json:"environment"`
+	ReproSteps       []string          `json:"reproduction_steps"`
 }
 
 // ImprovementContribution represents a feature or improvement suggestion
 type ImprovementContribution struct {
-	ImprovementType string   `json:"improvement_type"` // feature, performance, usability
-	CurrentBehavior string   `json:"current_behavior"`
-	ProposedBehavior string  `json:"proposed_behavior"`
-	Benefits        []string `json:"benefits"`
-	Implementation  string   `json:"implementation_notes,omitempty"`
-	Examples        []string `json:"examples,omitempty"`
-	References      []string `json:"references,omitempty"`
+	ImprovementType  string   `json:"improvement_type"` // feature, performance, usability
+	CurrentBehavior  string   `json:"current_behavior"`
+	ProposedBehavior string   `json:"proposed_behavior"`
+	Benefits         []string `json:"benefits"`
+	Implementation   string   `json:"implementation_notes,omitempty"`
+	Examples         []string `json:"examples,omitempty"`
+	References       []string `json:"references,omitempty"`
 }
 
 // TestResults represents the results of testing a contribution
 type TestResults struct {
-	TestedAt        time.Time         `json:"tested_at"`
-	SpecGradeVersion string           `json:"specgrade_version"`
-	TestsPassed     int               `json:"tests_passed"`
-	TestsFailed     int               `json:"tests_failed"`
-	TestOutput      string            `json:"test_output"`
-	PerformanceData map[string]float64 `json:"performance_data,omitempty"`
-	Issues          []string          `json:"issues,omitempty"`
+	TestedAt         time.Time          `json:"tested_at"`
+	SpecGradeVersion string             `json:"specgrade_version"`
+	TestsPassed      int                `json:"tests_passed"`
+	TestsFailed      int                `json:"tests_failed"`
+	TestOutput       string             `json:"test_output"`
+	PerformanceData  map[string]float64 `json:"performance_data,omitempty"`
+	Issues           []string           `json:"issues,omitempty"`
 }
 
 // CommunityFramework manages community contributions and edge case discovery
@@ -168,29 +168,29 @@ func (cf *CommunityFramework) SubmitContribution(contrib *Contribution) (string,
 	contrib.ID = cf.generateContributionID(contrib)
 	contrib.SubmittedAt = time.Now()
 	contrib.Status = StatusPending
-	
+
 	// Validate contribution
 	if err := cf.validateContribution(contrib); err != nil {
 		return "", fmt.Errorf("contribution validation failed: %w", err)
 	}
-	
+
 	// Update contributor information
 	cf.updateContributor(&contrib.Contributor)
-	
+
 	// Store contribution
 	cf.ContributionsDB[contrib.ID] = contrib
 	cf.ReviewQueue = append(cf.ReviewQueue, contrib)
-	
+
 	// Save to disk
 	if err := cf.saveContribution(contrib); err != nil {
 		return "", fmt.Errorf("failed to save contribution: %w", err)
 	}
-	
+
 	fmt.Printf("✅ Contribution submitted successfully: %s\n", contrib.ID)
 	fmt.Printf("   Type: %s\n", contrib.Type)
 	fmt.Printf("   Title: %s\n", contrib.Title)
 	fmt.Printf("   Contributor: %s\n", contrib.Contributor.Name)
-	
+
 	return contrib.ID, nil
 }
 
@@ -200,16 +200,16 @@ func (cf *CommunityFramework) ReviewContribution(contributionID, reviewerName, n
 	if !exists {
 		return fmt.Errorf("contribution not found: %s", contributionID)
 	}
-	
+
 	contrib.Status = StatusReviewing
 	contrib.ReviewNotes = notes
 	contrib.ReviewedBy = reviewerName
 	now := time.Now()
 	contrib.ReviewedAt = &now
-	
+
 	if approved {
 		contrib.Status = StatusApproved
-		
+
 		// Run tests if applicable
 		if err := cf.testContribution(contrib); err != nil {
 			contrib.Status = StatusRejected
@@ -218,18 +218,18 @@ func (cf *CommunityFramework) ReviewContribution(contributionID, reviewerName, n
 	} else {
 		contrib.Status = StatusRejected
 	}
-	
+
 	// Remove from review queue
 	cf.removeFromReviewQueue(contributionID)
-	
+
 	// Save updated contribution
 	if err := cf.saveContribution(contrib); err != nil {
 		return fmt.Errorf("failed to save reviewed contribution: %w", err)
 	}
-	
-	fmt.Printf("📋 Contribution %s reviewed by %s: %s\n", 
+
+	fmt.Printf("📋 Contribution %s reviewed by %s: %s\n",
 		contributionID, reviewerName, contrib.Status)
-	
+
 	return nil
 }
 
@@ -239,11 +239,11 @@ func (cf *CommunityFramework) IntegrateContribution(contributionID string) error
 	if !exists {
 		return fmt.Errorf("contribution not found: %s", contributionID)
 	}
-	
+
 	if contrib.Status != StatusApproved {
 		return fmt.Errorf("contribution must be approved before integration")
 	}
-	
+
 	// Integration logic based on contribution type
 	switch contrib.Type {
 	case ContributionEdgeCase:
@@ -251,39 +251,39 @@ func (cf *CommunityFramework) IntegrateContribution(contributionID string) error
 		if err != nil {
 			return fmt.Errorf("failed to integrate edge case: %w", err)
 		}
-		
+
 	case ContributionRealWorldAPI:
 		err := cf.integrateRealWorldAPI(contrib)
 		if err != nil {
 			return fmt.Errorf("failed to integrate real-world API: %w", err)
 		}
-		
+
 	case ContributionRule:
 		err := cf.integrateValidationRule(contrib)
 		if err != nil {
 			return fmt.Errorf("failed to integrate validation rule: %w", err)
 		}
-		
+
 	default:
 		return fmt.Errorf("integration not implemented for contribution type: %s", contrib.Type)
 	}
-	
+
 	contrib.Status = StatusIntegrated
 	now := time.Now()
 	contrib.IntegratedAt = &now
-	
+
 	// Update contributor stats
 	contributor := cf.Contributors[contrib.Contributor.Email]
 	if contributor != nil {
 		contributor.Contributions++
 		contributor.LastContrib = time.Now()
 	}
-	
+
 	// Save updated contribution
 	if err := cf.saveContribution(contrib); err != nil {
 		return fmt.Errorf("failed to save integrated contribution: %w", err)
 	}
-	
+
 	fmt.Printf("🚀 Contribution %s successfully integrated!\n", contributionID)
 	return nil
 }
@@ -291,39 +291,39 @@ func (cf *CommunityFramework) IntegrateContribution(contributionID string) error
 // GetContributionStats returns statistics about community contributions
 func (cf *CommunityFramework) GetContributionStats() map[string]interface{} {
 	stats := map[string]interface{}{
-		"total_contributions":    len(cf.ContributionsDB),
-		"pending_reviews":        len(cf.ReviewQueue),
-		"total_contributors":     len(cf.Contributors),
-		"contributions_by_type":  make(map[ContributionType]int),
+		"total_contributions":     len(cf.ContributionsDB),
+		"pending_reviews":         len(cf.ReviewQueue),
+		"total_contributors":      len(cf.Contributors),
+		"contributions_by_type":   make(map[ContributionType]int),
 		"contributions_by_status": make(map[ContributionStatus]int),
-		"top_contributors":       cf.getTopContributors(10),
-		"recent_activity":        cf.getRecentActivity(30),
+		"top_contributors":        cf.getTopContributors(10),
+		"recent_activity":         cf.getRecentActivity(30),
 	}
-	
+
 	// Count by type and status
 	for _, contrib := range cf.ContributionsDB {
 		stats["contributions_by_type"].(map[ContributionType]int)[contrib.Type]++
 		stats["contributions_by_status"].(map[ContributionStatus]int)[contrib.Status]++
 	}
-	
+
 	return stats
 }
 
 // DiscoverEdgeCases analyzes contributions to identify common edge case patterns
 func (cf *CommunityFramework) DiscoverEdgeCases() []EdgeCasePattern {
 	var patterns []EdgeCasePattern
-	
+
 	// Analyze edge case contributions
 	edgeCases := cf.getContributionsByType(ContributionEdgeCase)
-	
+
 	// Group by common characteristics
 	patternMap := make(map[string]*EdgeCasePattern)
-	
+
 	for _, contrib := range edgeCases {
 		if contrib.EdgeCaseData == nil {
 			continue
 		}
-		
+
 		// Extract patterns (simplified)
 		for _, tag := range contrib.Tags {
 			if pattern, exists := patternMap[tag]; exists {
@@ -342,16 +342,16 @@ func (cf *CommunityFramework) DiscoverEdgeCases() []EdgeCasePattern {
 			}
 		}
 	}
-	
+
 	// Convert to slice and sort by frequency
 	for _, pattern := range patternMap {
 		patterns = append(patterns, *pattern)
 	}
-	
+
 	sort.Slice(patterns, func(i, j int) bool {
 		return patterns[i].Frequency > patterns[j].Frequency
 	})
-	
+
 	return patterns
 }
 
@@ -369,7 +369,7 @@ type EdgeCasePattern struct {
 // Helper methods
 
 func (cf *CommunityFramework) generateContributionID(contrib *Contribution) string {
-	data := fmt.Sprintf("%s-%s-%s-%d", 
+	data := fmt.Sprintf("%s-%s-%s-%d",
 		contrib.Type, contrib.Title, contrib.Contributor.Email, time.Now().UnixNano())
 	hash := sha256.Sum256([]byte(data))
 	return fmt.Sprintf("%x", hash)[:12] // Use first 12 characters
@@ -379,15 +379,15 @@ func (cf *CommunityFramework) validateContribution(contrib *Contribution) error 
 	if contrib.Title == "" {
 		return fmt.Errorf("title is required")
 	}
-	
+
 	if contrib.Description == "" {
 		return fmt.Errorf("description is required")
 	}
-	
+
 	if contrib.Contributor.Name == "" {
 		return fmt.Errorf("contributor name is required")
 	}
-	
+
 	// Type-specific validation
 	switch contrib.Type {
 	case ContributionEdgeCase:
@@ -397,7 +397,7 @@ func (cf *CommunityFramework) validateContribution(contrib *Contribution) error 
 		if contrib.EdgeCaseData.SpecContent == "" {
 			return fmt.Errorf("spec content is required for edge cases")
 		}
-		
+
 	case ContributionRealWorldAPI:
 		if contrib.APIData == nil {
 			return fmt.Errorf("API data is required")
@@ -405,7 +405,7 @@ func (cf *CommunityFramework) validateContribution(contrib *Contribution) error 
 		if contrib.APIData.SpecContent == "" {
 			return fmt.Errorf("spec content is required for APIs")
 		}
-		
+
 	case ContributionRule:
 		if contrib.RuleData == nil {
 			return fmt.Errorf("rule data is required")
@@ -414,7 +414,7 @@ func (cf *CommunityFramework) validateContribution(contrib *Contribution) error 
 			return fmt.Errorf("rule implementation is required")
 		}
 	}
-	
+
 	return nil
 }
 
@@ -423,7 +423,7 @@ func (cf *CommunityFramework) updateContributor(contributor *Contributor) {
 	if email == "" {
 		email = contributor.Name // Fallback to name if no email
 	}
-	
+
 	if existing, exists := cf.Contributors[email]; exists {
 		existing.Contributions++
 		existing.LastContrib = time.Now()
@@ -448,7 +448,7 @@ func (cf *CommunityFramework) saveContribution(contrib *Contribution) error {
 	if err := os.MkdirAll(typeDir, 0755); err != nil {
 		return err
 	}
-	
+
 	// Save contribution as JSON
 	contribPath := filepath.Join(typeDir, contrib.ID+".json")
 	file, err := os.Create(contribPath)
@@ -456,7 +456,7 @@ func (cf *CommunityFramework) saveContribution(contrib *Contribution) error {
 		return err
 	}
 	defer file.Close()
-	
+
 	encoder := json.NewEncoder(file)
 	encoder.SetIndent("", "  ")
 	return encoder.Encode(contrib)
@@ -470,7 +470,7 @@ func (cf *CommunityFramework) testContribution(contrib *Contribution) error {
 		TestsPassed:      0,
 		TestsFailed:      0,
 	}
-	
+
 	switch contrib.Type {
 	case ContributionEdgeCase:
 		// Test edge case against SpecGrade
@@ -479,7 +479,7 @@ func (cf *CommunityFramework) testContribution(contrib *Contribution) error {
 			testResults.TestsPassed = 1
 			testResults.TestOutput = "Edge case successfully reproduced"
 		}
-		
+
 	case ContributionRealWorldAPI:
 		// Validate API spec and run SpecGrade
 		if contrib.APIData != nil {
@@ -487,7 +487,7 @@ func (cf *CommunityFramework) testContribution(contrib *Contribution) error {
 			testResults.TestsPassed = 1
 			testResults.TestOutput = "API spec validated successfully"
 		}
-		
+
 	case ContributionRule:
 		// Compile and test rule implementation
 		if contrib.RuleData != nil {
@@ -496,7 +496,7 @@ func (cf *CommunityFramework) testContribution(contrib *Contribution) error {
 			testResults.TestOutput = "Rule implementation compiled and tested"
 		}
 	}
-	
+
 	contrib.TestResults = testResults
 	return nil
 }
@@ -516,7 +516,7 @@ func (cf *CommunityFramework) integrateEdgeCase(contrib *Contribution) error {
 	if err := os.MkdirAll(edgeCaseDir, 0755); err != nil {
 		return err
 	}
-	
+
 	specPath := filepath.Join(edgeCaseDir, contrib.ID+".yaml")
 	return os.WriteFile(specPath, []byte(contrib.EdgeCaseData.SpecContent), 0644)
 }
@@ -527,7 +527,7 @@ func (cf *CommunityFramework) integrateRealWorldAPI(contrib *Contribution) error
 	if err := os.MkdirAll(apiDir, 0755); err != nil {
 		return err
 	}
-	
+
 	specPath := filepath.Join(apiDir, "openapi.yaml")
 	return os.WriteFile(specPath, []byte(contrib.APIData.SpecContent), 0644)
 }
@@ -539,7 +539,7 @@ func (cf *CommunityFramework) integrateValidationRule(contrib *Contribution) err
 	if err := os.MkdirAll(ruleDir, 0755); err != nil {
 		return err
 	}
-	
+
 	rulePath := filepath.Join(ruleDir, contrib.RuleData.RuleID+".go")
 	return os.WriteFile(rulePath, []byte(contrib.RuleData.Implementation), 0644)
 }
@@ -559,73 +559,73 @@ func (cf *CommunityFramework) getTopContributors(limit int) []Contributor {
 	for _, contributor := range cf.Contributors {
 		contributors = append(contributors, *contributor)
 	}
-	
+
 	sort.Slice(contributors, func(i, j int) bool {
 		return contributors[i].Contributions > contributors[j].Contributions
 	})
-	
+
 	if len(contributors) > limit {
 		contributors = contributors[:limit]
 	}
-	
+
 	return contributors
 }
 
 func (cf *CommunityFramework) getRecentActivity(days int) []Contribution {
 	cutoff := time.Now().AddDate(0, 0, -days)
 	var recent []Contribution
-	
+
 	for _, contrib := range cf.ContributionsDB {
 		if contrib.SubmittedAt.After(cutoff) {
 			recent = append(recent, *contrib)
 		}
 	}
-	
+
 	sort.Slice(recent, func(i, j int) bool {
 		return recent[i].SubmittedAt.After(recent[j].SubmittedAt)
 	})
-	
+
 	return recent
 }
 
 // LoadContributions loads existing contributions from disk
 func (cf *CommunityFramework) LoadContributions() error {
 	contributionsDir := filepath.Join(cf.BaseDir, "contributions")
-	
+
 	if _, err := os.Stat(contributionsDir); os.IsNotExist(err) {
 		return nil // No contributions directory yet
 	}
-	
+
 	return filepath.Walk(contributionsDir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
-		
+
 		if !strings.HasSuffix(path, ".json") {
 			return nil
 		}
-		
+
 		file, err := os.Open(path)
 		if err != nil {
 			return err
 		}
 		defer file.Close()
-		
+
 		var contrib Contribution
 		if err := json.NewDecoder(file).Decode(&contrib); err != nil {
 			return err
 		}
-		
+
 		cf.ContributionsDB[contrib.ID] = &contrib
-		
+
 		// Add to review queue if pending
 		if contrib.Status == StatusPending {
 			cf.ReviewQueue = append(cf.ReviewQueue, &contrib)
 		}
-		
+
 		// Update contributor info
 		cf.updateContributor(&contrib.Contributor)
-		
+
 		return nil
 	})
 }
@@ -634,13 +634,13 @@ func (cf *CommunityFramework) LoadContributions() error {
 func (cf *CommunityFramework) GenerateContributionReport() map[string]interface{} {
 	stats := cf.GetContributionStats()
 	patterns := cf.DiscoverEdgeCases()
-	
+
 	report := map[string]interface{}{
-		"summary":           stats,
+		"summary":            stats,
 		"edge_case_patterns": patterns,
-		"generated_at":      time.Now(),
-		"framework_version": "1.0.0",
+		"generated_at":       time.Now(),
+		"framework_version":  "1.0.0",
 	}
-	
+
 	return report
 }

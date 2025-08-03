@@ -1,0 +1,17 @@
+{
+  "name": "sendgrid",
+  "provider": "SendGrid",
+  "category": "communication",
+  "version": "latest",
+  "source_url": "https://raw.githubusercontent.com/sendgrid/sendgrid-oai/main/oai.yaml",
+  "collected_at": "2025-08-02T19:59:22.90136673-07:00",
+  "expected_grade": "B",
+  "complexity_level": "medium",
+  "description": "Email delivery and marketing automation",
+  "tags": [
+    "email",
+    "marketing",
+    "automation",
+    "delivery"
+  ]
+}

@@ -17,7 +17,7 @@ func NewExitHandler(failThreshold string) *ExitHandler {
 // Handle returns the appropriate exit code based on the grade and threshold
 func (e *ExitHandler) Handle(grade string) int {
 	grade = strings.ToUpper(grade)
-	
+
 	// Grade hierarchy (higher is better)
 	gradeValues := map[string]int{
 		"A+": 12,
@@ -32,20 +32,20 @@ func (e *ExitHandler) Handle(grade string) int {
 		"D":  3,
 		"F":  0,
 	}
-	
+
 	actualValue, exists := gradeValues[grade]
 	if !exists {
 		return 1 // Unknown grade, fail
 	}
-	
+
 	thresholdValue, exists := gradeValues[e.failThreshold]
 	if !exists {
 		return 1 // Unknown threshold, fail
 	}
-	
+
 	if actualValue >= thresholdValue {
 		return 0 // Success
 	}
-	
+
 	return 1 // Failure
 }

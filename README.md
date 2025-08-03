@@ -5,7 +5,8 @@ A modular, dynamic, and CICD-optimized conformance validator for OpenAPI specifi
 ## 🚀 Features
 
 - **Modular Rule System**: Pluggable validation rules that can be easily extended
-- **Multiple Output Formats**: JSON, CLI, HTML, and Markdown reporting
+- **Enhanced Developer Reporting**: Actionable insights with file references and OpenAPI schema links
+- **Multiple Output Formats**: JSON, CLI, HTML, Markdown, and Developer reporting
 - **CI/CD Integration**: Semantic exit codes and configurable fail thresholds
 - **YAML Configuration**: Team-wide standardization with `specgrade.yaml`
 - **Rule Management**: Skip specific rules or generate documentation
@@ -77,7 +78,8 @@ These features are **100% functional** and ready for production use:
 
 - **Core Validation Engine**: 8 comprehensive validation rules
 - **Grading System**: Transparent A+ to F scoring with detailed breakdowns
-- **Multi-Format Output**: JSON, CLI, HTML, and Markdown reporters
+- **Enhanced Developer Reporting**: Actionable insights with file references and OpenAPI schema links
+- **Multi-Format Output**: JSON, CLI, HTML, Markdown, and Developer reporters
 - **Configuration Management**: YAML config files with CLI flag precedence
 - **Multi-File Support**: External `$ref` resolution for complex specs
 - **Rule Management**: Skip rules, generate documentation, list available rules
@@ -141,6 +143,45 @@ specgrade \
   --skip=RULE001,RULE012
 ```
 
+### Enhanced Developer Reporting
+
+🎯 **New!** SpecGrade now includes enhanced developer-focused reporting with actionable insights:
+
+```bash
+# Get enhanced developer report with file references and schema links
+specgrade --target-dir ./specs --output-format developer
+```
+
+**Key Features:**
+- 📄 **Precise File References** - Shows exact file locations for each issue
+- 📋 **OpenAPI Schema Links** - Direct links to official OpenAPI specification sections
+- 🔧 **Actionable Fix Guidance** - Practical examples and step-by-step instructions
+- 📚 **Documentation References** - Links to relevant OpenAPI documentation
+- 🎯 **Developer-Focused Output** - Clean, readable format optimized for developers
+
+**Example Output:**
+```
+🚀 SpecGrade Developer Report
+====================================
+📄 Target: ./specs
+🔖 OpenAPI Version: 3.1.0
+🏅 Grade: B (75%)
+
+🔍 Issues Found
+================
+
+⚠️ operation-success-response
+   Problem: Missing error responses: 1 missing 400 responses
+   📄 File: openapi.yaml:paths section
+   📋 Section: paths
+   🔍 JSON Path: $.paths
+   🔧 Fix:
+      Define proper error responses to help API consumers handle failures gracefully
+      📋 OpenAPI Schema: https://spec.openapis.org/oas/v3.0.3#responses-object
+      📚 References:
+        • https://spec.openapis.org/oas/v3.0.3#responses-object
+```
+
 ### Using Configuration File
 
 Create a `specgrade.yaml` file:
@@ -149,7 +190,7 @@ Create a `specgrade.yaml` file:
 spec_version: 3.1.0
 input_dir: ./specs/openai
 fail_threshold: B
-output_format: json
+output_format: developer  # Use enhanced developer reporting
 skip_rules:
   - RULE001
   - RULE012

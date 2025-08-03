@@ -3,9 +3,9 @@ package test
 import (
 	"testing"
 
-	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/copyleftdev/specgrade/core"
 	"github.com/copyleftdev/specgrade/rules"
+	"github.com/getkin/kin-openapi/openapi3"
 )
 
 func TestInfoTitleRule(t *testing.T) {
@@ -25,7 +25,7 @@ func TestInfoTitleRule(t *testing.T) {
 				},
 			},
 			expected: true,
-			detail:   "Title present",
+			detail:   "Title present: 'Test API'",
 		},
 		{
 			name: "spec without title",
